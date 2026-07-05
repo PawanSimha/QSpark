@@ -11,4 +11,6 @@ public interface ParkingRepository extends JpaRepository<ParkingSlot, Integer> {
 
     List<ParkingSlot> findByVehicleNumberContainingIgnoreCase(String vehicleNumber);
 
+    boolean existsByVehicleNumberAndExitTimeIsNull(String vehicleNumber);
+
 }

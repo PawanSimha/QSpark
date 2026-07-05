@@ -19,7 +19,7 @@
 
 **Problem:** Parking lots in commercial buildings suffer from manual logbooks, double-booking conflicts, no real-time slot visibility, and zero historical tracking — leading to wasted time, frustrated drivers, and administrative chaos.
 
-**Solution:** Q-Park is a production-grade web application that digitizes parking management with session‑based admin access, a real‑time three‑tab dashboard, cascading slot selection across 200 bays, and full audit history. Built on Spring Boot with MySQL persistence and a clean vanilla‑JS frontend — no frameworks, no bloat.
+**Solution:** Q-Park is a production-grade web application that digitizes parking management with session‑based admin access, a real‑time three‑tab dashboard, cascading slot selection across 200 bays, QR-based vehicle identification, and full audit history. Built on Spring Boot with MySQL persistence and a clean vanilla‑JS frontend — no frameworks, no bloat.
 
 ---
 
@@ -41,7 +41,7 @@
 | **Indian Plate Auto‑Format** | Live JS mask enforces `KA 01 AB 1234` format; `@Pattern` backend validation as second layer |
 | **10‑Digit Mobile** | `maxlength="10"` + JS strips every non‑numeric keystroke |
 | **Auto Entry Time** | `LocalDateTime.now()` recorded server‑side on booking — no user input |
-| **Duplicate Protection** | `findBySlotNumber()` checks `exitTime IS NULL` so freed slots can be re‑booked |
+| **Duplicate Protection** | Slot-level: `findBySlotNumber()` checks `exitTime IS NULL`. Vehicle-level: `existsByVehicleNumberAndExitTimeIsNull()` prevents same vehicle parking twice while active |
 
 ###  Operations & History
 | Feature | Detail |
@@ -49,6 +49,15 @@
 | **Left Button** | Green action per row calls `GET /left/{id}` → sets `exitTime = now` → record moves to History |
 | **Full CRUD** | Create, Read, Update (edit form preserves original entry time), Delete |
 | **Audit Trail** | History tab shows every completed parking record with entry time and exit time |
+
+###  QR Code Management
+| Feature | Detail |
+|---------|--------|
+| **Generate QR** | Enter vehicle number → server generates PNG via ZXing → browser downloads it as attachment |
+| **Scan QR** | Browser-based camera scanning via html5-qrcode CDN (rear camera, `environment` facing mode) |
+| **Redirect to Dashboard** | Scanned vehicle number pre-filled as readonly in the booking form, ready to assign a slot |
+| **Vehicle Registration** | Separate `vehicle_registration` table tracks which vehicles have QR issued (UNIQUE vehicle number) |
+| **Duplicate Prevention** | Generating QR for existing registration returns existing PNG; scanning unregistered vehicle shows error |
 
 ###  Security
 | Feature | Detail |
@@ -72,18 +81,18 @@
         │                                                          │
         │  ┌──────────────────────────────────────────────────┐    │
         │  │          Controller Layer                         │    │
-        │  │  LoginController.java  │  ParkingController.java  │    │
-        │  │  @GetMapping / @PostMapping · Session Guard       │    │
+         │  │  LoginController.java  │  ParkingController.java  │  QRCodeController.java  │    │
+         │  │  @GetMapping / @PostMapping · Session Guard                         │    │
         │  └──────────────────────┬───────────────────────────┘    │
         │                         ▼                                │
         │  ┌──────────────────────────────────────────────────┐    │
         │  │          Repository Layer (Spring Data JPA)       │    │
-        │  │  AdminRepository  │  ParkingRepository             │    │
+         │  │  AdminRepository  │  ParkingRepository  │  VehicleRegistrationRepository  │    │
         │  └──────────────────────┬───────────────────────────┘    │
         │                         ▼                                │
         │  ┌──────────────────────────────────────────────────┐    │
         │  │          Entity Layer (JPA / Hibernate)           │    │
-        │  │  Admin · ParkingSlot                              │    │
+         │  │  Admin · ParkingSlot · VehicleRegistration         │    │
         │  └──────────────────────┬───────────────────────────┘    │
         └─────────────────────────┼───────────────────────────────┘
                                   │ JDBC / Hibernate ORM
@@ -118,6 +127,8 @@
 | **Typography** | Inter (Google Fonts) | — |
 | **Icons** | Font Awesome (CDN) | — |
 | **Build Tool** | Maven (wrapped: `mvnw.cmd`) | 3.9+ |
+| **QR Generation** | ZXing (core + javase) | 3.5.3 |
+| **QR Scanning** | html5-qrcode (CDN, browser camera API) | — |
 | **Auth** | Session‑based (no JWT, no Spring Security) | — |
 
 ---
@@ -135,13 +146,16 @@ ParkEase/
 │   ├── ParkEaseApplication.java         # @SpringBootApplication entry point
 │   ├── controller/
 │   │   ├── LoginController.java         # /login, /logout, landing page
-│   │   └── ParkingController.java       # /dashboard, /save, /edit, /update, /delete, /left
+│   │   ├── ParkingController.java       # /dashboard, /save, /edit, /update, /delete, /left
+│   │   └── QRCodeController.java        # /qrcode, /qrcode/generate, /qrcode/scan, /qrcode/list
 │   ├── model/
 │   │   ├── Admin.java                   # @Entity — id, username, password
-│   │   └── ParkingSlot.java             # @Entity — 8 fields, entry/exit timestamps
+│   │   ├── ParkingSlot.java             # @Entity — 8 fields, entry/exit timestamps
+│   │   └── VehicleRegistration.java     # @Entity — id, vehicleNumber (UNIQUE), createdAt
 │   └── repository/
 │       ├── AdminRepository.java         # findByUsernameAndPassword()
-│       └── ParkingRepository.java       # findBySlotNumber(), findByVehicleNumberContainingIgnoreCase()
+│       ├── ParkingRepository.java       # findBySlotNumber(), findByVehicleNumberContainingIgnoreCase(), existsByVehicleNumberAndExitTimeIsNull()
+│       └── VehicleRegistrationRepository.java  # findByVehicleNumber(), existsByVehicleNumber()
 │
 └── src/main/resources/
     ├── application.properties           # MySQL connection + JPA config
@@ -153,7 +167,8 @@ ParkEase/
         ├── landing.html                 # Marketing page (hero, features, architecture)
         ├── login.html                   # Auth form (two‑column layout)
         ├── index.html                   # Dashboard (Booking / Occupied / History tabs)
-        └── edit.html                    # Edit booking form
+        ├── edit.html                    # Edit booking form
+        └── qrcode.html                  # QR code generation & camera scanning
 ```
 
 ---
@@ -231,6 +246,10 @@ mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
 | `POST` | `/update` | Update existing booking | ✓ |
 | `GET` | `/delete/{id}` | Delete a booking record | ✓ |
 | `GET` | `/left/{id}` | Mark vehicle as exited (sets `exit_time`) | ✓ |
+| `GET` | `/qrcode` | QR management page (generate / scan) | ✓ |
+| `POST` | `/qrcode/generate` | Generate QR code PNG for a vehicle number | ✓ |
+| `POST` | `/qrcode/scan` | Validate scanned QR code & redirect to dashboard | ✓ |
+| `GET` | `/qrcode/list` | JSON list of all registered vehicles | ✓ |
 
 ### Database Schema
 
@@ -253,11 +272,18 @@ mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
 | `entry_time` | `DATETIME` | Set server‑side on booking |
 | `exit_time` | `DATETIME` | `NULL` while active; set on "Left" action |
 
+**`vehicle_registration`** table:
+| Column | Type | Constraints |
+|--------|------|:-----------:|
+| `id` | `INT` | PK, AUTO_INCREMENT |
+| `vehicle_number` | `VARCHAR` | UNIQUE, NOT NULL |
+| `created_at` | `DATETIME` | Set on registration |
+
 ---
 
 ##  Product Roadmap
 
-- [ ] **QR Code Entry / Exit** — Generate QR on booking, scan to mark exit
+- [x] **QR Code Entry / Exit** — Generate QR for vehicle identification, scan with camera, pre-fill dashboard for slot assignment
 - [ ] **Receipt / Invoice Generation** — PDF download for completed parking records
 - [ ] **Multi‑Admin Support** — Role‑based access (operator vs. owner)
 - [ ] **Real‑Time Dashboard Push** — WebSocket integration for live slot updates across open browser tabs
@@ -274,6 +300,9 @@ mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
 | `404` on page refresh inside dashboard | Client‑side routing | Always navigate via buttons — the app uses server‑side rendering |
 | `Port 8081 already in use` | Another instance running | Close the old CMD window or run `taskkill /f /im java.exe` |
 | MySQL connection refused | MySQL service stopped | Start MySQL: `net start MySQL80` |
+| `404` at `/qrcode` | Stale target/ after adding new classes | Run `mvnw.cmd clean compile` to rebuild |
+| Camera not working on QR scan page | Browser permissions or HTTP (non-HTTPS) | Use `localhost` (allowed by browsers) or serve via HTTPS |
+| `Vehicle not registered` on scan | QR scanned but vehicle never had QR generated | Generate QR first via the Generate tab |
 
 ### Contributing
 

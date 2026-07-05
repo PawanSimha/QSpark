@@ -40,13 +40,18 @@ public class ParkingController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
+    public String dashboard(HttpSession session, Model model,
+                            @RequestParam(required = false) String vehicle) {
 
         if (session.getAttribute("admin") == null) {
             return "login";
         }
 
         addModelAttributes(model);
+
+        if (vehicle != null && !vehicle.isEmpty()) {
+            model.addAttribute("scannedVehicle", vehicle);
+        }
 
         return "index";
     }
@@ -66,12 +71,14 @@ public class ParkingController {
                     repository.findBySlotNumber(parkingSlot.getSlotNumber());
 
             if (existingSlot != null && existingSlot.getExitTime() == null) {
-
-                model.addAttribute("error",
-                        "Slot Already Booked!");
-
+                model.addAttribute("error", "Slot Already Booked!");
                 addModelAttributes(model);
+                return "index";
+            }
 
+            if (repository.existsByVehicleNumberAndExitTimeIsNull(parkingSlot.getVehicleNumber())) {
+                model.addAttribute("error", "Vehicle already parked in another slot!");
+                addModelAttributes(model);
                 return "index";
             }
 

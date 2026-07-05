@@ -44,6 +44,7 @@ mvnw.cmd clean
 |---|---|
 | `LoginController` | `GET /` (landing), `GET /login`, `POST /login`, `GET /logout` |
 | `ParkingController` | `GET /dashboard`, `POST /save`, `GET /delete/{id}`, `GET /left/{id}`, `GET /edit/{id}`, `POST /update` |
+| `QRCodeController` | `GET /qrcode`, `POST /qrcode/generate`, `POST /qrcode/scan`, `GET /qrcode/list` |
 
 All guarded endpoints check `session.getAttribute("admin") != null`, redirect to `"login"` if missing.
 
@@ -57,16 +58,23 @@ All guarded endpoints check `session.getAttribute("admin") != null`, redirect to
 ## Frontend
 
 - Vanilla HTML/CSS/JS + Thymeleaf — no frontend framework
-- Templates: `landing.html`, `login.html`, `index.html` (dashboard), `edit.html`
+- Templates: `landing.html`, `login.html`, `index.html` (dashboard), `edit.html`, `qrcode.html`
 - Fragments: `fragments.html` (dark mode + clock scripts)
 - Dark mode persisted to `localStorage`
 - Three-tab dashboard: Booking / Occupied / History (CSS translate, no JS router)
-- Cascading slot dropdowns: B1–B4, 50 slots each
+- Cinema-style slot grid: B1–B4 tabs, 50 slots in 10×5 grid, green=available red=occupied blue=selected
+- QR page: two-tab layout (Generate QR / Scan QR) with camera via html5-qrcode CDN
+
+## New Entities
+
+- `VehicleRegistration` — stores vehicles that have QR codes issued (vehicleNumber UNIQUE, createdAt)
+- `VehicleRegistrationRepository` — `findByVehicleNumber()`, `existsByVehicleNumber()`
 
 ## Known Gotchas
 
 - `-Dspring-boot.run.profiles=h2` must be **quoted** when passed to `mvnw.cmd` from PowerShell/cmd, otherwise Maven parses it as a lifecycle phase
 - `data.sql` uses MySQL `INSERT IGNORE` — will **fail** on H2. The H2 profile explicitly loads only `data-h2.sql`
 - `target/` may contain stale classes from a different project (`com.peterparker`) — always `mvn clean` first if switching
+- Duplicate booking check prevents same vehicle number from being parked twice while still active (`exitTime IS NULL`)
 - No Spring Security CSRF protection — sessions are the only auth layer
 - All controller-returned views are server-rendered Thymeleaf templates (no SPA routing)
