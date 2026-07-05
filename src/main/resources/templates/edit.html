@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Q-Park - Edit Booking</title>
+    <link rel="icon" type="image/png" href="/logo.png">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root{
+            --bg-body:#F1F5F9;
+            --bg-card:#FFFFFF;
+            --bg-header:#FFFFFF;
+            --bg-input:#F8FAFC;
+            --text-primary:#0F172A;
+            --text-secondary:#64748B;
+            --text-muted:#94A3B8;
+            --border:#E2E8F0;
+            --border-input:#CBD5E1;
+            --hover-bg:#F1F5F9;
+        }
+        body.dark-mode{
+            --bg-body:#0F172A;
+            --bg-card:#1E293B;
+            --bg-header:#1E293B;
+            --bg-input:#1E293B;
+            --text-primary:#F1F5F9;
+            --text-secondary:#94A3B8;
+            --text-muted:#64748B;
+            --border:#334155;
+            --border-input:#475569;
+            --hover-bg:#334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg-body);
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-header);
+            padding: 12px 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .logo-title {
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .logo-title span {
+            color: #2563EB;
+        }
+
+        .logo-sub {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .logout {
+            background: transparent;
+            color: #DC2626;
+            border: 1px solid #FCA5A5;
+            padding: 6px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.15s;
+        }
+
+        .logout:hover {
+            background: var(--hover-bg);
+        }
+
+        .box {
+            max-width: 700px;
+            margin: 40px auto;
+            background: var(--bg-card);
+            padding: 36px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 22px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-input);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: var(--bg-input);
+            transition: border 0.15s;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2563EB;
+            background: var(--bg-card);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border: none;
+            background: #2563EB;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.15s;
+        }
+
+        .btn:hover {
+            background: #1D4ED8;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <div class="logo" style="gap:12px;">
+        <img src="/logo.png" alt="Q-Park" style="width:34px;height:34px;border-radius:8px;object-fit:cover;">
+        <div>
+            <div style="font-size:20px;font-weight:800;line-height:1.2;"><span>Q</span>-Park</div>
+            <div style="font-size:10px;color:var(--text-muted);font-weight:500;">Quick &amp; Smart Parking</div>
+        </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:20px;">
+        <div id="liveClock" style="text-align:right;">
+            <div id="liveDate" style="font-size:12px;color:var(--text-secondary);font-weight:500;"></div>
+            <div id="liveTime" style="font-size:18px;font-weight:700;color:var(--text-primary);letter-spacing:0.02em;"></div>
+        </div>
+        <button id="darkModeToggle" onclick="toggleDarkMode()" style="background:var(--hover-bg);border:1px solid var(--border);border-radius:6px;width:36px;height:36px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;line-height:1;">🌙</button>
+        <a href="/logout" class="logout">
+            Logout
+        </a>
+    </div>
+
+</div>
+
+<div class="box">
+
+    <h2>Edit Parking Booking</h2>
+    <p class="subtitle">Update the details for this parking slot.</p>
+
+    <form action="/update" method="post">
+
+        <input type="hidden"
+               name="id"
+               th:value="${parking.id}">
+
+        <div class="grid">
+
+            <input type="text"
+                   name="ownerName"
+                   th:value="${parking.ownerName}"
+                   placeholder="Owner Name">
+
+            <input type="text"
+                   name="vehicleNumber"
+                   th:value="${parking.vehicleNumber}"
+                   placeholder="Vehicle Number"
+                   oninput="var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');var r='';if(v.length>0)r+=v.slice(0,2);if(v.length>2)r+=' '+v.slice(2,4);if(v.length>4)r+=' '+v.slice(4,Math.min(6,v.length));if(v.length>6)r+=' '+v.slice(6,10);this.value=r;">
+
+            <input type="text"
+                   name="vehicleType"
+                   th:value="${parking.vehicleType}"
+                   placeholder="Vehicle Type">
+
+            <input type="hidden" name="slotNumber" id="slotHidden" th:value="${parking.slotNumber}">
+
+            <select id="editBasement"
+                    onchange="editUpdateSlots()"
+                    required>
+                <option value="">Select Basement</option>
+                <option value="B1">Basement B1</option>
+                <option value="B2">Basement B2</option>
+                <option value="B3">Basement B3</option>
+                <option value="B4">Basement B4</option>
+            </select>
+
+            <select id="editSlot"
+                    required disabled>
+                <option value="">First select basement</option>
+            </select>
+
+            <input type="text"
+                   name="mobileNumber"
+                   th:value="${parking.mobileNumber}"
+                   placeholder="Mobile Number"
+                   pattern="[0-9]{10}"
+                   maxlength="10"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                   required>
+
+        </div>
+
+        <button type="submit" class="btn">
+            Update Booking
+        </button>
+
+        <div style="text-align:center;margin-top:16px;">
+            <a href="/dashboard" style="color:var(--text-secondary);text-decoration:none;font-size:14px;">&larr; Back to Dashboard</a>
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    function editUpdateSlots() {
+        var b = document.getElementById("editBasement").value;
+        var s = document.getElementById("editSlot");
+        s.innerHTML = '<option value="">Select Slot Number</option>';
+        s.disabled = !b;
+        if (b) {
+            for (var i = 1; i <= 50; i++) {
+                var n = i.toString().padStart(2, '0');
+                s.innerHTML += '<option value="' + b + '-' + n + '">' + b + ' - Slot ' + n + '</option>';
+            }
+        }
+        s.onchange = function() {
+            document.getElementById("slotHidden").value = this.value;
+        };
+        s.onchange();
+    }
+
+    window.onload = function() {
+        var h = document.getElementById("slotHidden");
+        var existing = h.value;
+        if (existing && existing.indexOf('-') > 0) {
+            var sep = existing.lastIndexOf('-');
+            var basement = existing.substring(0, sep);
+            document.getElementById("editBasement").value = basement;
+            editUpdateSlots();
+            document.getElementById("editSlot").value = existing;
+            document.getElementById("slotHidden").value = existing;
+        }
+    };
+
+    function updateClock() {
+        var now = new Date();
+        var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        document.getElementById('liveDate').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+        document.getElementById('liveTime').textContent = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        var isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('sppn-dark-mode', isDark ? 'true' : 'false');
+        document.getElementById('darkModeToggle').textContent = isDark ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    }
+
+    function applyDarkMode() {
+        var isDark = localStorage.getItem('sppn-dark-mode') === 'true';
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkModeToggle').textContent = '\u2600\uFE0F';
+        }
+    }
+    applyDarkMode();
+</script>
+
+</body>
+</html>

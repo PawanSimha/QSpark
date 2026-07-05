@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Q-Park - Dashboard</title>
+    <link rel="icon" type="image/png" href="/logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        :root{
+            --bg-body:#F8FAFC;
+            --bg-card:#FFFFFF;
+            --bg-header:#FFFFFF;
+            --bg-input:#F8FAFC;
+            --bg-th:#F8FAFC;
+            --text-primary:#0F172A;
+            --text-secondary:#64748B;
+            --text-muted:#94A3B8;
+            --border:#E2E8F0;
+            --border-input:#CBD5E1;
+            --hover-bg:#F1F5F9;
+        }
+        body.dark-mode{
+            --bg-body:#0F172A;
+            --bg-card:#1E293B;
+            --bg-header:#1E293B;
+            --bg-input:#1E293B;
+            --bg-th:#1E293B;
+            --text-primary:#F1F5F9;
+            --text-secondary:#94A3B8;
+            --text-muted:#64748B;
+            --border:#334155;
+            --border-input:#475569;
+            --hover-bg:#334155;
+        }
+
+        body{
+            background-color:var(--bg-body);
+            color:var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+        }
+        .header{
+            background:var(--bg-header);
+            padding:16px 40px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            position:sticky;
+            top:0;
+            z-index:100;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .logo{
+            font-size:24px;
+            font-weight:800;
+            letter-spacing: -0.025em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span{
+            color:#2563EB;
+        }
+
+        .logout{
+            text-decoration:none;
+            background:var(--hover-bg);
+            color:var(--text-secondary);
+            padding:8px 16px;
+            border-radius:6px;
+            font-weight:600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .logout:hover{
+            background:var(--border);
+            color:var(--text-primary);
+        }
+        .container{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1{
+            font-size: 28px;
+            font-weight: 700;
+            color:var(--text-primary);
+            margin-bottom:32px;
+            letter-spacing: -0.025em;
+        }
+        .navbar{
+            display:flex;
+            gap:12px;
+            margin-bottom:32px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+        }
+
+        .nav-btn{
+            background:transparent;
+            color:var(--text-secondary);
+            border:1px solid transparent;
+            padding:8px 16px;
+            border-radius:6px;
+            cursor:pointer;
+            font-weight:500;
+            font-size:14px;
+            transition:all .2s ease;
+        }
+
+        .nav-btn:hover{
+            background:var(--hover-bg);
+            color:var(--text-primary);
+        }
+
+        .nav-btn:focus {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border-color: #BFDBFE;
+        }
+        .slider-container{
+            overflow:hidden;
+            width:100%;
+        }
+
+        .slider{
+            display:flex;
+            width:300%;
+            transition:transform .5s cubic-bezier(0.4, 0, 0.2, 1);
+            align-items: flex-start;
+        }
+
+        .page{
+            width:33.333%;
+            padding:0 10px;
+        }
+        .stats{
+            display:flex;
+            gap:24px;
+            margin-bottom:32px;
+        }
+
+        .card{
+            flex:1;
+            background:var(--bg-card);
+            padding:24px;
+            border-radius:12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2{
+            font-size: 32px;
+            font-weight: 800;
+            color:#2563EB;
+            margin-bottom:8px;
+            letter-spacing: -0.025em;
+        }
+
+        .card p{
+            color:var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .form-box{
+            background:var(--bg-card);
+            padding:32px;
+            border-radius:12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-bottom:40px;
+        }
+
+        .form-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:24px;
+        }
+        input,
+        select{
+            width:100%;
+            padding:12px 16px;
+            border:1px solid var(--border-input);
+            border-radius:8px;
+            font-size:14px;
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        input:focus,
+        select:focus{
+            outline:none;
+            border-color:#3B82F6;
+            background-color: var(--bg-card);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .book-btn{
+            margin-top:24px;
+            background:#2563EB;
+            color:white;
+            border:none;
+            padding:12px 24px;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:15px;
+            font-weight:600;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .book-btn:hover{
+            background:#1D4ED8;
+        }
+        .error{
+            color:#EF4444;
+            margin-top:16px;
+            font-weight:500;
+            font-size: 14px;
+            text-align: center;
+        }
+        .table-box{
+            background:var(--bg-card);
+            border-radius:12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+        th{
+            background:var(--bg-th);
+            color:var(--text-secondary);
+            padding:16px 24px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        td{
+            padding:16px 24px;
+            text-align:left;
+            border-bottom:1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        tr:hover{
+            background:var(--hover-bg);
+        }
+        .delete-btn{
+            background:transparent;
+            color:#EF4444;
+            border: 1px solid #FECACA;
+            padding:6px 12px;
+            text-decoration:none;
+            border-radius:6px;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .delete-btn:hover{
+            background:#FEF2F2;
+            border-color: #EF4444;
+        }
+        @media(max-width:768px){
+
+            .form-grid{
+                grid-template-columns:1fr;
+            }
+
+            .stats{
+                flex-direction:column;
+            }
+
+            .header{
+                padding: 16px 20px;
+            }
+
+            table{
+                font-size:12px;
+                display: block;
+                overflow-x: auto;
+            }
+
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+
+    <div class="logo" style="gap:12px;">
+        <img src="/logo.png" alt="Q-Park" style="width:34px;height:34px;border-radius:8px;object-fit:cover;">
+        <div>
+            <div style="font-size:20px;font-weight:800;line-height:1.2;"><span>Q</span>-Park</div>
+            <div style="font-size:10px;color:#94A3B8;font-weight:500;">Quick &amp; Smart Parking</div>
+        </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:20px;">
+        <div id="liveClock" style="text-align:right;">
+            <div id="liveDate" style="font-size:12px;color:var(--text-secondary);font-weight:500;"></div>
+            <div id="liveTime" style="font-size:18px;font-weight:700;color:var(--text-primary);letter-spacing:0.02em;"></div>
+        </div>
+        <button id="darkModeToggle" onclick="toggleDarkMode()" style="background:var(--hover-bg);border:1px solid var(--border);border-radius:6px;width:36px;height:36px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;line-height:1;">🌙</button>
+        <a href="/logout" class="logout">
+            Logout
+        </a>
+    </div>
+
+</div>
+
+<div class="container">
+
+    <div th:if="${success}" style="background:#DCFCE7;color:#166534;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:500;font-size:14px;border:1px solid #86EFAC;" th:text="${success}"></div>
+    <div th:if="${error}" style="background:#FEE2E2;color:#991B1B;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:500;font-size:14px;border:1px solid #FCA5A5;" th:text="${error}"></div>
+
+    <h1>Dashboard Overview</h1>
+
+    <div class="navbar">
+
+        <button class="nav-btn"
+                onclick="showDashboard()">
+            Booking
+        </button>
+
+        <button class="nav-btn"
+                onclick="showOccupied()">
+            Occupied
+        </button>
+
+        <button class="nav-btn"
+                onclick="showHistory()">
+            History
+        </button>
+
+    </div>
+    <div class="slider-container">
+
+        <div class="slider" id="slider">
+            <div class="page">
+
+                <div class="stats">
+
+                    <div class="card">
+                        <h2 th:text="${#lists.size(list)}">0</h2>
+                        <p>Total Bookings</p>
+                    </div>
+
+                    <div class="card">
+                        <h2>24/7</h2>
+                        <p>Service Uptime</p>
+                    </div>
+
+                    <div class="card">
+                        <h2>Active</h2>
+                        <p>System Status</p>
+                    </div>
+
+                </div>
+
+                <div class="form-box">
+
+                    <h2 style="margin-bottom:24px; font-size:20px; color:var(--text-primary);">
+                        New Booking
+                    </h2>
+
+                    <form action="/save" method="post">
+
+                        <div class="form-grid">
+
+                            <input type="text"
+                                   name="ownerName"
+                                   placeholder="Owner Name"
+                                   required>
+
+                            <input type="text"
+                                   name="vehicleNumber"
+                                   placeholder="KA 01 AB 1234"
+                                   pattern="[A-Z]{2} [0-9]{2} [A-Z]{1,2} [0-9]{4}"
+                                   oninput="var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');var r='';if(v.length>0)r+=v.slice(0,2);if(v.length>2)r+=' '+v.slice(2,4);if(v.length>4)r+=' '+v.slice(4,Math.min(6,v.length));if(v.length>6)r+=' '+v.slice(6,10);this.value=r;"
+                                   required>
+
+                            <select name="vehicleType" required>
+                                <option value="">Select Vehicle Type</option>
+                                <option value="Car">Car</option>
+                                <option value="Bike">Bike</option>
+                                <option value="Scooter">Scooter</option>
+                                <option value="Auto Rickshaw">Auto Rickshaw</option>
+                                <option value="Electric Car">Electric Car</option>
+                                <option value="Electric Two Wheeler">Electric Two Wheeler</option>
+                            </select>
+
+                            <select id="basementSelect"
+                                    onchange="updateSlots()"
+                                    required>
+                                <option value="">Select Basement</option>
+                                <option value="B1">Basement B1</option>
+                                <option value="B2">Basement B2</option>
+                                <option value="B3">Basement B3</option>
+                                <option value="B4">Basement B4</option>
+                            </select>
+
+                            <select name="slotNumber"
+                                    id="slotSelect"
+                                    required disabled>
+                                <option value="">First select basement</option>
+                            </select>
+
+                            <input type="text"
+                                   name="mobileNumber"
+                                   placeholder="Mobile Number"
+                                   pattern="[0-9]{10}"
+                                   maxlength="10"
+                                   oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                                   required>
+
+                        </div>
+
+                        <button type="submit" class="book-btn">
+                            Confirm Booking
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+            <!-- PAGE 2 -->
+
+            <div class="page">
+
+                <div class="table-box">
+
+                    <div style="padding: 24px; border-bottom: 1px solid var(--border);">
+                        <h2 style="font-size:20px; color:var(--text-primary);">
+                            Active Records
+                        </h2>
+                        <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">
+                            Manage current parking slot allocations.
+                        </p>
+                        <form style="padding:20px;display:flex;gap:12px;align-items:center;">
+
+                            <input type="text"
+                                   id="searchInput"
+                                   oninput="filterTable()"
+                                   placeholder="Search by vehicle number, name, type, slot or mobile..."
+                                   style="flex:1;">
+
+                            <button type="button" onclick="exportCSV('occupied')" style="padding:8px 16px;background:#2563EB;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;white-space:nowrap;">Export CSV</button>
+
+                        </form>
+
+                        <div style="padding:0 20px 16px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                            <span style="font-size:13px;font-weight:600;color:var(--text-secondary);white-space:nowrap;">Sort by:</span>
+                            <select id="sortCol" onchange="sortTable()" style="padding:6px 10px;border:1px solid var(--border-input);border-radius:6px;font-size:13px;background:var(--bg-input);color:var(--text-primary);max-width:140px;">
+                                <option value="">Default</option>
+                                <option value="type">Vehicle Type</option>
+                                <option value="slot">Slot Number</option>
+                                <option value="time">Entry Time</option>
+                            </select>
+                            <button id="sortDirBtn" onclick="toggleSortDir()" style="padding:6px 12px;border:1px solid var(--border-input);border-radius:6px;font-size:13px;background:var(--bg-input);color:var(--text-primary);cursor:pointer;font-weight:600;min-width:90px;">Ascending</button>
+                        </div>
+                    </div>
+
+                    <table id="occupiedTable">
+
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Owner Name</th>
+                            <th>Vehicle Number</th>
+                            <th>Vehicle Type</th>
+                            <th>Slot Number</th>
+                            <th>Mobile</th>
+                            <th>Entry Time</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="p : ${list}">
+
+                            <td th:text="${p.id}"></td>
+                            <td th:text="${p.ownerName}"></td>
+                            <td th:text="${p.vehicleNumber}"></td>
+                            <td th:text="${p.vehicleType}"></td>
+                            <td th:text="${p.slotNumber}"></td>
+                            <td th:text="${p.mobileNumber}"></td>
+                            <td th:text="${#temporals.format(p.entryTime, 'dd-MM-yyyy | hh:mm a')}"></td>
+
+                            <td>
+                                <div style="display: flex; gap: 8px;">
+                                    <a th:href="@{/edit/{id}(id=${p.id})}"
+                                       style="background:#2563EB;
+                                              color:white;
+                                              padding:6px 12px;
+                                              border-radius:6px;
+                                              text-decoration:none;
+                                              display:inline-block;">
+                                        Edit
+                                    </a>
+
+                                    <a th:href="@{/left/{id}(id=${p.id})}"
+                                       onclick="return confirm('Mark this vehicle as Left and move to History?')"
+                                       style="background:#16A34A;
+                                              color:white;
+                                              padding:6px 12px;
+                                              border-radius:6px;
+                                              text-decoration:none;
+                                              display:inline-block;
+                                              font-weight:600;">
+                                        Left
+                                    </a>
+
+                                    <a class="delete-btn"
+                                       th:href="@{/delete/{id}(id=${p.id})}"
+                                       onclick="return confirm('Delete this booking?')">
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+            <!-- PAGE 3 -->
+
+            <div class="page">
+
+                <div class="table-box">
+
+                    <div style="padding: 24px; border-bottom: 1px solid var(--border);">
+                        <h2 style="font-size:20px; color:var(--text-primary);">
+                            Parking History
+                        </h2>
+                        <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">
+                            Records of vehicles that have left.
+                        </p>
+                        <div style="padding:0 24px 16px 24px;">
+                            <button type="button" onclick="exportCSV('history')" style="padding:8px 16px;background:#2563EB;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;">Export CSV</button>
+                        </div>
+                    </div>
+
+                    <table id="historyTable">
+
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Owner Name</th>
+                            <th>Vehicle Number</th>
+                            <th>Vehicle Type</th>
+                            <th>Slot Number</th>
+                            <th>Mobile</th>
+                            <th>Entry Time</th>
+                            <th>Left At</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="p : ${history}">
+
+                            <td th:text="${p.id}"></td>
+                            <td th:text="${p.ownerName}"></td>
+                            <td th:text="${p.vehicleNumber}"></td>
+                            <td th:text="${p.vehicleType}"></td>
+                            <td th:text="${p.slotNumber}"></td>
+                            <td th:text="${p.mobileNumber}"></td>
+                            <td th:text="${#temporals.format(p.entryTime, 'dd-MM-yyyy | hh:mm a')}"></td>
+                            <td th:text="${#temporals.format(p.exitTime, 'dd-MM-yyyy | hh:mm a')}"></td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </div> <!-- slider -->
+
+    </div> <!-- slider-container -->
+
+</div> <!-- container -->
+
+<script>
+    var occupiedSlots = "[(${occupied})]".split(',').filter(Boolean);
+
+    function showDashboard() {
+        document.getElementById("slider").style.transform =
+            "translateX(0%)";
+    }
+
+    function showOccupied() {
+        document.getElementById("slider").style.transform =
+            "translateX(-33.333%)";
+    }
+
+    function showHistory() {
+        document.getElementById("slider").style.transform =
+            "translateX(-66.666%)";
+    }
+
+    function updateSlots() {
+        var b = document.getElementById("basementSelect").value;
+        var s = document.getElementById("slotSelect");
+        s.innerHTML = '<option value="">Select Slot Number</option>';
+        s.disabled = !b;
+        if (b) {
+            for (var i = 1; i <= 50; i++) {
+                var n = i.toString().padStart(2, '0');
+                var slotVal = b + '-' + n;
+                var isOccupied = occupiedSlots.indexOf(slotVal) >= 0;
+                var label = b + ' - Slot ' + n;
+                if (isOccupied) {
+                    s.innerHTML += '<option value="' + slotVal + '" disabled style="color:#DC2626;font-weight:600;">' + label + ' (Occupied)</option>';
+                } else {
+                    s.innerHTML += '<option value="' + slotVal + '">' + label + '</option>';
+                }
+            }
+        }
+    }
+
+    function updateClock() {
+        var now = new Date();
+        var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        document.getElementById('liveDate').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+        document.getElementById('liveTime').textContent = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    var sortAsc = true;
+
+    function toggleSortDir() {
+        sortAsc = !sortAsc;
+        document.getElementById('sortDirBtn').textContent = sortAsc ? 'Ascending' : 'Descending';
+        sortTable();
+    }
+
+    function sortTable() {
+        var mode = document.getElementById('sortCol').value;
+        var tbody = document.querySelector('table tbody');
+        var rows = Array.from(tbody.querySelectorAll('tr'));
+        if (!mode) { rows.forEach(function(r) { r.style.display = ''; }); filterTable(); return; }
+        var col;
+        if (mode === 'type') col = 3;
+        else if (mode === 'slot') col = 4;
+        else if (mode === 'time') col = 6;
+        rows.sort(function(a, b) {
+            var va = a.cells[col].textContent.trim();
+            var vb = b.cells[col].textContent.trim();
+            var cmp = va.localeCompare(vb);
+            return sortAsc ? cmp : -cmp;
+        });
+        rows.forEach(function(r) { tbody.appendChild(r); });
+        filterTable();
+    }
+
+    function filterTable() {
+        var q = document.getElementById('searchInput').value.toLowerCase();
+        var rows = document.querySelectorAll('table tbody tr');
+        for (var i = 0; i < rows.length; i++) {
+            var text = '';
+            var cols = rows[i].querySelectorAll('td');
+            for (var j = 0; j < cols.length - 1; j++) {
+                text += cols[j].textContent.toLowerCase() + ' ';
+            }
+            rows[i].style.display = text.indexOf(q) >= 0 ? '' : 'none';
+        }
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        var isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('sppn-dark-mode', isDark ? 'true' : 'false');
+        document.getElementById('darkModeToggle').textContent = isDark ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    }
+
+    function applyDarkMode() {
+        var isDark = localStorage.getItem('sppn-dark-mode') === 'true';
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkModeToggle').textContent = '\u2600\uFE0F';
+        }
+    }
+    applyDarkMode();
+
+    function exportCSV(type) {
+        var tableId = type === 'occupied' ? 'occupiedTable' : 'historyTable';
+        var filename = type === 'occupied' ? 'Occupied_Records.csv' : 'History_Records.csv';
+        var table = document.getElementById(tableId);
+        var csv = [];
+        var ths = table.querySelectorAll('thead th');
+        var maxCols = type === 'occupied' ? ths.length - 1 : ths.length;
+        var headers = [];
+        for (var i = 0; i < maxCols; i++) {
+            headers.push('"' + ths[i].textContent.trim() + '"');
+        }
+        csv.push(headers.join(','));
+        var rows = table.querySelectorAll('tbody tr');
+        for (var r = 0; r < rows.length; r++) {
+            var cols = rows[r].querySelectorAll('td');
+            var row = [];
+            var limit = type === 'occupied' ? cols.length - 1 : cols.length;
+            for (var c = 0; c < limit; c++) {
+                row.push('"' + cols[c].textContent.trim() + '"');
+            }
+            csv.push(row.join(','));
+        }
+        var blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+</script>
+</body>
