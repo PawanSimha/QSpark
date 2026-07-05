@@ -288,7 +288,7 @@ All contributions are welcome — bug fixes, new features, UI polish, or documen
 
 ##  Author & License
 
-**Built by** — Pawan Simha, Sangeetha, Prajwal R, Nithin ML  
+
 *Academic project for Q-Park system demonstration.*
 
 This project is licensed under the **MIT License**. See the `LICENSE` file for details.
