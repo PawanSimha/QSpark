@@ -3,9 +3,11 @@ package com.parkease.controller;
 import com.parkease.model.ParkingSlot;
 import com.parkease.repository.ParkingRepository;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -41,7 +43,10 @@ public class ParkingController {
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model,
-                            @RequestParam(required = false) String vehicle) {
+                            @RequestParam(required = false) String ownerName,
+                            @RequestParam(required = false) String vehicleNumber,
+                            @RequestParam(required = false) String vehicleType,
+                            @RequestParam(required = false) String mobileNumber) {
 
         if (session.getAttribute("admin") == null) {
             return "login";
@@ -49,20 +54,31 @@ public class ParkingController {
 
         addModelAttributes(model);
 
-        if (vehicle != null && !vehicle.isEmpty()) {
-            model.addAttribute("scannedVehicle", vehicle);
+        if (vehicleNumber != null && !vehicleNumber.isEmpty()) {
+            model.addAttribute("scannedOwnerName", ownerName != null ? ownerName : "");
+            model.addAttribute("scannedVehicleNumber", vehicleNumber);
+            model.addAttribute("scannedVehicleType", vehicleType != null ? vehicleType : "");
+            model.addAttribute("scannedMobileNumber", mobileNumber != null ? mobileNumber : "");
         }
 
         return "index";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute ParkingSlot parkingSlot,
+    public String save(@Valid @ModelAttribute ParkingSlot parkingSlot,
+                       BindingResult result,
                        HttpSession session,
                        Model model) {
 
         if (session.getAttribute("admin") == null) {
             return "login";
+        }
+
+        if (result.hasErrors()) {
+            model.addAttribute("error",
+                    "Invalid vehicle number format (use: KA 01 AB 1234 or 26 BH 9876 AB)");
+            addModelAttributes(model);
+            return "index";
         }
 
         try {

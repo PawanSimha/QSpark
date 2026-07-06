@@ -528,21 +528,30 @@
                         New Booking
                     </h2>
 
-                    <form action="/save" method="post" onsubmit="return validateSlot()">
+                    <form action="/save" method="post" onsubmit="return prepareSubmit()">
 
                         <div class="form-grid">
                             <input type="text"
                                    name="ownerName"
+                                   id="ownerNameInput"
                                    placeholder="Owner Name"
                                    required>
+                            <select id="formatSelect" onchange="onFormatChange()">
+                                <option value="">Select Format</option>
+                                <option value="std1">Standard (1-letter) — KA 04 A 2256</option>
+                                <option value="std2">Standard (2-letter) — DL 03 CA 1234</option>
+                                <option value="std3">Standard (3-letter) — ML 04 ASD 5256</option>
+                                <option value="bhr">Bharat Series — 26 BH 9876 AB</option>
+                            </select>
                             <input type="text"
                                    name="vehicleNumber"
                                    id="vehicleInput"
-                                   placeholder="KA 01 AB 1234"
-                                   pattern="[A-Z]{2} [0-9]{2} [A-Z]{1,2} [0-9]{4}"
-                                   oninput="var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');var r='';if(v.length>0)r+=v.slice(0,2);if(v.length>2)r+=' '+v.slice(2,4);if(v.length>4)r+=' '+v.slice(4,Math.min(6,v.length));if(v.length>6)r+=' '+v.slice(6,10);this.value=r;"
+                                   placeholder="Select format above"
+                                   readonly
+                                   style="grid-column:1/-1;background:var(--bg-th);cursor:not-allowed;"
+                                   oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9 ]/g,'');"
                                    required>
-                            <select name="vehicleType" required>
+                            <select name="vehicleType" id="vehicleTypeInput" required>
                                 <option value="">Select Vehicle Type</option>
                                 <option value="Car">Car</option>
                                 <option value="Bike">Bike</option>
@@ -553,6 +562,7 @@
                             </select>
                             <input type="text"
                                    name="mobileNumber"
+                                   id="mobileNumberInput"
                                    placeholder="Mobile Number"
                                    pattern="[0-9]{10}"
                                    maxlength="10"
@@ -815,12 +825,16 @@
         }
     }
 
-    function validateSlot() {
+    function prepareSubmit() {
         var val = document.getElementById('selectedSlot').value;
         if (!val) {
             alert('Please select a parking slot from the grid.');
             return false;
         }
+        var fi = document.getElementById('formatSelect');
+        if (fi && fi.disabled) fi.disabled = false;
+        var ti = document.getElementById('vehicleTypeInput');
+        if (ti && ti.disabled) ti.disabled = false;
         return true;
     }
 
@@ -874,21 +888,65 @@
         }
     }
 
-    var scannedVehicle = '[[${scannedVehicle}]]';
+    var formatMap = {
+        'std1': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{1} [0-9]{4}$', example: 'KA 04 A 2256' },
+        'std2': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{2} [0-9]{4}$', example: 'DL 03 CA 1234' },
+        'std3': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{3} [0-9]{4}$', example: 'ML 04 ASD 5256' },
+        'bhr':  { pattern: '^[0-9]{2} BH [0-9]{4} [A-Z]{2}$', example: '26 BH 9876 AB' }
+    };
+
+    function onFormatChange() {
+        var sel = document.getElementById('formatSelect');
+        var inp = document.getElementById('vehicleInput');
+        var fmt = formatMap[sel.value];
+        if (fmt) {
+            inp.placeholder = 'e.g. ' + fmt.example;
+            inp.pattern = fmt.pattern;
+            inp.title = 'Format: ' + fmt.example;
+            inp.readOnly = false;
+            inp.style.background = '';
+            inp.style.cursor = '';
+            inp.value = '';
+        } else {
+            inp.placeholder = 'Select format above';
+            inp.pattern = '';
+            inp.title = '';
+            inp.readOnly = true;
+            inp.style.background = 'var(--bg-th)';
+            inp.style.cursor = 'not-allowed';
+            inp.value = '';
+        }
+    }
+
+    var scannedOwnerName = '[[${scannedOwnerName}]]';
+    var scannedVehicleNumber = '[[${scannedVehicleNumber}]]';
+    var scannedVehicleType = '[[${scannedVehicleType}]]';
+    var scannedMobileNumber = '[[${scannedMobileNumber}]]';
+
+    function setReadOnly(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.readOnly = true;
+        el.style.background = 'var(--bg-th)';
+        el.style.cursor = 'not-allowed';
+    }
 
     function applyScannedVehicle() {
-        if (scannedVehicle && scannedVehicle !== '') {
-            var inp = document.getElementById('vehicleInput');
-            if (inp) {
-                inp.value = scannedVehicle;
-                inp.readOnly = true;
-                inp.style.background = 'var(--bg-th)';
-                inp.style.cursor = 'not-allowed';
-            }
+        if (scannedVehicleNumber && scannedVehicleNumber !== '') {
+            var oi = document.getElementById('ownerNameInput');
+            if (oi) { oi.value = scannedOwnerName; setReadOnly('ownerNameInput'); }
+            var vi = document.getElementById('vehicleInput');
+            if (vi) { vi.value = scannedVehicleNumber; setReadOnly('vehicleInput'); }
+            var fi = document.getElementById('formatSelect');
+            if (fi) { fi.disabled = true; fi.style.cursor = 'not-allowed'; }
+            var ti = document.getElementById('vehicleTypeInput');
+            if (ti) { ti.value = scannedVehicleType; ti.disabled = true; ti.style.cursor = 'not-allowed'; }
+            var mi = document.getElementById('mobileNumberInput');
+            if (mi) { mi.value = scannedMobileNumber; setReadOnly('mobileNumberInput'); }
             var banner = document.createElement('div');
             banner.id = 'scanBanner';
-            banner.style.cssText = 'background:var(--bg-th);color:var(--text-primary);padding:10px 16px;border-radius:8px;margin-bottom:16px;font-weight:500;font-size:13px;border:1px solid var(--border);display:flex;align-items:center;gap:8px;';
-            banner.innerHTML = '<span style="font-size:16px;">\uD83D\uDCF7</span> QR Scanned: <strong>' + scannedVehicle + '</strong>';
+            banner.style.cssText = 'background:var(--bg-th);color:var(--text-primary);padding:10px 16px;border-radius:8px;margin-bottom:16px;font-weight:500;font-size:13px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;';
+            banner.innerHTML = '<span style="font-size:16px;">\uD83D\uDCF7</span> <strong>' + scannedOwnerName + '</strong> \u00B7 ' + scannedVehicleNumber + ' \u00B7 ' + scannedVehicleType + ' \u00B7 ' + scannedMobileNumber;
             var form = document.querySelector('.form-box');
             if (form) form.insertBefore(banner, form.firstChild);
         }

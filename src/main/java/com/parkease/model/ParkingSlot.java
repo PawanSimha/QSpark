@@ -17,8 +17,8 @@ public class ParkingSlot {
 
     @Column(name = "vehicle_number")
     @Pattern(
-            regexp = "^[A-Z]{2} [0-9]{2} [A-Z]{1,2} [0-9]{4}$",
-            message = "Invalid Vehicle Number Format (use: KA 01 AB 1234)"
+            regexp = "^(?:[A-Z]{2} [0-9]{2} [A-Z]{1,3} [0-9]{4}|[0-9]{2} BH [0-9]{4} [A-Z]{2})$",
+            message = "Invalid Format (use: KA 01 AB 1234 or 26 BH 9876 AB)"
     )
     private String vehicleNumber;
 

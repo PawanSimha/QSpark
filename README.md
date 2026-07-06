@@ -38,7 +38,7 @@
 |---------|--------|
 | **200 Slots / 4 Basements** | B1–B4, 50 slots each; cascading dropdowns with occupied bays shown red & disabled |
 | **6 Vehicle Types** | Car, Bike, Scooter, Auto Rickshaw, Electric Car, Electric Two Wheeler |
-| **Indian Plate Auto‑Format** | Live JS mask enforces `KA 01 AB 1234` format; `@Pattern` backend validation as second layer |
+| **Indian Plate Validation** | Supports standard (`KA 01 AB 1234`, `ML 04 ASD 5256`) and Bharat series (`26 BH 9876 AB`); `@Pattern` backend validation |
 | **10‑Digit Mobile** | `maxlength="10"` + JS strips every non‑numeric keystroke |
 | **Auto Entry Time** | `LocalDateTime.now()` recorded server‑side on booking — no user input |
 | **Duplicate Protection** | Slot-level: `findBySlotNumber()` checks `exitTime IS NULL`. Vehicle-level: `existsByVehicleNumberAndExitTimeIsNull()` prevents same vehicle parking twice while active |
@@ -53,11 +53,11 @@
 ###  QR Code Management
 | Feature | Detail |
 |---------|--------|
-| **Generate QR** | Enter vehicle number → server generates PNG via ZXing → browser downloads it as attachment |
+| **Generate QR** | Enter owner name, vehicle number, vehicle type, mobile → server generates PNG via ZXing → browser downloads it as attachment |
 | **Scan QR** | Browser-based camera scanning via html5-qrcode CDN (rear camera, `environment` facing mode) |
-| **Redirect to Dashboard** | Scanned vehicle number pre-filled as readonly in the booking form, ready to assign a slot |
-| **Vehicle Registration** | Separate `vehicle_registration` table tracks which vehicles have QR issued (UNIQUE vehicle number) |
-| **Duplicate Prevention** | Generating QR for existing registration returns existing PNG; scanning unregistered vehicle shows error |
+| **Auto-fill Dashboard** | Scanned QR pre-fills all 4 fields (name, vehicle, type, mobile) as readonly — admin only picks a slot |
+| **Vehicle Registration** | Separate `vehicle_registration` table stores all details (UNIQUE vehicle number) |
+| **Duplicate Prevention** | Re-generating QR updates existing record; scanning unregistered vehicle shows error |
 
 ###  Security
 | Feature | Detail |
@@ -265,7 +265,7 @@ mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
 |--------|------|-------|
 | `id` | `INT` | PK, AUTO_INCREMENT |
 | `owner_name` | `VARCHAR` | — |
-| `vehicle_number` | `VARCHAR` | Format: `KA 01 AB 1234` |
+| `vehicle_number` | `VARCHAR` | Format: `KA 01 AB 1234` / `26 BH 9876 AB` |
 | `vehicle_type` | `VARCHAR` | 6 vehicle types |
 | `slot_number` | `VARCHAR` | `B1-01` … `B4-50` |
 | `mobile_number` | `VARCHAR` | 10 digits |

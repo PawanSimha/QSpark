@@ -38,15 +38,25 @@ public class QRCodeController {
     }
 
     @PostMapping("/qrcode/generate")
-    public ResponseEntity<?> generateQR(@RequestParam String vehicleNumber, HttpSession session) {
+    public ResponseEntity<?> generateQR(@RequestParam String vehicleNumber,
+                                         @RequestParam String ownerName,
+                                         @RequestParam String vehicleType,
+                                         @RequestParam String mobileNumber,
+                                         HttpSession session) {
         if (session.getAttribute("admin") == null) {
             return ResponseEntity.status(401).build();
         }
 
         String formatted = vehicleNumber.toUpperCase().trim();
 
-        if (!vehicleRepo.existsByVehicleNumber(formatted)) {
-            vehicleRepo.save(new VehicleRegistration(formatted));
+        VehicleRegistration reg = vehicleRepo.findByVehicleNumber(formatted).orElse(null);
+        if (reg != null) {
+            reg.setOwnerName(ownerName.trim());
+            reg.setVehicleType(vehicleType);
+            reg.setMobileNumber(mobileNumber.trim());
+            vehicleRepo.save(reg);
+        } else {
+            vehicleRepo.save(new VehicleRegistration(formatted, ownerName.trim(), vehicleType, mobileNumber.trim()));
         }
 
         try {
@@ -74,13 +84,26 @@ public class QRCodeController {
 
         String formatted = vehicleNumber.toUpperCase().trim();
 
-        if (!vehicleRepo.existsByVehicleNumber(formatted)) {
+        VehicleRegistration reg = vehicleRepo.findByVehicleNumber(formatted).orElse(null);
+        if (reg == null) {
             model.addAttribute("error", "Vehicle not registered. Generate QR first.");
             model.addAttribute("registrations", vehicleRepo.findAll());
             return "qrcode";
         }
 
-        return "redirect:/dashboard?vehicle=" + formatted;
+        return "redirect:/dashboard?ownerName=" + urlEncode(reg.getOwnerName())
+                + "&vehicleNumber=" + urlEncode(reg.getVehicleNumber())
+                + "&vehicleType=" + urlEncode(reg.getVehicleType())
+                + "&mobileNumber=" + urlEncode(reg.getMobileNumber());
+    }
+
+    private String urlEncode(String s) {
+        if (s == null) return "";
+        try {
+            return java.net.URLEncoder.encode(s, java.nio.charset.StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return s;
+        }
     }
 
     @GetMapping("/qrcode/list")

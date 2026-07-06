@@ -339,15 +339,39 @@
     <div class="tab-content active" id="tabGenerate">
         <div class="card-box">
             <h2>Generate New QR Code</h2>
-            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;">Enter a vehicle number to generate a downloadable QR code. The vehicle will be registered for future scans.</p>
-            <div class="form-row">
+            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;">Fill in all details to generate a downloadable QR code. Scanning it will auto-fill the dashboard.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <input type="text" id="ownerInput" placeholder="Owner Name">
+                <select id="formatSelect" onchange="onFormatChange()">
+                    <option value="">Select Format</option>
+                    <option value="std1">Standard (1-letter) — KA 04 A 2256</option>
+                    <option value="std2">Standard (2-letter) — DL 03 CA 1234</option>
+                    <option value="std3">Standard (3-letter) — ML 04 ASD 5256</option>
+                    <option value="bhr">Bharat Series — 26 BH 9876 AB</option>
+                </select>
                 <input type="text"
                        id="vehicleInput"
-                       placeholder="KA 01 AB 1234"
-                       pattern="[A-Z]{2} [0-9]{2} [A-Z]{1,2} [0-9]{4}"
-                       oninput="var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');var r='';if(v.length>0)r+=v.slice(0,2);if(v.length>2)r+=' '+v.slice(2,4);if(v.length>4)r+=' '+v.slice(4,Math.min(6,v.length));if(v.length>6)r+=' '+v.slice(6,10);this.value=r;">
-                <button class="btn-primary" onclick="generateQR()" id="generateBtn">Generate QR</button>
+                       placeholder="Select format above"
+                       readonly
+                       style="grid-column:1/-1;background:var(--bg-th);cursor:not-allowed;"
+                       oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9 ]/g,'');">
+                <select id="typeInput">
+                    <option value="">Select Vehicle Type</option>
+                    <option value="Car">Car</option>
+                    <option value="Bike">Bike</option>
+                    <option value="Scooter">Scooter</option>
+                    <option value="Auto Rickshaw">Auto Rickshaw</option>
+                    <option value="Electric Car">Electric Car</option>
+                    <option value="Electric Two Wheeler">Electric Two Wheeler</option>
+                </select>
+                <input type="text"
+                       id="mobileInput"
+                       placeholder="Mobile Number"
+                       pattern="[0-9]{10}"
+                       maxlength="10"
+                       oninput="this.value=this.value.replace(/[^0-9]/g,'');">
             </div>
+            <button class="btn-primary" onclick="generateQR()" id="generateBtn" style="margin-top:16px;">Generate QR</button>
             <div id="qrPreview" class="qr-preview">
                 <img id="qrImage" src="" alt="QR Code">
                 <p style="color:var(--text-secondary);font-size:14px;margin-top:8px;" id="qrVehicleLabel"></p>
@@ -366,18 +390,24 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Owner</th>
                             <th>Vehicle Number</th>
+                            <th>Type</th>
+                            <th>Mobile</th>
                             <th>Registered On</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="reg, iter : ${registrations}">
                             <td th:text="${iter.index + 1}"></td>
+                            <td th:text="${reg.ownerName}"></td>
                             <td style="font-weight:600;font-family:monospace;" th:text="${reg.vehicleNumber}"></td>
+                            <td th:text="${reg.vehicleType}"></td>
+                            <td th:text="${reg.mobileNumber}"></td>
                             <td th:text="${#temporals.format(reg.createdAt, 'dd-MM-yyyy | hh:mm a')}"></td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(registrations)}">
-                            <td colspan="3" style="text-align:center;color:var(--text-muted);padding:32px;">No vehicles registered yet. Generate a QR code above.</td>
+                            <td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px;">No vehicles registered yet. Generate a QR code above.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -400,7 +430,40 @@
 </div>
 
 <script>
+    var formatMap = {
+        'std1': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{1} [0-9]{4}$', example: 'KA 04 A 2256' },
+        'std2': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{2} [0-9]{4}$', example: 'DL 03 CA 1234' },
+        'std3': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{3} [0-9]{4}$', example: 'ML 04 ASD 5256' },
+        'bhr':  { pattern: '^[0-9]{2} BH [0-9]{4} [A-Z]{2}$', example: '26 BH 9876 AB' }
+    };
+
+    function onFormatChange() {
+        var sel = document.getElementById('formatSelect');
+        var inp = document.getElementById('vehicleInput');
+        var fmt = formatMap[sel.value];
+        if (fmt) {
+            inp.placeholder = 'e.g. ' + fmt.example;
+            inp.pattern = fmt.pattern;
+            inp.title = 'Format: ' + fmt.example;
+            inp.readOnly = false;
+            inp.style.background = '';
+            inp.style.cursor = '';
+            inp.value = '';
+        } else {
+            inp.placeholder = 'Select format above';
+            inp.pattern = '';
+            inp.title = '';
+            inp.readOnly = true;
+            inp.style.background = 'var(--bg-th)';
+            inp.style.cursor = 'not-allowed';
+            inp.value = '';
+        }
+    }
+
+    var ownerInput = document.getElementById('ownerInput');
     var vehicleInput = document.getElementById('vehicleInput');
+    var typeInput = document.getElementById('typeInput');
+    var mobileInput = document.getElementById('mobileInput');
     var qrPreview = document.getElementById('qrPreview');
     var qrImage = document.getElementById('qrImage');
     var qrVehicleLabel = document.getElementById('qrVehicleLabel');
@@ -417,11 +480,19 @@
     }
 
     function generateQR() {
+        var o = ownerInput.value.trim();
         var v = vehicleInput.value.trim();
-        if (!v) { alert('Enter a vehicle number'); return; }
-        if (!/^[A-Z]{2} [0-9]{2} [A-Z]{1,2} [0-9]{4}$/.test(v)) {
-            alert('Invalid format. Use: KA 01 AB 1234'); return;
+        var t = typeInput.value;
+        var m = mobileInput.value.trim();
+        var fmt = formatMap[document.getElementById('formatSelect').value];
+        if (!fmt) { alert('Select a vehicle number format'); return; }
+        if (!o) { alert('Enter owner name'); return; }
+        if (!v) { alert('Enter vehicle number'); return; }
+        if (!new RegExp(fmt.pattern).test(v)) {
+            alert('Invalid format. Expected: ' + fmt.example); return;
         }
+        if (!t) { alert('Select vehicle type'); return; }
+        if (!/^[0-9]{10}$/.test(m)) { alert('Enter valid 10-digit mobile number'); return; }
         generateBtn.disabled = true;
         generateBtn.textContent = 'Generating...';
 
@@ -436,7 +507,7 @@
                 var blob = xhr.response;
                 var url = URL.createObjectURL(blob);
                 qrImage.src = url;
-                qrVehicleLabel.textContent = v;
+                qrVehicleLabel.textContent = o + ' — ' + v;
                 downloadLink.href = url;
                 downloadLink.download = 'QR-' + v.replace(/ /g, '_') + '.png';
                 qrPreview.style.display = 'block';
@@ -450,11 +521,17 @@
             generateBtn.textContent = 'Generate QR';
             alert('Network error');
         };
-        xhr.send('vehicleNumber=' + encodeURIComponent(v));
+        xhr.send('vehicleNumber=' + encodeURIComponent(v)
+                + '&ownerName=' + encodeURIComponent(o)
+                + '&vehicleType=' + encodeURIComponent(t)
+                + '&mobileNumber=' + encodeURIComponent(m));
     }
 
     function resetGenerator() {
+        ownerInput.value = '';
         vehicleInput.value = '';
+        typeInput.value = '';
+        mobileInput.value = '';
         qrPreview.style.display = 'none';
         qrImage.src = '';
     }
@@ -473,19 +550,16 @@
             function(decodedText) {
                 stopScanner();
                 document.getElementById('scanStatus').textContent = 'Redirecting...';
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/qrcode/scan', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        window.location.href = '/dashboard?vehicle=' + encodeURIComponent(decodedText.trim().toUpperCase());
-                    } else {
-                        document.getElementById('scanStatus').textContent = 'Error: Vehicle not registered.';
-                        document.getElementById('startScanBtn').style.display = 'inline-block';
-                        document.getElementById('stopScanBtn').style.display = 'none';
-                    }
-                };
-                xhr.send('vehicleNumber=' + encodeURIComponent(decodedText));
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/qrcode/scan';
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'vehicleNumber';
+                input.value = decodedText.trim().toUpperCase();
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
             },
             function(error) {
                 console.log(error);
@@ -515,14 +589,14 @@
                 var data = JSON.parse(xhr.responseText);
                 var tbody = document.querySelector('.registered-list tbody');
                 if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:32px;">No vehicles registered yet.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px;">No vehicles registered yet.</td></tr>';
                 } else {
                     var html = '';
                     for (var i = 0; i < data.length; i++) {
                         var r = data[i];
                         var d = new Date(r.createdAt);
                         var dateStr = d.getDate().toString().padStart(2,'0') + '-' + (d.getMonth()+1).toString().padStart(2,'0') + '-' + d.getFullYear() + ' | ' + d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0') + ' ' + (d.getHours() >= 12 ? 'PM' : 'AM');
-                        html += '<tr><td>' + (i+1) + '</td><td style="font-weight:600;font-family:monospace;">' + r.vehicleNumber + '</td><td>' + dateStr + '</td></tr>';
+                        html += '<tr><td>' + (i+1) + '</td><td>' + (r.ownerName||'') + '</td><td style="font-weight:600;font-family:monospace;">' + r.vehicleNumber + '</td><td>' + (r.vehicleType||'') + '</td><td>' + (r.mobileNumber||'') + '</td><td>' + dateStr + '</td></tr>';
                     }
                     tbody.innerHTML = html;
                 }

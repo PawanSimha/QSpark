@@ -82,6 +82,26 @@ class ParkingSlotValidationTest {
     }
 
     @Test
+    void validVehicleNumber_BharatSeries_ShouldPass() {
+        ParkingSlot slot = new ParkingSlot();
+        slot.setVehicleNumber("26 BH 9876 AB");
+
+        Set<ConstraintViolation<ParkingSlot>> violations = validator.validateProperty(slot, "vehicleNumber");
+
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
+    void validVehicleNumber_ThreeLetterSuffix_ShouldPass() {
+        ParkingSlot slot = new ParkingSlot();
+        slot.setVehicleNumber("ML 04 ASD 5256");
+
+        Set<ConstraintViolation<ParkingSlot>> violations = validator.validateProperty(slot, "vehicleNumber");
+
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
     void validParkingSlot_ShouldPassAllValidations() {
         ParkingSlot slot = new ParkingSlot();
         slot.setOwnerName("Test User");
