@@ -1,1004 +1,478 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-
-    <meta charset="UTF-8">
-    <title>Q-Park - Dashboard</title>
-    <link rel="icon" type="image/png" href="/logo.png">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Inter', system-ui, -apple-system, sans-serif;
-        }
-
-        :root{
-            --bg-body:#F8FAFC;
-            --bg-card:#FFFFFF;
-            --bg-header:#FFFFFF;
-            --bg-input:#F8FAFC;
-            --bg-th:#F8FAFC;
-            --text-primary:#0F172A;
-            --text-secondary:#64748B;
-            --text-muted:#94A3B8;
-            --border:#E2E8F0;
-            --border-input:#CBD5E1;
-            --hover-bg:#F1F5F9;
-        }
-        body.dark-mode{
-            --bg-body:#0F172A;
-            --bg-card:#1E293B;
-            --bg-header:#1E293B;
-            --bg-input:#1E293B;
-            --bg-th:#1E293B;
-            --text-primary:#F1F5F9;
-            --text-secondary:#94A3B8;
-            --text-muted:#64748B;
-            --border:#334155;
-            --border-input:#475569;
-            --hover-bg:#334155;
-        }
-
-        body{
-            background-color:var(--bg-body);
-            color:var(--text-primary);
-            -webkit-font-smoothing: antialiased;
-        }
-        .header{
-            background:var(--bg-header);
-            padding:16px 40px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            position:sticky;
-            top:0;
-            z-index:100;
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-
-        .logo{
-            font-size:24px;
-            font-weight:800;
-            letter-spacing: -0.025em;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo span{
-            color:#2563EB;
-        }
-
-        .logout{
-            text-decoration:none;
-            background:var(--hover-bg);
-            color:var(--text-secondary);
-            padding:8px 16px;
-            border-radius:6px;
-            font-weight:600;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .logout:hover{
-            background:var(--border);
-            color:var(--text-primary);
-        }
-        .container{
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        h1{
-            font-size: 28px;
-            font-weight: 700;
-            color:var(--text-primary);
-            margin-bottom:32px;
-            letter-spacing: -0.025em;
-        }
-        .navbar{
-            display:flex;
-            gap:12px;
-            margin-bottom:32px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 16px;
-        }
-
-        .nav-btn{
-            background:transparent;
-            color:var(--text-secondary);
-            border:1px solid transparent;
-            padding:8px 16px;
-            border-radius:6px;
-            cursor:pointer;
-            font-weight:500;
-            font-size:14px;
-            transition:all .2s ease;
-        }
-
-        .nav-btn:hover{
-            background:var(--hover-bg);
-            color:var(--text-primary);
-        }
-
-        .nav-btn:focus {
-            background: #EFF6FF;
-            color: #1D4ED8;
-            border-color: #BFDBFE;
-        }
-        .slider-container{
-            overflow:hidden;
-            width:100%;
-        }
-
-        .slider{
-            display:flex;
-            width:300%;
-            transition:transform .5s cubic-bezier(0.4, 0, 0.2, 1);
-            align-items: flex-start;
-        }
-
-        .page{
-            width:33.333%;
-            padding:0 10px;
-        }
-        .stats{
-            display:flex;
-            gap:24px;
-            margin-bottom:32px;
-        }
-
-        .card{
-            flex:1;
-            background:var(--bg-card);
-            padding:24px;
-            border-radius:12px;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-
-        .card h2{
-            font-size: 32px;
-            font-weight: 800;
-            color:#2563EB;
-            margin-bottom:8px;
-            letter-spacing: -0.025em;
-        }
-
-        .card p{
-            color:var(--text-secondary);
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .form-box{
-            background:var(--bg-card);
-            padding:32px;
-            border-radius:12px;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            margin-bottom:40px;
-        }
-
-        .form-grid{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:24px;
-        }
-        input,
-        select{
-            width:100%;
-            padding:12px 16px;
-            border:1px solid var(--border-input);
-            border-radius:8px;
-            font-size:14px;
-            background-color: var(--bg-input);
-            color: var(--text-primary);
-            transition: all 0.2s;
-        }
-
-        input:focus,
-        select:focus{
-            outline:none;
-            border-color:#3B82F6;
-            background-color: var(--bg-card);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        .book-btn{
-            margin-top:24px;
-            background:#2563EB;
-            color:white;
-            border:none;
-            padding:12px 24px;
-            border-radius:8px;
-            cursor:pointer;
-            font-size:15px;
-            font-weight:600;
-            transition: background 0.2s;
-            width: 100%;
-        }
-
-        .book-btn:hover{
-            background:#1D4ED8;
-        }
-        .error{
-            color:#EF4444;
-            margin-top:16px;
-            font-weight:500;
-            font-size: 14px;
-            text-align: center;
-        }
-        .table-box{
-            background:var(--bg-card);
-            border-radius:12px;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-        }
-
-        table{
-            width:100%;
-            border-collapse:collapse;
-        }
-        th{
-            background:var(--bg-th);
-            color:var(--text-secondary);
-            padding:16px 24px;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 1px solid var(--border);
-            text-align: left;
-        }
-
-        td{
-            padding:16px 24px;
-            text-align:left;
-            border-bottom:1px solid var(--border);
-            font-size: 14px;
-            color: var(--text-primary);
-        }
-
-        tr:hover{
-            background:var(--hover-bg);
-        }
-        .delete-btn{
-            background:transparent;
-            color:#EF4444;
-            border: 1px solid #FECACA;
-            padding:6px 12px;
-            text-decoration:none;
-            border-radius:6px;
-            font-weight: 500;
-            font-size: 13px;
-            transition: all 0.2s;
-            display: inline-block;
-        }
-
-        .delete-btn:hover{
-            background:#FEF2F2;
-            border-color: #EF4444;
-        }
-        .slot-layout{
-            display:flex;
-            flex-direction:column;
-            gap:16px;
-            margin-top:24px;
-            padding-top:24px;
-            border-top:1px solid var(--border);
-        }
-        .slot-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            flex-wrap:wrap;
-            gap:12px;
-        }
-        .slot-header span{
-            font-size:16px;
-            font-weight:700;
-            color:var(--text-primary);
-        }
-        .basement-tabs{
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-        }
-        .basement-tab{
-            padding:8px 20px;
-            border-radius:20px;
-            border:1px solid var(--border-input);
-            background:var(--bg-input);
-            color:var(--text-secondary);
-            font-weight:600;
-            font-size:13px;
-            cursor:pointer;
-            transition:all .2s;
-        }
-        .basement-tab:hover{
-            border-color:#3B82F6;
-            color:var(--text-primary);
-        }
-        .basement-tab.active{
-            background:#2563EB;
-            color:#fff;
-            border-color:#2563EB;
-        }
-        .legend{
-            display:flex;
-            gap:16px;
-            flex-wrap:wrap;
-            font-size:12px;
-            color:var(--text-secondary);
-            font-weight:500;
-        }
-        .legend-item{
-            display:flex;
-            align-items:center;
-            gap:6px;
-        }
-        .legend-dot{
-            width:14px;
-            height:14px;
-            border-radius:4px;
-            display:inline-block;
-        }
-        .legend-dot.avail{ background:#DCFCE7; border:1px solid #86EFAC; }
-        .legend-dot.occ{ background:#FEE2E2; border:1px solid #FCA5A5; }
-        .legend-dot.sel{ background:#2563EB; }
-        body.dark-mode .legend-dot.avail{ background:#064E3B; border-color:#059669; }
-        body.dark-mode .legend-dot.occ{ background:#7F1D1D; border-color:#DC2626; }
-        .slot-grid{
-            display:grid;
-            grid-template-columns:repeat(10,1fr);
-            gap:8px;
-            max-width:100%;
-        }
-        .slot-tile{
-            aspect-ratio:1;
-            border-radius:8px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:11px;
-            font-weight:600;
-            cursor:pointer;
-            border:2px solid transparent;
-            transition:all .15s;
-            min-width:0;
-            min-height:44px;
-            background:var(--bg-input);
-            color:var(--text-secondary);
-            border-color:var(--border-input);
-        }
-        .slot-tile.available{
-            background:#DCFCE7;
-            color:#166534;
-            border-color:#86EFAC;
-        }
-        .slot-tile.available:hover{
-            background:#BBF7D0;
-            transform:scale(1.08);
-        }
-        .slot-tile.occupied{
-            background:#FEE2E2;
-            color:#991B1B;
-            border-color:#FCA5A5;
-            cursor:not-allowed;
-            opacity:.65;
-        }
-        .slot-tile.selected{
-            background:#2563EB !important;
-            color:#fff !important;
-            border-color:#1D4ED8 !important;
-            transform:scale(1.08);
-            box-shadow:0 4px 12px rgba(37,99,235,.35);
-        }
-        body.dark-mode .slot-tile.available{
-            background:#064E3B;
-            color:#6EE7B7;
-            border-color:#059669;
-        }
-        body.dark-mode .slot-tile.available:hover{
-            background:#065F46;
-        }
-        body.dark-mode .slot-tile.occupied{
-            background:#7F1D1D;
-            color:#FCA5A5;
-            border-color:#DC2626;
-        }
-        @media(max-width:768px){
-
-            .form-grid{
-                grid-template-columns:1fr;
-            }
-
-            .stats{
-                flex-direction:column;
-            }
-
-            .header{
-                padding: 16px 20px;
-            }
-
-            .slot-grid{
-                grid-template-columns:repeat(5,1fr);
-                gap:4px;
-            }
-            .slot-tile{
-                font-size:9px;
-                min-height:36px;
-                border-radius:6px;
-            }
-            table{
-                font-size:12px;
-                display: block;
-                overflow-x: auto;
-            }
-
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q-Park - Dashboard</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 
-<div class="header">
+<div id="toastContainer" class="toast-container"></div>
+<div id="activeModal"></div>
 
-    <div class="logo" style="gap:12px;">
-        <img src="/logo.png" alt="Q-Park" style="width:34px;height:34px;border-radius:8px;object-fit:cover;">
-        <div>
-            <div style="font-size:20px;font-weight:800;line-height:1.2;"><span>Q</span>-Park</div>
-            <div style="font-size:10px;color:#94A3B8;font-weight:500;">Quick &amp; Smart Parking</div>
-        </div>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="/logo.png" alt="Q-Park" class="sidebar-logo-img">
+      <div>
+        <div class="sidebar-logo-text"><span>Q</span>-Park</div>
+        <div class="sidebar-logo-sub">Smart Parking</div>
+      </div>
     </div>
-
-    <div style="display:flex;align-items:center;gap:20px;">
-        <div id="liveClock" style="text-align:right;">
-            <div id="liveDate" style="font-size:12px;color:var(--text-secondary);font-weight:500;"></div>
-            <div id="liveTime" style="font-size:18px;font-weight:700;color:var(--text-primary);letter-spacing:0.02em;"></div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-link active" data-tab="booking" onclick="showTab('booking')">
+        <span class="sidebar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 17V7h4a3 3 0 1 1 0 6H9"/></svg>
+        </span>
+        <span class="sidebar-label">Dashboard</span>
+      </button>
+      <button class="sidebar-link" data-tab="occupied" onclick="showTab('occupied')">
+        <span class="sidebar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M3 9h18"/></svg>
+        </span>
+        <span class="sidebar-label">Active</span>
+      </button>
+      <button class="sidebar-link" data-tab="history" onclick="showTab('history')">
+        <span class="sidebar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <span class="sidebar-label">History</span>
+      </button>
+      <a href="/qrcode" class="sidebar-link">
+        <span class="sidebar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="3" width="6" height="6"/><rect x="3" y="15" width="6" height="6"/><path d="M21 15h-6v6"/></svg>
+        </span>
+        <span class="sidebar-label">QR Code</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Admin</div>
+          <div class="sidebar-user-role">SPPN</div>
         </div>
-        <a href="/qrcode" style="background:var(--hover-bg);color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:6px;font-weight:600;font-size:14px;transition:all 0.2s;display:flex;align-items:center;gap:6px;">QR Code</a>
-        <button id="darkModeToggle" onclick="toggleDarkMode()" style="background:var(--hover-bg);border:1px solid var(--border);border-radius:6px;width:36px;height:36px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;line-height:1;">🌙</button>
-        <a href="/logout" class="logout">
-            Logout
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="topbar-title" id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <button id="darkModeToggle" onclick="toggleDarkMode()" class="btn btn-ghost btn-icon" title="Toggle dark mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="/qrcode?scan=1" class="btn btn-ghost btn-sm" title="Scan QR">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="3" width="6" height="6"/><rect x="3" y="15" width="6" height="6"/><path d="M21 15h-6v6"/></svg>
+          Scan
         </a>
-    </div>
+        <div class="topbar-clock">
+          <div class="topbar-date" id="liveDate"></div>
+          <div class="topbar-time" id="liveTime"></div>
+        </div>
+        <a href="/logout" class="btn btn-ghost btn-sm" style="color:var(--red-500);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </a>
+      </div>
+    </header>
 
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Alerts -->
+      <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+      <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+      <!-- Tab Bar -->
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="booking" onclick="showTab('booking')">Booking</button>
+        <button class="tab-btn" data-tab="occupied" onclick="showTab('occupied')">Occupied</button>
+        <button class="tab-btn" data-tab="history" onclick="showTab('history')">History</button>
+      </div>
+
+      <!-- ===== TAB 1: BOOKING ===== -->
+      <div class="tab-panel active" id="tabBooking">
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-value" th:text="${#lists.size(list)}">0</div>
+            <div class="stat-label">Active Bookings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">Service Uptime</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">Active</div>
+            <div class="stat-label">System Status</div>
+            <div class="stat-trend up">Operational</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" th:text="${#lists.size(list)}">0</div>
+            <div class="stat-label">Occupied Slots</div>
+          </div>
+        </div>
+
+        <div class="form-box">
+          <h2>New Booking</h2>
+          <form action="/save" method="post" onsubmit="return prepareSubmit()">
+            <div class="form-grid">
+              <input type="text" name="ownerName" id="ownerNameInput" class="input" placeholder="Owner Name" required>
+              <select id="formatSelect" class="input" onchange="onFormatChange()">
+                <option value="">Select Format</option>
+                <option value="std1">Standard (1-letter) — KA 04 A 2256</option>
+                <option value="std2">Standard (2-letter) — DL 03 CA 1234</option>
+                <option value="std3">Standard (3-letter) — ML 04 ASD 5256</option>
+                <option value="bhr">Bharat Series — 26 BH 9876 AB</option>
+              </select>
+              <input type="text" name="vehicleNumber" id="vehicleInput" class="input" placeholder="Select format above" readonly style="grid-column:1/-1;background:var(--bg-th);cursor:not-allowed;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9 ]/g,'');" required>
+              <select name="vehicleType" id="vehicleTypeInput" class="input" required>
+                <option value="">Select Vehicle Type</option>
+                <option value="Car">Car</option>
+                <option value="Bike">Bike</option>
+                <option value="Scooter">Scooter</option>
+                <option value="Auto Rickshaw">Auto Rickshaw</option>
+                <option value="Electric Car">Electric Car</option>
+                <option value="Electric Two Wheeler">Electric Two Wheeler</option>
+              </select>
+              <input type="text" name="mobileNumber" id="mobileNumberInput" class="input" placeholder="Mobile Number" pattern="[0-9]{10}" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+            </div>
+
+            <div class="slot-section">
+              <div class="slot-header">
+                <span class="slot-header-label">Select Parking Slot</span>
+                <div class="legend">
+                  <span class="legend-item"><span class="legend-dot avail"></span> Available</span>
+                  <span class="legend-item"><span class="legend-dot occ"></span> Occupied</span>
+                  <span class="legend-item"><span class="legend-dot sel"></span> Selected</span>
+                </div>
+              </div>
+              <div class="basement-tabs">
+                <button class="basement-tab" data-b="B1" onclick="selectBasement('B1')">B1</button>
+                <button class="basement-tab" data-b="B2" onclick="selectBasement('B2')">B2</button>
+                <button class="basement-tab" data-b="B3" onclick="selectBasement('B3')">B3</button>
+                <button class="basement-tab" data-b="B4" onclick="selectBasement('B4')">B4</button>
+              </div>
+              <div class="slot-grid" id="slotGrid"></div>
+              <input type="hidden" name="slotNumber" id="selectedSlot">
+              <div class="slot-status" id="slotStatus">Select a basement above</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-full mt-20">Confirm Booking</button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- ===== TAB 2: OCCUPIED ===== -->
+      <div class="tab-panel" id="tabOccupied">
+
+        <div class="table-container">
+          <div class="table-toolbar">
+            <input type="text" id="occupiedSearch" class="input" placeholder="Search by vehicle, name, type, slot or mobile..." oninput="filterTable('occupiedTable', 'occupiedSearch')">
+            <div style="display:flex;gap:8px;align-items:center;margin-left:auto;">
+              <span style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">Sort:</span>
+              <select id="occupiedSortCol" class="input" style="max-width:140px;padding:6px 28px 6px 10px;font-size:13px;" onchange="sortOccupiedTable()">
+                <option value="">Default</option>
+                <option value="3">Vehicle Type</option>
+                <option value="4">Slot Number</option>
+                <option value="6">Entry Time</option>
+              </select>
+              <button onclick="toggleOccupiedSortDir()" class="btn btn-secondary btn-sm" id="occupiedSortDirBtn">Ascending</button>
+              <button onclick="exportCSV('occupiedTable', 'Occupied_Records.csv')" class="btn btn-primary btn-sm">Export CSV</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="table" id="occupiedTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Owner Name</th>
+                  <th>Vehicle Number</th>
+                  <th data-sortable="false">Vehicle Type</th>
+                  <th data-sortable="false">Slot</th>
+                  <th>Mobile</th>
+                  <th data-sortable="false">Entry Time</th>
+                  <th data-sortable="false">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="p : ${list}">
+                  <td th:text="${p.id}"></td>
+                  <td th:text="${p.ownerName}"></td>
+                  <td class="mono" th:text="${p.vehicleNumber}"></td>
+                  <td><span class="badge badge-blue" th:text="${p.vehicleType}"></span></td>
+                  <td class="mono" th:text="${p.slotNumber}"></td>
+                  <td th:text="${p.mobileNumber}"></td>
+                  <td style="white-space:nowrap;" th:text="${#temporals.format(p.entryTime, 'dd-MM-yyyy | hh:mm a')}"></td>
+                  <td>
+                    <div class="action-group">
+                      <a th:href="@{/edit/{id}(id=${p.id})}" class="action-btn edit">Edit</a>
+                      <a th:href="@{/left/{id}(id=${p.id})}" class="action-btn left" onclick="return confirmLeft(event, this)">Left</a>
+                      <a th:href="@{/delete/{id}(id=${p.id})}" class="action-btn danger" onclick="return confirmDelete(event, this)">Delete</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(list)}">
+                  <td colspan="8">
+                    <div class="empty-state">
+                      <div class="empty-state-icon">&#128663;</div>
+                      <div class="empty-state-title">No active bookings</div>
+                      <div class="empty-state-desc">All parking slots are free. Create a new booking to get started.</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== TAB 3: HISTORY ===== -->
+      <div class="tab-panel" id="tabHistory">
+
+        <div class="table-container">
+          <div class="table-toolbar">
+            <input type="text" id="historySearch" class="input" placeholder="Search history..." oninput="filterTable('historyTable', 'historySearch')">
+            <div style="margin-left:auto;">
+              <button onclick="exportCSV('historyTable', 'History_Records.csv')" class="btn btn-primary btn-sm">Export CSV</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="table" id="historyTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Owner Name</th>
+                  <th>Vehicle Number</th>
+                  <th>Vehicle Type</th>
+                  <th>Slot</th>
+                  <th>Mobile</th>
+                  <th>Entry Time</th>
+                  <th>Left At</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="p : ${history}">
+                  <td th:text="${p.id}"></td>
+                  <td th:text="${p.ownerName}"></td>
+                  <td class="mono" th:text="${p.vehicleNumber}"></td>
+                  <td><span class="badge badge-amber" th:text="${p.vehicleType}"></span></td>
+                  <td class="mono" th:text="${p.slotNumber}"></td>
+                  <td th:text="${p.mobileNumber}"></td>
+                  <td style="white-space:nowrap;" th:text="${#temporals.format(p.entryTime, 'dd-MM-yyyy | hh:mm a')}"></td>
+                  <td style="white-space:nowrap;" th:text="${#temporals.format(p.exitTime, 'dd-MM-yyyy | hh:mm a')}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(history)}">
+                  <td colspan="8">
+                    <div class="empty-state">
+                      <div class="empty-state-icon">&#128203;</div>
+                      <div class="empty-state-title">No parking history</div>
+                      <div class="empty-state-desc">Completed parking records will appear here.</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
 </div>
 
-<div class="container">
-
-    <div th:if="${success}" style="background:#DCFCE7;color:#166534;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:500;font-size:14px;border:1px solid #86EFAC;" th:text="${success}"></div>
-    <div th:if="${error}" style="background:#FEE2E2;color:#991B1B;padding:12px 20px;border-radius:8px;margin-bottom:24px;font-weight:500;font-size:14px;border:1px solid #FCA5A5;" th:text="${error}"></div>
-
-    <h1>Dashboard Overview</h1>
-
-    <div class="navbar">
-
-        <button class="nav-btn"
-                onclick="showDashboard()">
-            Booking
-        </button>
-
-        <button class="nav-btn"
-                onclick="showOccupied()">
-            Occupied
-        </button>
-
-        <button class="nav-btn"
-                onclick="showHistory()">
-            History
-        </button>
-
-    </div>
-    <div class="slider-container">
-
-        <div class="slider" id="slider">
-            <div class="page">
-
-                <div class="stats">
-
-                    <div class="card">
-                        <h2 th:text="${#lists.size(list)}">0</h2>
-                        <p>Total Bookings</p>
-                    </div>
-
-                    <div class="card">
-                        <h2>24/7</h2>
-                        <p>Service Uptime</p>
-                    </div>
-
-                    <div class="card">
-                        <h2>Active</h2>
-                        <p>System Status</p>
-                    </div>
-
-                </div>
-
-                <div class="form-box">
-
-                    <h2 style="margin-bottom:24px; font-size:20px; color:var(--text-primary);">
-                        New Booking
-                    </h2>
-
-                    <form action="/save" method="post" onsubmit="return prepareSubmit()">
-
-                        <div class="form-grid">
-                            <input type="text"
-                                   name="ownerName"
-                                   id="ownerNameInput"
-                                   placeholder="Owner Name"
-                                   required>
-                            <select id="formatSelect" onchange="onFormatChange()">
-                                <option value="">Select Format</option>
-                                <option value="std1">Standard (1-letter) — KA 04 A 2256</option>
-                                <option value="std2">Standard (2-letter) — DL 03 CA 1234</option>
-                                <option value="std3">Standard (3-letter) — ML 04 ASD 5256</option>
-                                <option value="bhr">Bharat Series — 26 BH 9876 AB</option>
-                            </select>
-                            <input type="text"
-                                   name="vehicleNumber"
-                                   id="vehicleInput"
-                                   placeholder="Select format above"
-                                   readonly
-                                   style="grid-column:1/-1;background:var(--bg-th);cursor:not-allowed;"
-                                   oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9 ]/g,'');"
-                                   required>
-                            <select name="vehicleType" id="vehicleTypeInput" required>
-                                <option value="">Select Vehicle Type</option>
-                                <option value="Car">Car</option>
-                                <option value="Bike">Bike</option>
-                                <option value="Scooter">Scooter</option>
-                                <option value="Auto Rickshaw">Auto Rickshaw</option>
-                                <option value="Electric Car">Electric Car</option>
-                                <option value="Electric Two Wheeler">Electric Two Wheeler</option>
-                            </select>
-                            <input type="text"
-                                   name="mobileNumber"
-                                   id="mobileNumberInput"
-                                   placeholder="Mobile Number"
-                                   pattern="[0-9]{10}"
-                                   maxlength="10"
-                                   oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-                                   required>
-                        </div>
-
-                        <div class="slot-layout" id="slotLayout">
-                            <div class="slot-header">
-                                <span>Select Parking Slot</span>
-                                <div class="legend">
-                                    <span class="legend-item"><span class="legend-dot avail"></span> Available</span>
-                                    <span class="legend-item"><span class="legend-dot occ"></span> Occupied</span>
-                                    <span class="legend-item"><span class="legend-dot sel"></span> Selected</span>
-                                </div>
-                            </div>
-                            <div class="basement-tabs">
-                                <div class="basement-tab" data-b="B1" onclick="selectBasement('B1')">B1</div>
-                                <div class="basement-tab" data-b="B2" onclick="selectBasement('B2')">B2</div>
-                                <div class="basement-tab" data-b="B3" onclick="selectBasement('B3')">B3</div>
-                                <div class="basement-tab" data-b="B4" onclick="selectBasement('B4')">B4</div>
-                            </div>
-                            <div class="slot-grid" id="slotGrid"></div>
-                            <input type="hidden" name="slotNumber" id="selectedSlot">
-                            <div id="slotStatus" style="font-size:13px;color:var(--text-secondary);font-weight:500;min-height:20px;">Select a basement above</div>
-                        </div>
-
-                        <button type="submit" class="book-btn">
-                            Confirm Booking
-                        </button>
-
-                    </form>
-
-                </div>
-
-            </div>
-            <!-- PAGE 2 -->
-
-            <div class="page">
-
-                <div class="table-box">
-
-                    <div style="padding: 24px; border-bottom: 1px solid var(--border);">
-                        <h2 style="font-size:20px; color:var(--text-primary);">
-                            Active Records
-                        </h2>
-                        <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">
-                            Manage current parking slot allocations.
-                        </p>
-                        <form style="padding:20px;display:flex;gap:12px;align-items:center;">
-
-                            <input type="text"
-                                   id="searchInput"
-                                   oninput="filterTable()"
-                                   placeholder="Search by vehicle number, name, type, slot or mobile..."
-                                   style="flex:1;">
-
-                            <button type="button" onclick="exportCSV('occupied')" style="padding:8px 16px;background:#2563EB;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;white-space:nowrap;">Export CSV</button>
-
-                        </form>
-
-                        <div style="padding:0 20px 16px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-                            <span style="font-size:13px;font-weight:600;color:var(--text-secondary);white-space:nowrap;">Sort by:</span>
-                            <select id="sortCol" onchange="sortTable()" style="padding:6px 10px;border:1px solid var(--border-input);border-radius:6px;font-size:13px;background:var(--bg-input);color:var(--text-primary);max-width:140px;">
-                                <option value="">Default</option>
-                                <option value="type">Vehicle Type</option>
-                                <option value="slot">Slot Number</option>
-                                <option value="time">Entry Time</option>
-                            </select>
-                            <button id="sortDirBtn" onclick="toggleSortDir()" style="padding:6px 12px;border:1px solid var(--border-input);border-radius:6px;font-size:13px;background:var(--bg-input);color:var(--text-primary);cursor:pointer;font-weight:600;min-width:90px;">Ascending</button>
-                        </div>
-                    </div>
-
-                    <table id="occupiedTable">
-
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Owner Name</th>
-                            <th>Vehicle Number</th>
-                            <th>Vehicle Type</th>
-                            <th>Slot Number</th>
-                            <th>Mobile</th>
-                            <th>Entry Time</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-
-                        <tr th:each="p : ${list}">
-
-                            <td th:text="${p.id}"></td>
-                            <td th:text="${p.ownerName}"></td>
-                            <td th:text="${p.vehicleNumber}"></td>
-                            <td th:text="${p.vehicleType}"></td>
-                            <td th:text="${p.slotNumber}"></td>
-                            <td th:text="${p.mobileNumber}"></td>
-                            <td th:text="${#temporals.format(p.entryTime, 'dd-MM-yyyy | hh:mm a')}"></td>
-
-                            <td>
-                                <div style="display: flex; gap: 8px;">
-                                    <a th:href="@{/edit/{id}(id=${p.id})}"
-                                       style="background:#2563EB;
-                                              color:white;
-                                              padding:6px 12px;
-                                              border-radius:6px;
-                                              text-decoration:none;
-                                              display:inline-block;">
-                                        Edit
-                                    </a>
-
-                                    <a th:href="@{/left/{id}(id=${p.id})}"
-                                       onclick="return confirm('Mark this vehicle as Left and move to History?')"
-                                       style="background:#16A34A;
-                                              color:white;
-                                              padding:6px 12px;
-                                              border-radius:6px;
-                                              text-decoration:none;
-                                              display:inline-block;
-                                              font-weight:600;">
-                                        Left
-                                    </a>
-
-                                    <a class="delete-btn"
-                                       th:href="@{/delete/{id}(id=${p.id})}"
-                                       onclick="return confirm('Delete this booking?')">
-                                        Delete
-                                    </a>
-                                </div>
-                            </td>
-
-                        </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-            <!-- PAGE 3 -->
-
-            <div class="page">
-
-                <div class="table-box">
-
-                    <div style="padding: 24px; border-bottom: 1px solid var(--border);">
-                        <h2 style="font-size:20px; color:var(--text-primary);">
-                            Parking History
-                        </h2>
-                        <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">
-                            Records of vehicles that have left.
-                        </p>
-                        <div style="padding:0 24px 16px 24px;">
-                            <button type="button" onclick="exportCSV('history')" style="padding:8px 16px;background:#2563EB;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;">Export CSV</button>
-                        </div>
-                    </div>
-
-                    <table id="historyTable">
-
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Owner Name</th>
-                            <th>Vehicle Number</th>
-                            <th>Vehicle Type</th>
-                            <th>Slot Number</th>
-                            <th>Mobile</th>
-                            <th>Entry Time</th>
-                            <th>Left At</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-
-                        <tr th:each="p : ${history}">
-
-                            <td th:text="${p.id}"></td>
-                            <td th:text="${p.ownerName}"></td>
-                            <td th:text="${p.vehicleNumber}"></td>
-                            <td th:text="${p.vehicleType}"></td>
-                            <td th:text="${p.slotNumber}"></td>
-                            <td th:text="${p.mobileNumber}"></td>
-                            <td th:text="${#temporals.format(p.entryTime, 'dd-MM-yyyy | hh:mm a')}"></td>
-                            <td th:text="${#temporals.format(p.exitTime, 'dd-MM-yyyy | hh:mm a')}"></td>
-
-                        </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-        </div> <!-- slider -->
-
-    </div> <!-- slider-container -->
-
-</div> <!-- container -->
-
+<!-- ===== Page-Specific Script ===== -->
 <script>
-    var occupiedSlots = "[(${occupied})]".split(',').filter(Boolean);
+  var occupiedSlots = "[(${occupied})]";
+  var scannedOwnerName = '[[${scannedOwnerName}]]';
+  var scannedVehicleNumber = '[[${scannedVehicleNumber}]]';
+  var scannedVehicleType = '[[${scannedVehicleType}]]';
+  var scannedMobileNumber = '[[${scannedMobileNumber}]]';
 
-    function showDashboard() {
-        document.getElementById("slider").style.transform =
-            "translateX(0%)";
+  var selectedBasement = '';
+  var occupiedSortAsc = true;
+
+  // --- Tab Switching ---
+  function showTab(name) {
+    var titles = { booking: 'Dashboard', occupied: 'Active Bookings', history: 'Parking History' };
+    document.getElementById('pageTitle').textContent = titles[name] || 'Dashboard';
+
+    document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+
+    document.getElementById('tab' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+    document.querySelector('.tab-btn[data-tab="' + name + '"]').classList.add('active');
+
+    document.querySelectorAll('.sidebar-link[data-tab]').forEach(function (l) {
+      l.classList.toggle('active', l.getAttribute('data-tab') === name);
+    });
+  }
+
+  // --- Slot Grid ---
+  function selectBasement(b) {
+    selectedBasement = b;
+    document.querySelectorAll('.basement-tab').forEach(function (t) {
+      t.classList.toggle('active', t.getAttribute('data-b') === b);
+    });
+    buildGrid(b);
+  }
+
+  function buildGrid(b) {
+    var grid = document.getElementById('slotGrid');
+    var hidden = document.getElementById('selectedSlot');
+    var status = document.getElementById('slotStatus');
+    hidden.value = '';
+    status.textContent = b + ' — Select a slot';
+    grid.innerHTML = '';
+    var occ = occupiedSlots.split(',').filter(Boolean);
+    for (var i = 1; i <= 50; i++) {
+      var n = i.toString().padStart(2, '0');
+      var slotVal = b + '-' + n;
+      var tile = document.createElement('div');
+      tile.className = 'slot-tile';
+      tile.textContent = n;
+      tile.dataset.slot = slotVal;
+      if (occ.indexOf(slotVal) >= 0) {
+        tile.classList.add('occupied');
+      } else {
+        tile.classList.add('available');
+        tile.onclick = function () {
+          document.querySelectorAll('.slot-tile.selected').forEach(function (t) { t.classList.remove('selected'); });
+          this.classList.add('selected');
+          document.getElementById('selectedSlot').value = this.dataset.slot;
+          document.getElementById('slotStatus').textContent = 'Selected: ' + this.dataset.slot;
+        };
+      }
+      grid.appendChild(tile);
     }
+  }
 
-    function showOccupied() {
-        document.getElementById("slider").style.transform =
-            "translateX(-33.333%)";
+  // --- Form Submit ---
+  function prepareSubmit() {
+    var val = document.getElementById('selectedSlot').value;
+    if (!val) {
+      Toast.error('Please select a parking slot from the grid.');
+      return false;
     }
+    var fi = document.getElementById('formatSelect');
+    if (fi && fi.disabled) fi.disabled = false;
+    var ti = document.getElementById('vehicleTypeInput');
+    if (ti && ti.disabled) ti.disabled = false;
+    return true;
+  }
 
-    function showHistory() {
-        document.getElementById("slider").style.transform =
-            "translateX(-66.666%)";
+  // --- Vehicle Format ---
+  var formatMap = {
+    'std1': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{1} [0-9]{4}$', example: 'KA 04 A 2256' },
+    'std2': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{2} [0-9]{4}$', example: 'DL 03 CA 1234' },
+    'std3': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{3} [0-9]{4}$', example: 'ML 04 ASD 5256' },
+    'bhr':  { pattern: '^[0-9]{2} BH [0-9]{4} [A-Z]{2}$', example: '26 BH 9876 AB' }
+  };
+
+  function onFormatChange() {
+    var sel = document.getElementById('formatSelect');
+    var inp = document.getElementById('vehicleInput');
+    var fmt = formatMap[sel.value];
+    if (fmt) {
+      inp.placeholder = 'e.g. ' + fmt.example;
+      inp.pattern = fmt.pattern;
+      inp.title = 'Format: ' + fmt.example;
+      inp.readOnly = false;
+      inp.style.background = '';
+      inp.style.cursor = '';
+      inp.value = '';
+    } else {
+      inp.placeholder = 'Select format above';
+      inp.pattern = '';
+      inp.title = '';
+      inp.readOnly = true;
+      inp.style.background = 'var(--bg-th)';
+      inp.style.cursor = 'not-allowed';
+      inp.value = '';
     }
+  }
 
-    var selectedBasement = '';
-
-    function selectBasement(b) {
-        selectedBasement = b;
-        document.querySelectorAll('.basement-tab').forEach(function(t) {
-            t.classList.toggle('active', t.getAttribute('data-b') === b);
-        });
-        buildGrid(b);
+  // --- Scanned Vehicle Auto-fill ---
+  function applyScannedVehicle() {
+    if (scannedVehicleNumber && scannedVehicleNumber !== '') {
+      var oi = document.getElementById('ownerNameInput');
+      if (oi) { oi.value = scannedOwnerName; oi.readOnly = true; oi.style.background = 'var(--bg-th)'; oi.style.cursor = 'not-allowed'; }
+      var vi = document.getElementById('vehicleInput');
+      if (vi) { vi.value = scannedVehicleNumber; vi.readOnly = true; vi.style.background = 'var(--bg-th)'; vi.style.cursor = 'not-allowed'; }
+      var fi = document.getElementById('formatSelect');
+      if (fi) { fi.disabled = true; fi.style.cursor = 'not-allowed'; }
+      var ti = document.getElementById('vehicleTypeInput');
+      if (ti) { ti.value = scannedVehicleType; ti.disabled = true; ti.style.cursor = 'not-allowed'; }
+      var mi = document.getElementById('mobileNumberInput');
+      if (mi) { mi.value = scannedMobileNumber; mi.readOnly = true; mi.style.background = 'var(--bg-th)'; mi.style.cursor = 'not-allowed'; }
     }
+  }
+  applyScannedVehicle();
 
-    function buildGrid(b) {
-        var grid = document.getElementById('slotGrid');
-        var hidden = document.getElementById('selectedSlot');
-        var status = document.getElementById('slotStatus');
-        hidden.value = '';
-        status.textContent = b + ' — Select a slot';
-        grid.innerHTML = '';
-        for (var i = 1; i <= 50; i++) {
-            var n = i.toString().padStart(2, '0');
-            var slotVal = b + '-' + n;
-            var tile = document.createElement('div');
-            tile.className = 'slot-tile';
-            tile.textContent = n;
-            tile.dataset.slot = slotVal;
-            var isOccupied = occupiedSlots.indexOf(slotVal) >= 0;
-            if (isOccupied) {
-                tile.classList.add('occupied');
-            } else {
-                tile.classList.add('available');
-                tile.onclick = function() {
-                    document.querySelectorAll('.slot-tile.selected').forEach(function(t) {
-                        t.classList.remove('selected');
-                    });
-                    this.classList.add('selected');
-                    document.getElementById('selectedSlot').value = this.dataset.slot;
-                    document.getElementById('slotStatus').textContent = 'Selected: ' + this.dataset.slot;
-                };
-            }
-            grid.appendChild(tile);
-        }
-    }
+  // --- Occupied Table Sort ---
+  function sortOccupiedTable() {
+    var mode = document.getElementById('occupiedSortCol').value;
+    var tbody = document.querySelector('#occupiedTable tbody');
+    var rows = Array.from(tbody.querySelectorAll('tr'));
+    if (!mode || rows.length === 0 || !rows[0].cells) { return; }
+    var col = parseInt(mode);
+    rows.sort(function (a, b) {
+      var va = a.cells[col] ? a.cells[col].textContent.trim() : '';
+      var vb = b.cells[col] ? b.cells[col].textContent.trim() : '';
+      return occupiedSortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    });
+    rows.forEach(function (r) { tbody.appendChild(r); });
+  }
 
-    function prepareSubmit() {
-        var val = document.getElementById('selectedSlot').value;
-        if (!val) {
-            alert('Please select a parking slot from the grid.');
-            return false;
-        }
-        var fi = document.getElementById('formatSelect');
-        if (fi && fi.disabled) fi.disabled = false;
-        var ti = document.getElementById('vehicleTypeInput');
-        if (ti && ti.disabled) ti.disabled = false;
-        return true;
-    }
+  function toggleOccupiedSortDir() {
+    occupiedSortAsc = !occupiedSortAsc;
+    document.getElementById('occupiedSortDirBtn').textContent = occupiedSortAsc ? 'Ascending' : 'Descending';
+    sortOccupiedTable();
+  }
 
-    function updateClock() {
-        var now = new Date();
-        var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        document.getElementById('liveDate').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
-        document.getElementById('liveTime').textContent = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
+  // --- Confirmation Dialogs ---
+  function confirmDelete(event, el) {
+    event.preventDefault();
+    Modal.confirm({
+      title: 'Delete Booking',
+      message: 'Are you sure you want to delete this booking? This cannot be undone.',
+      confirmText: 'Delete',
+      confirmClass: 'btn-danger',
+      onConfirm: function () { window.location.href = el.href; }
+    });
+    return false;
+  }
 
-    var sortAsc = true;
-
-    function toggleSortDir() {
-        sortAsc = !sortAsc;
-        document.getElementById('sortDirBtn').textContent = sortAsc ? 'Ascending' : 'Descending';
-        sortTable();
-    }
-
-    function sortTable() {
-        var mode = document.getElementById('sortCol').value;
-        var tbody = document.querySelector('table tbody');
-        var rows = Array.from(tbody.querySelectorAll('tr'));
-        if (!mode) { rows.forEach(function(r) { r.style.display = ''; }); filterTable(); return; }
-        var col;
-        if (mode === 'type') col = 3;
-        else if (mode === 'slot') col = 4;
-        else if (mode === 'time') col = 6;
-        rows.sort(function(a, b) {
-            var va = a.cells[col].textContent.trim();
-            var vb = b.cells[col].textContent.trim();
-            var cmp = va.localeCompare(vb);
-            return sortAsc ? cmp : -cmp;
-        });
-        rows.forEach(function(r) { tbody.appendChild(r); });
-        filterTable();
-    }
-
-    function filterTable() {
-        var q = document.getElementById('searchInput').value.toLowerCase();
-        var rows = document.querySelectorAll('table tbody tr');
-        for (var i = 0; i < rows.length; i++) {
-            var text = '';
-            var cols = rows[i].querySelectorAll('td');
-            for (var j = 0; j < cols.length - 1; j++) {
-                text += cols[j].textContent.toLowerCase() + ' ';
-            }
-            rows[i].style.display = text.indexOf(q) >= 0 ? '' : 'none';
-        }
-    }
-
-    var formatMap = {
-        'std1': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{1} [0-9]{4}$', example: 'KA 04 A 2256' },
-        'std2': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{2} [0-9]{4}$', example: 'DL 03 CA 1234' },
-        'std3': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{3} [0-9]{4}$', example: 'ML 04 ASD 5256' },
-        'bhr':  { pattern: '^[0-9]{2} BH [0-9]{4} [A-Z]{2}$', example: '26 BH 9876 AB' }
-    };
-
-    function onFormatChange() {
-        var sel = document.getElementById('formatSelect');
-        var inp = document.getElementById('vehicleInput');
-        var fmt = formatMap[sel.value];
-        if (fmt) {
-            inp.placeholder = 'e.g. ' + fmt.example;
-            inp.pattern = fmt.pattern;
-            inp.title = 'Format: ' + fmt.example;
-            inp.readOnly = false;
-            inp.style.background = '';
-            inp.style.cursor = '';
-            inp.value = '';
-        } else {
-            inp.placeholder = 'Select format above';
-            inp.pattern = '';
-            inp.title = '';
-            inp.readOnly = true;
-            inp.style.background = 'var(--bg-th)';
-            inp.style.cursor = 'not-allowed';
-            inp.value = '';
-        }
-    }
-
-    var scannedOwnerName = '[[${scannedOwnerName}]]';
-    var scannedVehicleNumber = '[[${scannedVehicleNumber}]]';
-    var scannedVehicleType = '[[${scannedVehicleType}]]';
-    var scannedMobileNumber = '[[${scannedMobileNumber}]]';
-
-    function setReadOnly(id) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        el.readOnly = true;
-        el.style.background = 'var(--bg-th)';
-        el.style.cursor = 'not-allowed';
-    }
-
-    function applyScannedVehicle() {
-        if (scannedVehicleNumber && scannedVehicleNumber !== '') {
-            var oi = document.getElementById('ownerNameInput');
-            if (oi) { oi.value = scannedOwnerName; setReadOnly('ownerNameInput'); }
-            var vi = document.getElementById('vehicleInput');
-            if (vi) { vi.value = scannedVehicleNumber; setReadOnly('vehicleInput'); }
-            var fi = document.getElementById('formatSelect');
-            if (fi) { fi.disabled = true; fi.style.cursor = 'not-allowed'; }
-            var ti = document.getElementById('vehicleTypeInput');
-            if (ti) { ti.value = scannedVehicleType; ti.disabled = true; ti.style.cursor = 'not-allowed'; }
-            var mi = document.getElementById('mobileNumberInput');
-            if (mi) { mi.value = scannedMobileNumber; setReadOnly('mobileNumberInput'); }
-            var banner = document.createElement('div');
-            banner.id = 'scanBanner';
-            banner.style.cssText = 'background:var(--bg-th);color:var(--text-primary);padding:10px 16px;border-radius:8px;margin-bottom:16px;font-weight:500;font-size:13px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;';
-            banner.innerHTML = '<span style="font-size:16px;">\uD83D\uDCF7</span> <strong>' + scannedOwnerName + '</strong> \u00B7 ' + scannedVehicleNumber + ' \u00B7 ' + scannedVehicleType + ' \u00B7 ' + scannedMobileNumber;
-            var form = document.querySelector('.form-box');
-            if (form) form.insertBefore(banner, form.firstChild);
-        }
-    }
-    applyScannedVehicle();
-
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        var isDark = document.body.classList.contains('dark-mode');
-        localStorage.setItem('sppn-dark-mode', isDark ? 'true' : 'false');
-        document.getElementById('darkModeToggle').textContent = isDark ? '\u2600\uFE0F' : '\uD83C\uDF19';
-    }
-
-    function applyDarkMode() {
-        var isDark = localStorage.getItem('sppn-dark-mode') === 'true';
-        if (isDark) {
-            document.body.classList.add('dark-mode');
-            document.getElementById('darkModeToggle').textContent = '\u2600\uFE0F';
-        }
-    }
-    applyDarkMode();
-
-    function exportCSV(type) {
-        var tableId = type === 'occupied' ? 'occupiedTable' : 'historyTable';
-        var filename = type === 'occupied' ? 'Occupied_Records.csv' : 'History_Records.csv';
-        var table = document.getElementById(tableId);
-        var csv = [];
-        var ths = table.querySelectorAll('thead th');
-        var maxCols = type === 'occupied' ? ths.length - 1 : ths.length;
-        var headers = [];
-        for (var i = 0; i < maxCols; i++) {
-            headers.push('"' + ths[i].textContent.trim() + '"');
-        }
-        csv.push(headers.join(','));
-        var rows = table.querySelectorAll('tbody tr');
-        for (var r = 0; r < rows.length; r++) {
-            var cols = rows[r].querySelectorAll('td');
-            var row = [];
-            var limit = type === 'occupied' ? cols.length - 1 : cols.length;
-            for (var c = 0; c < limit; c++) {
-                row.push('"' + cols[c].textContent.trim() + '"');
-            }
-            csv.push(row.join(','));
-        }
-        var blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
-        var link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
+  function confirmLeft(event, el) {
+    event.preventDefault();
+    Modal.confirm({
+      title: 'Mark as Left',
+      message: 'Mark this vehicle as having left the parking slot? It will be moved to history.',
+      confirmText: 'Mark Left',
+      confirmClass: 'btn-primary',
+      onConfirm: function () { window.location.href = el.href; }
+    });
+    return false;
+  }
 </script>
+
+<script src="/js/app.js"></script>
+
 </body>
+</html>

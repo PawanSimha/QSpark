@@ -1,6 +1,6 @@
 @echo off
 cd /d "%~dp0"
-title Q-Park - Launcher
+title QSpark - Launcher
 
 echo ============================================
 echo    Q-Park - Smart Parking System
@@ -21,7 +21,7 @@ if not errorlevel 1 (
 
 echo [1/3] Starting backend server...
 echo.
-start "Q-Park-App" /MIN mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
+start "QSpark-App" /MIN mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
 
 echo [2/3] Waiting for server (this may take 30-60 sec)...
 echo.
@@ -46,7 +46,7 @@ pause >nul
 
 echo.
 echo Shutting down...
-taskkill /f /fi "WINDOWTITLE eq Q-Park-App" >nul 2>&1
+taskkill /f /fi "WINDOWTITLE eq QSpark-App" >nul 2>&1
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8081 " ^| findstr "LISTENING"') do (
     taskkill /f /pid %%a >nul 2>&1
 )
