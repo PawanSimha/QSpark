@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/favicon.ico" alt="QSpark Logo" width="48"/>
+  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/favicon.ico" alt="QSpark Logo" width="80"/>
   <h1 align="center">QSpark</h1>
   <p align="center"><i>Quick &amp; Smart Parking - Quick. Smart. Reliable.</i></p>
 
