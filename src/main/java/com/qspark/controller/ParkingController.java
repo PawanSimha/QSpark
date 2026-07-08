@@ -21,7 +21,6 @@ package com.qspark.controller;
 import com.qspark.model.ParkingSlot;
 import com.qspark.repository.ParkingRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,8 +33,11 @@ import java.util.stream.Collectors;
 @Controller
 public class ParkingController {
 
-    @Autowired
-    private ParkingRepository repository;
+    private final ParkingRepository repository;
+
+    public ParkingController(ParkingRepository repository) {
+        this.repository = repository;
+    }
 
     private String getOccupiedSlots(List<ParkingSlot> list) {
         return list.stream()

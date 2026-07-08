@@ -26,7 +26,6 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.qspark.model.VehicleRegistration;
 import com.qspark.repository.ParkingRepository;
 import com.qspark.repository.VehicleRegistrationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -39,11 +38,13 @@ import java.util.List;
 @Controller
 public class QRCodeController {
 
-    @Autowired
-    private VehicleRegistrationRepository vehicleRepo;
+    private final VehicleRegistrationRepository vehicleRepo;
+    private final ParkingRepository parkingRepo;
 
-    @Autowired
-    private ParkingRepository parkingRepo;
+    public QRCodeController(VehicleRegistrationRepository vehicleRepo, ParkingRepository parkingRepo) {
+        this.vehicleRepo = vehicleRepo;
+        this.parkingRepo = parkingRepo;
+    }
 
     @GetMapping("/qrcode")
     public String qrCodePage(Model model) {

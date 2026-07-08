@@ -46,7 +46,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/", "/login", "/css/**", "/js/**",
-                    "/images/**", "/logo.webp", "/logo.png", "/favicon.ico"
+                    "/images/**", "/logo.webp", "/logo.png", "/favicon.ico",
+                    "/hero-banner.webp"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
