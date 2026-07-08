@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/logo.webp" alt="QSpark Logo" width="90"/>
+  <img src="https://raw.githubusercontent.com/PawanSimha/QSpark/main/src/main/resources/static/logo.webp" alt="QSpark Logo" width="90"/>
   <h1 align="center">QSpark</h1>
   <p align="center"><i>Quick &amp; Smart Parking - Quick. Smart. Reliable.</i></p>
 
@@ -80,18 +80,12 @@ Database (MySQL / H2)       ← 3 tables: admin, parking_slot, vehicle_registrat
 ```
 
 ### UI Screenshots
-```
-+------------------+     +------------------+     +------------------+
-|  Landing Page    |     |  Login Page      |     |  Dashboard       |
-|  Marketing hero  | --> |  2-column auth   | --> |  3-tab layout    |
-|  Features/FAQ    |     |  CSRF + BCrypt   |     |  Slot grid/CRUD  |
-+------------------+     +------------------+     +------------------+
-                                                         |        |
-                                                    +---------+ +---------+
-                                                    | QR Page  | | Edit    |
-                                                    | Gen/Scan | | Booking |
-                                                    +---------+ +---------+
-```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/PawanSimha/QSpark/main/src/main/resources/static/hero-banner.webp" alt="QSpark Landing Page Hero" width="100%" style="border-radius: 12px; max-width: 800px;"/>
+  <br/>
+  <em>Landing page hero banner — full-width WebP image (1920x1080)</em>
+</p>
 
 ---
 
