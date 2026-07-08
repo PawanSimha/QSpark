@@ -1,5 +1,19 @@
 /* ============================================
-   Q-Park Shared JS — v2.0
+   QSpark - A production-grade smart parking management system
+   Copyright (C) 2026 PawanSimha
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.
    ============================================ */
 
 // ============================================
@@ -227,13 +241,13 @@ const Modal = {
 function toggleDarkMode() {
   document.body.classList.toggle('dark');
   var isDark = document.body.classList.contains('dark');
-  localStorage.setItem('qpark-dark-mode', isDark ? 'true' : 'false');
+  localStorage.setItem('qspark-dark-mode', isDark ? 'true' : 'false');
   var btn = document.getElementById('darkModeToggle');
   if (btn) btn.innerHTML = isDark ? sunIcon() : moonIcon();
 }
 
 function applyDarkMode() {
-  var isDark = localStorage.getItem('qpark-dark-mode') === 'true';
+  var isDark = localStorage.getItem('qspark-dark-mode') === 'true';
   if (isDark) {
     document.body.classList.add('dark');
     var btn = document.getElementById('darkModeToggle');
@@ -431,11 +445,23 @@ function exportCSV(tableId, filename) {
 // Vehicle Number Format Helpers
 // ============================================
 var VEHICLE_FORMATS = {
-  'std1': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{1} [0-9]{4}$', example: 'KA 04 A 2256' },
-  'std2': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{2} [0-9]{4}$', example: 'DL 03 CA 1234' },
-  'std3': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{3} [0-9]{4}$', example: 'ML 04 ASD 5256' },
-  'bhr':  { pattern: '^[0-9]{2} BH [0-9]{4} [A-Z]{2}$', example: '26 BH 9876 AB' }
+  'std1': { label: 'Standard (1-letter)', pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{1} [0-9]{4}$', example: 'KA 04 A 2256' },
+  'std2': { label: 'Standard (2-letter)', pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{2} [0-9]{4}$', example: 'DL 03 CA 1234' },
+  'std3': { label: 'Standard (3-letter)', pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{3} [0-9]{4}$', example: 'ML 04 ASD 5256' },
+  'bhr':  { label: 'Bharat Series', pattern: '^[0-9]{2} BH [0-9]{4} [A-Z]{2}$', example: '26 BH 9876 AB' }
 };
+
+function populateFormatSelect(selectId) {
+  var sel = document.getElementById(selectId);
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Select Format</option>';
+  for (var key in VEHICLE_FORMATS) {
+    if (VEHICLE_FORMATS.hasOwnProperty(key)) {
+      var f = VEHICLE_FORMATS[key];
+      sel.innerHTML += '<option value="' + key + '">' + f.label + ' \u2014 ' + f.example + '</option>';
+    }
+  }
+}
 
 function setupVehicleFormat(formatSelectId, vehicleInputId) {
   var sel = document.getElementById(formatSelectId);
@@ -480,32 +506,116 @@ function buildSlotGrid(basement, occupiedSlots, gridId, hiddenId, statusId) {
   grid.innerHTML = '';
 
   var occupied = occupiedSlots.split(',').filter(Boolean);
+  var total = 120;
+  var cols = 15;
+  var rows = Math.ceil(total / cols);
 
-  for (var i = 1; i <= 50; i++) {
-    var n = i.toString().padStart(2, '0');
-    var slotVal = basement + '-' + n;
-    var tile = document.createElement('div');
-    tile.className = 'slot-tile';
-    tile.textContent = n;
-    tile.dataset.slot = slotVal;
-    var isOccupied = occupied.indexOf(slotVal) >= 0;
+  function makeTileClickHandler(tile, slotVal) {
+    tile.onclick = function () {
+      document.querySelectorAll('.slot-tile.selected').forEach(function (t) {
+        t.classList.remove('selected');
+      });
+      this.classList.add('selected');
+      document.getElementById(hiddenId).value = slotVal;
+      document.getElementById(statusId).textContent = 'Selected: ' + slotVal;
+      var qj = document.getElementById('slotQuickJump');
+      if (qj) qj.value = slotVal;
+    };
+  }
 
-    if (isOccupied) {
-      tile.classList.add('occupied');
-    } else {
-      tile.classList.add('available');
-      tile.onclick = function () {
-        document.querySelectorAll('.slot-tile.selected').forEach(function (t) {
-          t.classList.remove('selected');
-        });
-        this.classList.add('selected');
-        document.getElementById(hiddenId).value = this.dataset.slot;
-        document.getElementById(statusId).textContent = 'Selected: ' + this.dataset.slot;
-      };
+  for (var r = 0; r < rows; r++) {
+    var start = r * cols + 1;
+    var end = Math.min((r + 1) * cols, total);
+    var label = document.createElement('div');
+    label.className = 'slot-row-label';
+    label.textContent = basement + '-' + start.toString().padStart(3, '0') + ' to ' + basement + '-' + end.toString().padStart(3, '0');
+    grid.appendChild(label);
+
+    for (var c = 0; c < cols; c++) {
+      var i = r * cols + c + 1;
+      if (i > total) break;
+      var n = i.toString().padStart(3, '0');
+      var slotVal = basement + '-' + n;
+      var tile = document.createElement('div');
+      tile.className = 'slot-tile';
+      tile.textContent = n;
+      tile.dataset.slot = slotVal;
+      if (occupied.indexOf(slotVal) >= 0) {
+        tile.classList.add('occupied');
+      } else {
+        tile.classList.add('available');
+        makeTileClickHandler(tile, slotVal);
+      }
+      grid.appendChild(tile);
     }
-    grid.appendChild(tile);
   }
 }
+
+// ============================================
+// Slot Quick-Jump
+// ============================================
+function quickJumpSlot() {
+  var input = document.getElementById('slotQuickJump');
+  if (!input) return;
+  var val = input.value.trim().toUpperCase();
+  var grid = document.getElementById('slotGrid');
+  if (!grid) return;
+
+  grid.querySelectorAll('.slot-tile.highlight').forEach(function (t) {
+    t.classList.remove('highlight');
+  });
+
+  if (!val) return;
+
+  var tiles = grid.querySelectorAll('.slot-tile');
+  var matches = [];
+  var exactMatch = null;
+
+  for (var i = 0; i < tiles.length; i++) {
+    var slot = tiles[i].dataset.slot;
+    if (!slot) continue;
+    var isOccupied = tiles[i].classList.contains('occupied');
+    if (slot === val) {
+      exactMatch = { tile: tiles[i], occupied: isOccupied };
+      matches.push(tiles[i]);
+    } else if (slot.indexOf(val) >= 0) {
+      matches.push(tiles[i]);
+    }
+  }
+
+  // If exactly one match and it's available, auto-select
+  if (exactMatch && !exactMatch.occupied && matches.length === 1) {
+    exactMatch.tile.click();
+    return;
+  }
+
+  // If one non-occupied match via partial search
+  if (matches.length === 1 && !matches[0].classList.contains('occupied')) {
+    matches[0].click();
+    return;
+  }
+
+  // Otherwise highlight all matches
+  matches.forEach(function (t) {
+    t.classList.add('highlight');
+  });
+  if (matches.length > 0) {
+    matches[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// Enter key on quick-jump triggers jump
+document.addEventListener('DOMContentLoaded', function () {
+  var qj = document.getElementById('slotQuickJump');
+  if (qj) {
+    qj.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        quickJumpSlot();
+      }
+    });
+  }
+});
 
 // ============================================
 // Initialize on DOM ready

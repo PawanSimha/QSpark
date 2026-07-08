@@ -1,13 +1,32 @@
 <!DOCTYPE html>
+<!--
+  QSpark - A production-grade smart parking management system
+  Copyright (C) 2026 PawanSimha
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Q-Park - QR Code</title>
-  <link rel="icon" type="image/png" href="/logo.png">
+  <title>QSpark - QR Code</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css?v=2">
+  <meta name="_csrf" th:content="${_csrf.token}">
+  <meta name="_csrf_header" th:content="${_csrf.headerName}">
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
@@ -19,11 +38,7 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <img src="/logo.png" alt="Q-Park" class="sidebar-logo-img">
-      <div>
-        <div class="sidebar-logo-text"><span>Q</span>-Park</div>
-        <div class="sidebar-logo-sub">Smart Parking</div>
-      </div>
+      <img src="/logo.webp" alt="QSpark" class="sidebar-logo-img">
     </div>
     <nav class="sidebar-nav">
       <a href="/dashboard" class="sidebar-link">
@@ -31,6 +46,18 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 17V7h4a3 3 0 1 1 0 6H9"/></svg>
         </span>
         <span class="sidebar-label">Dashboard</span>
+      </a>
+      <a href="/dashboard?tab=occupied" class="sidebar-link">
+        <span class="sidebar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M3 9h18"/></svg>
+        </span>
+        <span class="sidebar-label">Active</span>
+      </a>
+      <a href="/dashboard?tab=history" class="sidebar-link">
+        <span class="sidebar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <span class="sidebar-label">History</span>
       </a>
       <a href="/qrcode" class="sidebar-link active">
         <span class="sidebar-icon">
@@ -40,6 +67,13 @@
       </a>
     </nav>
     <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Admin</div>
+          <div class="sidebar-user-role">QSparker</div>
+        </div>
+      </div>
     </div>
   </aside>
 
@@ -58,10 +92,13 @@
           <div class="topbar-date" id="liveDate"></div>
           <div class="topbar-time" id="liveTime"></div>
         </div>
-        <a href="/logout" class="btn btn-ghost btn-sm" style="color:var(--red-500);">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Logout
-        </a>
+        <form action="/logout" method="post" style="display:inline;">
+          <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+          <button type="submit" class="btn btn-ghost btn-sm btn-danger-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+          </button>
+        </form>
       </div>
     </header>
 
@@ -86,14 +123,9 @@
             <p class="text-sm text-muted mb-20">Fill in all details to generate a downloadable QR code. Scanning it will auto-fill the dashboard.</p>
             <div class="form-grid">
               <input type="text" id="ownerInput" class="input" placeholder="Owner Name">
-              <select id="formatSelect" class="input" onchange="onFormatChange()">
-                <option value="">Select Format</option>
-                <option value="std1">Standard (1-letter) — KA 04 A 2256</option>
-                <option value="std2">Standard (2-letter) — DL 03 CA 1234</option>
-                <option value="std3">Standard (3-letter) — ML 04 ASD 5256</option>
-                <option value="bhr">Bharat Series — 26 BH 9876 AB</option>
+              <select id="formatSelect" class="input">
               </select>
-              <input type="text" id="vehicleInput" class="input" placeholder="Select format above" readonly style="grid-column:1/-1;background:var(--bg-th);cursor:not-allowed;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9 ]/g,'');">
+              <input type="text" id="vehicleInput" class="input input-readonly" placeholder="Select format above" readonly style="grid-column:1/-1;">
               <select id="typeInput" class="input">
                 <option value="">Select Vehicle Type</option>
                 <option value="Car">Car</option>
@@ -148,7 +180,9 @@
                   <tr th:if="${#lists.isEmpty(registrations)}">
                     <td colspan="6">
                       <div class="empty-state">
-                        <div class="empty-state-icon">&#128196;</div>
+                        <div class="empty-state-icon">
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5371FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="3" width="6" height="6"/><rect x="3" y="15" width="6" height="6"/><path d="M21 15h-6v6"/></svg>
+                        </div>
                         <div class="empty-state-title">No vehicles registered</div>
                         <div class="empty-state-desc">Generate a QR code above to register a vehicle.</div>
                       </div>
@@ -184,13 +218,6 @@
 </div>
 
 <script>
-  var formatMap = {
-    'std1': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{1} [0-9]{4}$', example: 'KA 04 A 2256' },
-    'std2': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{2} [0-9]{4}$', example: 'DL 03 CA 1234' },
-    'std3': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{3} [0-9]{4}$', example: 'ML 04 ASD 5256' },
-    'bhr':  { pattern: '^[0-9]{2} BH [0-9]{4} [A-Z]{2}$', example: '26 BH 9876 AB' }
-  };
-
   var ownerInput = document.getElementById('ownerInput');
   var vehicleInput = document.getElementById('vehicleInput');
   var typeInput = document.getElementById('typeInput');
@@ -201,6 +228,8 @@
   var downloadLink = document.getElementById('downloadLink');
   var generateBtn = document.getElementById('generateBtn');
   var html5Scanner = null;
+  var csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+  var csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
   // --- Tab Switching ---
   function switchTab(name) {
@@ -211,37 +240,13 @@
     if (name === 'scan') { stopScanner(); }
   }
 
-  // --- Vehicle Format ---
-  function onFormatChange() {
-    var sel = document.getElementById('formatSelect');
-    var inp = document.getElementById('vehicleInput');
-    var fmt = formatMap[sel.value];
-    if (fmt) {
-      inp.placeholder = 'e.g. ' + fmt.example;
-      inp.pattern = fmt.pattern;
-      inp.title = 'Format: ' + fmt.example;
-      inp.readOnly = false;
-      inp.style.background = '';
-      inp.style.cursor = '';
-      inp.value = '';
-    } else {
-      inp.placeholder = 'Select format above';
-      inp.pattern = '';
-      inp.title = '';
-      inp.readOnly = true;
-      inp.style.background = 'var(--bg-th)';
-      inp.style.cursor = 'not-allowed';
-      inp.value = '';
-    }
-  }
-
   // --- Generate QR ---
   function generateQR() {
     var o = ownerInput.value.trim();
     var v = vehicleInput.value.trim();
     var t = typeInput.value;
     var m = mobileInput.value.trim();
-    var fmt = formatMap[document.getElementById('formatSelect').value];
+    var fmt = VEHICLE_FORMATS[document.getElementById('formatSelect').value];
     if (!fmt) { Toast.error('Select a vehicle number format'); return; }
     if (!o) { Toast.error('Enter owner name'); return; }
     if (!v) { Toast.error('Enter vehicle number'); return; }
@@ -254,6 +259,7 @@
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/qrcode/generate', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader(csrfHeader, csrfToken);
     xhr.responseType = 'blob';
     xhr.onload = function () {
       generateBtn.disabled = false;
@@ -307,6 +313,11 @@
         var form = document.createElement('form');
         form.method = 'POST';
         form.action = '/qrcode/scan';
+        var csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_csrf';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
         var input = document.createElement('input');
         input.type = 'hidden';
         input.name = 'vehicleNumber';
@@ -357,6 +368,12 @@
     };
     xhr.send();
   }
+
+  // --- Init ---
+  document.addEventListener('DOMContentLoaded', function () {
+    populateFormatSelect('formatSelect');
+    setupVehicleFormat('formatSelect', 'vehicleInput');
+  });
 
   // --- Auto-scan if ?scan=1 in URL ---
   (function () {

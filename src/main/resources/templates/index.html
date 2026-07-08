@@ -1,13 +1,30 @@
 <!DOCTYPE html>
+<!--
+  QSpark - A production-grade smart parking management system
+  Copyright (C) 2026 PawanSimha
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Q-Park - Dashboard</title>
-  <link rel="icon" type="image/png" href="/logo.png">
+  <title>QSpark - Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css?v=2">
 </head>
 <body>
 
@@ -19,11 +36,7 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <img src="/logo.png" alt="Q-Park" class="sidebar-logo-img">
-      <div>
-        <div class="sidebar-logo-text"><span>Q</span>-Park</div>
-        <div class="sidebar-logo-sub">Smart Parking</div>
-      </div>
+      <img src="/logo.webp" alt="QSpark" class="sidebar-logo-img">
     </div>
     <nav class="sidebar-nav">
       <button class="sidebar-link active" data-tab="booking" onclick="showTab('booking')">
@@ -56,7 +69,7 @@
         <div class="sidebar-avatar">A</div>
         <div class="sidebar-user-info">
           <div class="sidebar-user-name">Admin</div>
-          <div class="sidebar-user-role">SPPN</div>
+          <div class="sidebar-user-role">QSparker</div>
         </div>
       </div>
     </div>
@@ -82,10 +95,13 @@
           <div class="topbar-date" id="liveDate"></div>
           <div class="topbar-time" id="liveTime"></div>
         </div>
-        <a href="/logout" class="btn btn-ghost btn-sm" style="color:var(--red-500);">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Logout
-        </a>
+        <form action="/logout" method="post" style="display:inline;">
+          <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+          <button type="submit" class="btn btn-ghost btn-sm btn-danger-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+          </button>
+        </form>
       </div>
     </header>
 
@@ -121,7 +137,7 @@
             <div class="stat-trend up">Operational</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" th:text="${#lists.size(list)}">0</div>
+            <div class="stat-value" th:text="${#lists.size(list) + ' / 480'}">0 / 480</div>
             <div class="stat-label">Occupied Slots</div>
           </div>
         </div>
@@ -129,16 +145,15 @@
         <div class="form-box">
           <h2>New Booking</h2>
           <form action="/save" method="post" onsubmit="return prepareSubmit()">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}">
             <div class="form-grid">
               <input type="text" name="ownerName" id="ownerNameInput" class="input" placeholder="Owner Name" required>
-              <select id="formatSelect" class="input" onchange="onFormatChange()">
-                <option value="">Select Format</option>
-                <option value="std1">Standard (1-letter) — KA 04 A 2256</option>
-                <option value="std2">Standard (2-letter) — DL 03 CA 1234</option>
-                <option value="std3">Standard (3-letter) — ML 04 ASD 5256</option>
-                <option value="bhr">Bharat Series — 26 BH 9876 AB</option>
+              <select id="formatSelect" class="input">
               </select>
-              <input type="text" name="vehicleNumber" id="vehicleInput" class="input" placeholder="Select format above" readonly style="grid-column:1/-1;background:var(--bg-th);cursor:not-allowed;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9 ]/g,'');" required>
+              <div style="grid-column:1/-1;">
+                <input type="text" name="vehicleNumber" id="vehicleInput" class="input input-readonly" placeholder="Select format above" readonly required>
+                <div th:if="${vehicleNumberError}" class="field-error" th:text="${vehicleNumberError}"></div>
+              </div>
               <select name="vehicleType" id="vehicleTypeInput" class="input" required>
                 <option value="">Select Vehicle Type</option>
                 <option value="Car">Car</option>
@@ -153,7 +168,12 @@
 
             <div class="slot-section">
               <div class="slot-header">
-                <span class="slot-header-label">Select Parking Slot</span>
+                <div class="slot-header-left">
+                  <span class="slot-header-label">Select Parking Slot</span>
+                  <input type="text" id="slotQuickJump" class="slot-quick-jump"
+                         placeholder="Quick jump — type slot (e.g. 042)"
+                         oninput="quickJumpSlot()">
+                </div>
                 <div class="legend">
                   <span class="legend-item"><span class="legend-dot avail"></span> Available</span>
                   <span class="legend-item"><span class="legend-dot occ"></span> Occupied</span>
@@ -229,7 +249,9 @@
                 <tr th:if="${#lists.isEmpty(list)}">
                   <td colspan="8">
                     <div class="empty-state">
-                      <div class="empty-state-icon">&#128663;</div>
+                      <div class="empty-state-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5371FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 1 1 0 6H9"/></svg>
+                      </div>
                       <div class="empty-state-title">No active bookings</div>
                       <div class="empty-state-desc">All parking slots are free. Create a new booking to get started.</div>
                     </div>
@@ -248,7 +270,16 @@
         <div class="table-container">
           <div class="table-toolbar">
             <input type="text" id="historySearch" class="input" placeholder="Search history..." oninput="filterTable('historyTable', 'historySearch')">
-            <div style="margin-left:auto;">
+            <div style="display:flex;gap:8px;align-items:center;margin-left:auto;">
+              <span style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">Sort:</span>
+              <select id="historySortCol" class="input" style="max-width:140px;padding:6px 28px 6px 10px;font-size:13px;" onchange="sortHistoryTable()">
+                <option value="">Default</option>
+                <option value="3">Vehicle Type</option>
+                <option value="4">Slot Number</option>
+                <option value="6">Entry Time</option>
+                <option value="7">Exit Time</option>
+              </select>
+              <button onclick="toggleHistorySortDir()" class="btn btn-secondary btn-sm" id="historySortDirBtn">Ascending</button>
               <button onclick="exportCSV('historyTable', 'History_Records.csv')" class="btn btn-primary btn-sm">Export CSV</button>
             </div>
           </div>
@@ -280,7 +311,9 @@
                 <tr th:if="${#lists.isEmpty(history)}">
                   <td colspan="8">
                     <div class="empty-state">
-                      <div class="empty-state-icon">&#128203;</div>
+                      <div class="empty-state-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5371FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      </div>
                       <div class="empty-state-title">No parking history</div>
                       <div class="empty-state-desc">Completed parking records will appear here.</div>
                     </div>
@@ -308,6 +341,13 @@
   var selectedBasement = '';
   var occupiedSortAsc = true;
 
+  // --- URL param tab deep-link ---
+  (function() {
+    var p = new URLSearchParams(window.location.search);
+    var t = p.get('tab');
+    if (t === 'occupied' || t === 'history') { showTab(t); }
+  })();
+
   // --- Tab Switching ---
   function showTab(name) {
     var titles = { booking: 'Dashboard', occupied: 'Active Bookings', history: 'Parking History' };
@@ -330,37 +370,9 @@
     document.querySelectorAll('.basement-tab').forEach(function (t) {
       t.classList.toggle('active', t.getAttribute('data-b') === b);
     });
-    buildGrid(b);
-  }
-
-  function buildGrid(b) {
-    var grid = document.getElementById('slotGrid');
-    var hidden = document.getElementById('selectedSlot');
-    var status = document.getElementById('slotStatus');
-    hidden.value = '';
-    status.textContent = b + ' — Select a slot';
-    grid.innerHTML = '';
-    var occ = occupiedSlots.split(',').filter(Boolean);
-    for (var i = 1; i <= 50; i++) {
-      var n = i.toString().padStart(2, '0');
-      var slotVal = b + '-' + n;
-      var tile = document.createElement('div');
-      tile.className = 'slot-tile';
-      tile.textContent = n;
-      tile.dataset.slot = slotVal;
-      if (occ.indexOf(slotVal) >= 0) {
-        tile.classList.add('occupied');
-      } else {
-        tile.classList.add('available');
-        tile.onclick = function () {
-          document.querySelectorAll('.slot-tile.selected').forEach(function (t) { t.classList.remove('selected'); });
-          this.classList.add('selected');
-          document.getElementById('selectedSlot').value = this.dataset.slot;
-          document.getElementById('slotStatus').textContent = 'Selected: ' + this.dataset.slot;
-        };
-      }
-      grid.appendChild(tile);
-    }
+    var qj = document.getElementById('slotQuickJump');
+    if (qj) qj.value = '';
+    buildSlotGrid(b, occupiedSlots, 'slotGrid', 'selectedSlot', 'slotStatus');
   }
 
   // --- Form Submit ---
@@ -377,50 +389,19 @@
     return true;
   }
 
-  // --- Vehicle Format ---
-  var formatMap = {
-    'std1': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{1} [0-9]{4}$', example: 'KA 04 A 2256' },
-    'std2': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{2} [0-9]{4}$', example: 'DL 03 CA 1234' },
-    'std3': { pattern: '^[A-Z]{2} [0-9]{2} [A-Z]{3} [0-9]{4}$', example: 'ML 04 ASD 5256' },
-    'bhr':  { pattern: '^[0-9]{2} BH [0-9]{4} [A-Z]{2}$', example: '26 BH 9876 AB' }
-  };
-
-  function onFormatChange() {
-    var sel = document.getElementById('formatSelect');
-    var inp = document.getElementById('vehicleInput');
-    var fmt = formatMap[sel.value];
-    if (fmt) {
-      inp.placeholder = 'e.g. ' + fmt.example;
-      inp.pattern = fmt.pattern;
-      inp.title = 'Format: ' + fmt.example;
-      inp.readOnly = false;
-      inp.style.background = '';
-      inp.style.cursor = '';
-      inp.value = '';
-    } else {
-      inp.placeholder = 'Select format above';
-      inp.pattern = '';
-      inp.title = '';
-      inp.readOnly = true;
-      inp.style.background = 'var(--bg-th)';
-      inp.style.cursor = 'not-allowed';
-      inp.value = '';
-    }
-  }
-
   // --- Scanned Vehicle Auto-fill ---
   function applyScannedVehicle() {
     if (scannedVehicleNumber && scannedVehicleNumber !== '') {
       var oi = document.getElementById('ownerNameInput');
-      if (oi) { oi.value = scannedOwnerName; oi.readOnly = true; oi.style.background = 'var(--bg-th)'; oi.style.cursor = 'not-allowed'; }
+      if (oi) { oi.value = scannedOwnerName; oi.readOnly = true; oi.classList.add('input-readonly'); }
       var vi = document.getElementById('vehicleInput');
-      if (vi) { vi.value = scannedVehicleNumber; vi.readOnly = true; vi.style.background = 'var(--bg-th)'; vi.style.cursor = 'not-allowed'; }
+      if (vi) { vi.value = scannedVehicleNumber; vi.readOnly = true; vi.classList.add('input-readonly'); }
       var fi = document.getElementById('formatSelect');
-      if (fi) { fi.disabled = true; fi.style.cursor = 'not-allowed'; }
+      if (fi) { fi.disabled = true; fi.classList.add('input-readonly'); }
       var ti = document.getElementById('vehicleTypeInput');
-      if (ti) { ti.value = scannedVehicleType; ti.disabled = true; ti.style.cursor = 'not-allowed'; }
+      if (ti) { ti.value = scannedVehicleType; ti.disabled = true; ti.classList.add('input-readonly'); }
       var mi = document.getElementById('mobileNumberInput');
-      if (mi) { mi.value = scannedMobileNumber; mi.readOnly = true; mi.style.background = 'var(--bg-th)'; mi.style.cursor = 'not-allowed'; }
+      if (mi) { mi.value = scannedMobileNumber; mi.readOnly = true; mi.classList.add('input-readonly'); }
     }
   }
   applyScannedVehicle();
@@ -445,6 +426,37 @@
     document.getElementById('occupiedSortDirBtn').textContent = occupiedSortAsc ? 'Ascending' : 'Descending';
     sortOccupiedTable();
   }
+
+  // --- History Table Sort ---
+  var historySortAsc = true;
+
+  function sortHistoryTable() {
+    var mode = document.getElementById('historySortCol').value;
+    var tbody = document.querySelector('#historyTable tbody');
+    var rows = Array.from(tbody.querySelectorAll('tr'));
+    if (!mode || rows.length === 0 || !rows[0].cells) { return; }
+    var col = parseInt(mode);
+    rows.sort(function (a, b) {
+      var va = a.cells[col] ? a.cells[col].textContent.trim() : '';
+      var vb = b.cells[col] ? b.cells[col].textContent.trim() : '';
+      return historySortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    });
+    rows.forEach(function (r) { tbody.appendChild(r); });
+  }
+
+  function toggleHistorySortDir() {
+    historySortAsc = !historySortAsc;
+    document.getElementById('historySortDirBtn').textContent = historySortAsc ? 'Ascending' : 'Descending';
+    sortHistoryTable();
+  }
+
+  // --- Init on DOM ready ---
+  document.addEventListener('DOMContentLoaded', function () {
+    populateFormatSelect('formatSelect');
+    setupVehicleFormat('formatSelect', 'vehicleInput');
+    if (document.getElementById('occupiedTable')) paginateTable('occupiedTable', 25);
+    if (document.getElementById('historyTable')) paginateTable('historyTable', 25);
+  });
 
   // --- Confirmation Dialogs ---
   function confirmDelete(event, el) {

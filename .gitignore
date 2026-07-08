@@ -1,11 +1,26 @@
+# Logs & temp
 HELP.md
 backend.log
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+*.log
 
-### STS ###
+# Build output
+target/
+build/
+dist/
+*.jar
+*.war
+
+# Maven wrapper jar (downloaded, not committed)
+.mvn/wrapper/maven-wrapper.jar
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+### STS (Eclipse) ###
 .apt_generated
 .classpath
 .factorypath
@@ -26,9 +41,18 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
+
+# Empty/legacy directories
+frontend/
+
+# Environment overrides (keep secrets out)
+*.local.properties
+*.dev.properties
+
+# Agent configuration
+.opencode/

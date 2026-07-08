@@ -1,2 +1,26 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Java source
+*.java text diff=java
+*.xml text
+*.properties text
+*.html text diff=html
+*.css text diff=css
+*.js text diff=javascript
+*.md text
+
+# Maven wrapper must always use LF
 /mvnw text eol=lf
+/mvnw.cmd text eol=crlf
+
+# Batch scripts
+*.bat text eol=crlf
 *.cmd text eol=crlf
+
+# Binary files
+*.jar binary
+*.png binary
+*.webp binary
+*.ico binary
+*.jpg binary

@@ -1,962 +1,514 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  QSpark - A production-grade smart parking management system
+  Copyright (C) 2026 PawanSimha
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Q-Park - Smart Parking Management</title>
-    <link rel="icon" type="image/png" href="/logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        *{ margin:0; padding:0; box-sizing:border-box; }
-        body{
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: #FFFFFF;
-            color: #0F172A;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .nav{
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 48px;
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-bottom: 1px solid #E2E8F0;
-        }
+  <!-- Primary Meta Tags -->
+  <title>QSpark — Open-Source Smart Parking Management System | Spring Boot</title>
+  <meta name="title" content="QSpark — Open-Source Smart Parking Management System | Spring Boot">
+  <meta name="description" content="QSpark is a production-grade, open-source smart parking management system built with Spring Boot, Spring Security (BCrypt), and Thymeleaf. Manages 480 parking slots across 4 basements with QR-code-based vehicle identification, real-time slot grid, CSRF protection, and full audit trail. MIT-licensed parking software.">
+  <meta name="keywords" content="parking management system, smart parking, open source parking software, spring boot parking, QR code parking, parking slot management, garage management system, parking reservation system, MIT license parking, PawanSimha, QSpark">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="PawanSimha">
+  <link rel="canonical" href="https://github.com/PawanSimha/QSpark">
 
-        .logo{
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            text-decoration: none;
-        }
-        .logo-img{
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-        .logo-text{
-            display: flex;
-            flex-direction: column;
-        }
-        .logo-title{
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: -0.025em;
-            color: #0F172A;
-            line-height: 1.2;
-        }
-        .logo-title span{ color: #2563EB; }
-        .logo-sub{
-            font-size: 11px;
-            font-weight: 500;
-            color: #94A3B8;
-            letter-spacing: 0.02em;
-        }
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://github.com/PawanSimha/QSpark">
+  <meta property="og:title" content="QSpark — Open-Source Smart Parking Management System | Spring Boot">
+  <meta property="og:description" content="Production-grade smart parking management: 480 slots, QR vehicle ID, Spring Security + BCrypt, real-time dashboard. Built with Java 17 and Spring Boot 3.3.1.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/PawanSimha/QSpark/main/src/main/resources/static/logo.webp">
 
-        .nav-links{
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-        .nav-links a{
-            text-decoration: none;
-            color: #475569;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover{ color: #0F172A; }
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://github.com/PawanSimha/QSpark">
+  <meta property="twitter:title" content="QSpark — Open-Source Smart Parking Management System">
+  <meta property="twitter:description" content="Production-grade smart parking: 480 slots, QR ID, BCrypt auth, real-time grid. Java 17 + Spring Boot 3.3.1.">
+  <meta property="twitter:image" content="https://raw.githubusercontent.com/PawanSimha/QSpark/main/src/main/resources/static/logo.webp">
 
-        .nav-cta{
-            background: #2563EB;
-            color: white !important;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600 !important;
-            font-size: 14px;
-            transition: background 0.2s !important;
-        }
-        .nav-cta:hover{ background: #1D4ED8 !important; }
+  <!-- GEO / AI Crawler Directives -->
+  <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <meta name="OAI-SearchBot" content="index, follow">
+  <meta name="PerplexityBot" content="index, follow">
 
-        .hero{
-            padding: 130px 48px 80px;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 60px;
-            min-height: 90vh;
-        }
-        .hero-content{ flex: 1.2; }
+  <!-- JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": "https://github.com/PawanSimha/QSpark",
+    "name": "QSpark",
+    "alternateName": "Quick & Smart Parking",
+    "description": "QSpark is a production-grade, open-source smart parking management system built with Spring Boot 3.3.1, Java 17, and Thymeleaf. It manages 480 parking slots across 4 basements with QR-code-based vehicle identification, Spring Security authentication with BCrypt password hashing, CSRF protection, real-time slot grid visualization, and full audit trail with entry/exit timestamps. Licensed under GNU GPLv3.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Cross-platform (Java 17+)",
+    "browserRequirements": "Requires JavaScript for camera QR scanning; server-rendered HTML works without JS for core CRUD",
+    "softwareVersion": "1.0.0",
+    "releaseNotes": "https://github.com/PawanSimha/QSpark/releases",
+    "url": "https://github.com/PawanSimha/QSpark",
+    "sameAs": [
+      "https://github.com/PawanSimha/QSpark",
+      "https://github.com/PawanSimha"
+    ],
+    "author": {
+      "@type": "Person",
+      "@id": "https://github.com/PawanSimha",
+      "name": "PawanSimha",
+      "email": "iampawansimha.2004@gmail.com",
+      "url": "https://github.com/PawanSimha",
+      "sameAs": [
+        "https://github.com/PawanSimha"
+      ]
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free and open-source under GNU General Public License v3.0"
+    },
+    "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+    "keywords": "parking management system, smart parking, spring boot, qr code parking, parking slot management, open source parking, garage management, BCrypt auth, parking dashboard",
+    "featureList": [
+      "480-slot parking management across 4 basements",
+      "QR-code-based vehicle identification with ZXing",
+      "Real-time slot grid with color-coded occupancy",
+      "Spring Security authentication with BCrypt password hashing",
+      "CSRF protection on all forms and AJAX calls",
+      "Full CRUD operations with entry/exit timestamps",
+      "Camera-based QR scanning via html5-qrcode",
+      "Dark mode with localStorage persistence",
+      "Client-side search, sort, pagination, and CSV export",
+      "Dual database profiles: MySQL (production) and H2 (development)"
+    ],
+    "browserRequirements": {
+      "@type": "WebApplication",
+      "name": "QSpark",
+      "description": "Modern browser with JavaScript enabled for QR scanning features"
+    },
+    "knowsAbout": [
+      {
+        "@type": "Thing",
+        "name": "Parking Management",
+        "description": "Digital management of parking slot allocation, vehicle tracking, and audit logging"
+      },
+      {
+        "@type": "Thing",
+        "name": "QR Code Vehicle Identification",
+        "description": "Generate and scan QR codes for vehicle identification using ZXing library"
+      },
+      {
+        "@type": "Thing",
+        "name": "Spring Boot Web Application",
+        "description": "Java 17 + Spring Boot 3.3.1 MVC application with Thymeleaf templating"
+      },
+      {
+        "@type": "Thing",
+        "name": "Spring Security Implementation",
+        "description": "BCrypt password encoding, form-based authentication, CSRF protection, secure headers"
+      }
+    ]
+  }
+  </script>
 
-        .hero-badge{
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #EFF6FF;
-            color: #1D4ED8;
-            padding: 6px 14px;
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 24px;
-        }
+  <!-- Fonts & Styles -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
 
-        .hero h1{
-            font-size: 54px;
-            font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -0.03em;
-            margin-bottom: 8px;
-        }
-        .hero h1 span{ color: #2563EB; }
-        .hero .hero-tagline{
-            font-size: 20px;
-            font-weight: 500;
-            color: #64748B;
-            margin-bottom: 20px;
-        }
-        .hero p{
-            font-size: 18px;
-            line-height: 1.7;
-            color: #64748B;
-            max-width: 520px;
-            margin-bottom: 36px;
-        }
+  <style>
+    /* Landing page specific overrides — design tokens */
+    :root {
+      --lp-primary: #2a66e8;
+      --lp-primary-dark: #1a4cb8;
+      --lp-bg: #EAEAEA;
+      --lp-card-bg: #FFFFFF;
+      --lp-text: #000000;
+      --lp-text-muted: rgba(0,0,0,0.5);
+      --lp-border: #E0E0E0;
+      --lp-radius: 24px;
+    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--lp-bg); color: var(--lp-text); -webkit-font-smoothing: antialiased; margin: 0; }
+    a { color: var(--lp-primary); text-decoration: none; }
 
-        .hero-buttons{
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
+    /* Floating pill nav */
+    .lp-nav {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;
+      background: rgba(255,255,255,0.55); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(0,0,0,0.06); border-radius: 999px; padding: 8px 24px;
+      display: flex; align-items: center; gap: 24px; white-space: nowrap; box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .lp-nav a { font-size: 14px; font-weight: 600; color: var(--lp-text); transition: color 0.2s; }
+    .lp-nav a:hover { color: var(--lp-primary); }
+    .lp-nav .nav-login {
+      background: var(--lp-primary); color: #fff !important; padding: 8px 20px; border-radius: 999px;
+      font-weight: 600; font-size: 14px; transition: all 0.2s;
+    }
+    .lp-nav .nav-login:hover { background: var(--lp-primary-dark); transform: translateY(-1px); }
 
-        .btn-primary{
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #2563EB;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-        .btn-primary:hover{
-            background: #1D4ED8;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
-        }
+    /* Hero */
+    .lp-hero { padding: 120px 24px 40px; max-width: 1200px; margin: 0 auto; }
+    .lp-hero img { width: 100%; border-radius: 20px; display: block; box-shadow: 0 8px 40px rgba(0,0,0,0.10); }
 
-        .btn-secondary{
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: transparent;
-            color: #475569;
-            padding: 14px 28px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            border: 1px solid #E2E8F0;
-            transition: all 0.2s;
-        }
-        .btn-secondary:hover{
-            border-color: #2563EB;
-            color: #2563EB;
-            background: #F8FAFC;
-        }
+    /* Sections */
+    .lp-section { padding: 80px 24px; max-width: 1200px; margin: 0 auto; }
+    .lp-section-header { text-align: center; margin-bottom: 48px; }
+    .lp-section-header h2 { font-size: 36px; font-weight: 800; letter-spacing: -0.025em; margin: 0 0 12px; }
+    .lp-section-header p { font-size: 16px; color: var(--lp-text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+    .lp-label {
+      display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--lp-primary); margin-bottom: 8px;
+    }
 
-        .hero-visual{
-            flex: 1;
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-            border-radius: 24px;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-visual::before{
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%);
-            pointer-events: none;
-        }
+    /* Feature cards */
+    .lp-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .lp-feature-card {
+      background: var(--lp-card-bg); border-radius: var(--lp-radius); padding: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .lp-feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+    .lp-feature-icon {
+      width: 48px; height: 48px; background: var(--lp-bg); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+    }
+    .lp-feature-icon svg { width: 24px; height: 24px; stroke: var(--lp-primary); fill: none; stroke-width: 1.8; }
+    .lp-feature-card h3 { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+    .lp-feature-card p { font-size: 14px; color: var(--lp-text-muted); margin: 0; line-height: 1.6; }
 
-        .visual-card{
-            background: white;
-            border-radius: 12px;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-            border: 1px solid #E2E8F0;
-            position: relative;
-            z-index: 1;
-        }
+    /* Architecture diagram */
+    .lp-arch {
+      background: var(--lp-card-bg); border-radius: var(--lp-radius); padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      text-align: center;
+    }
+    .lp-arch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+    .lp-arch-tier {
+      background: var(--lp-bg); border-radius: 16px; padding: 24px 16px; border: 1px solid #D0D0D0;
+    }
+    .lp-arch-tier h4 { font-size: 14px; font-weight: 700; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .lp-arch-tier p { font-size: 13px; color: var(--lp-text-muted); margin: 0; line-height: 1.5; }
+    .lp-arch-tier .arch-accent { color: var(--lp-primary); font-weight: 600; }
 
-        .visual-dot{
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        .dot-blue{ background: #DBEAFE; color: #1D4ED8; }
-        .dot-green{ background: #D1FAE5; color: #059669; }
-        .dot-amber{ background: #FEF3C7; color: #D97706; }
+    /* Stats */
+    .lp-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; padding: 60px 0; }
+    .lp-stat-value { font-size: 40px; font-weight: 900; letter-spacing: -0.03em; }
+    .lp-stat-label { font-size: 14px; color: var(--lp-text-muted); margin-top: 4px; font-weight: 500; }
+    .lp-stat-divider { width: 1px; height: 60px; background: rgba(0,0,0,0.10); align-self: center; }
 
-        .visual-info h3{
-            font-size: 14px;
-            font-weight: 600;
-            color: #0F172A;
-        }
-        .visual-info p{
-            font-size: 12px;
-            color: #94A3B8;
-            margin: 0;
-        }
+    /* Tech stack table */
+    .lp-tech-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .lp-tech-table thead { background: var(--lp-primary); color: #fff; }
+    .lp-tech-table th { padding: 14px 20px; text-align: left; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .lp-tech-table td { padding: 12px 20px; font-size: 14px; border-bottom: 1px solid var(--lp-border); background: var(--lp-card-bg); }
+    .lp-tech-table tbody tr:last-child td { border-bottom: none; }
 
-        .visual-status{
-            margin-left: auto;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 100px;
-            flex-shrink: 0;
-        }
-        .status-active{ background: #D1FAE5; color: #059669; }
-        .status-pending{ background: #FEF3C7; color: #D97706; }
-        .status-occupied{ background: #FEE2E2; color: #DC2626; }
+    /* QR showcase */
+    .lp-qr-card { background: var(--lp-card-bg); border-radius: var(--lp-radius); padding: 48px; box-shadow: 0 8px 32px rgba(0,0,0,0.06); display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .lp-qr-card .qr-content h2 { font-size: 28px; font-weight: 800; margin: 0 0 12px; }
+    .lp-qr-card .qr-content p { font-size: 15px; color: var(--lp-text-muted); line-height: 1.7; margin: 0 0 20px; }
 
-        .features{
-            padding: 80px 48px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    /* FAQ */
+    .lp-faq-list { display: grid; gap: 12px; max-width: 800px; margin: 0 auto; }
+    .lp-faq-item { background: var(--lp-card-bg); border-radius: 16px; padding: 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .lp-faq-question { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+    .lp-faq-answer { font-size: 14px; color: var(--lp-text-muted); margin: 0; line-height: 1.6; }
 
-        .section-label{
-            text-align: center;
-            color: #2563EB;
-            font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 12px;
-        }
+    /* CTA */
+    .lp-cta {
+      background: #000; color: #fff; border-radius: var(--lp-radius); padding: 64px; text-align: center; margin: 80px 24px 24px;
+    }
+    .lp-cta h2 { font-size: 32px; font-weight: 800; margin: 0 0 12px; }
+    .lp-cta p { font-size: 16px; color: rgba(255,255,255,0.6); margin: 0 0 28px; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .lp-cta .cta-btn {
+      display: inline-block; background: var(--lp-primary); color: #fff; padding: 16px 40px; border-radius: 999px;
+      font-weight: 700; font-size: 16px; transition: all 0.2s;
+    }
+    .lp-cta .cta-btn:hover { background: var(--lp-primary-dark); transform: translateY(-2px); }
 
-        .features h2{
-            text-align: center;
-            font-size: 36px;
-            font-weight: 800;
-            letter-spacing: -0.025em;
-            margin-bottom: 16px;
-        }
-        .features > p{
-            text-align: center;
-            color: #64748B;
-            font-size: 17px;
-            max-width: 600px;
-            margin: 0 auto 48px;
-            line-height: 1.6;
-        }
+    /* Footer */
+    .lp-footer { background: #000; color: rgba(255,255,255,0.5); border-radius: var(--lp-radius) var(--lp-radius) 0 0; padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin: 0 24px; }
+    .lp-footer img { height: 32px; }
 
-        .feature-grid{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
+    /* Accordion answer (static — always visible for AI crawlers) */
+    .lp-faq-answer { display: block; }
 
-        .feature-card{
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            padding: 28px;
-            transition: all 0.2s;
-        }
-        .feature-card:hover{
-            border-color: #BFDBFE;
-            box-shadow: 0 4px 12px rgba(37,99,235,0.08);
-            transform: translateY(-2px);
-        }
-
-        .feature-icon{
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-        .feature-card h3{
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .feature-card p{
-            font-size: 14px;
-            color: #64748B;
-            line-height: 1.6;
-        }
-
-        .stats-section{
-            background: #F8FAFC;
-            padding: 80px 48px;
-            border-top: 1px solid #E2E8F0;
-            border-bottom: 1px solid #E2E8F0;
-        }
-        .stats-grid{
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 32px;
-            text-align: center;
-        }
-        .stat h3{
-            font-size: 40px;
-            font-weight: 900;
-            color: #2563EB;
-            letter-spacing: -0.025em;
-        }
-        .stat p{
-            color: #64748B;
-            font-size: 15px;
-            font-weight: 500;
-            margin-top: 4px;
-        }
-
-        /* ---- Logo Explanation Section ---- */
-        .logo-section{
-            padding: 80px 48px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .logo-section .logo-showcase{
-            display: flex;
-            align-items: center;
-            gap: 60px;
-            margin-top: 40px;
-        }
-        .logo-section .logo-showcase img{
-            width: 240px;
-            height: 240px;
-            border-radius: 20px;
-            object-fit: cover;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border: 1px solid #E2E8F0;
-            flex-shrink: 0;
-        }
-        .logo-meaning{
-            flex: 1;
-        }
-        .logo-meaning h3{
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #0F172A;
-        }
-        .logo-meaning .acronym{
-            font-size: 28px;
-            font-weight: 900;
-            color: #2563EB;
-            letter-spacing: 0.08em;
-            margin-bottom: 8px;
-        }
-        .logo-meaning .fullform{
-            font-size: 16px;
-            color: #475569;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-        .logo-meaning p{
-            color: #64748B;
-            font-size: 15px;
-            line-height: 1.7;
-        }
-        .meaning-list{
-            list-style: none;
-            padding: 0;
-            margin-top: 16px;
-        }
-        .meaning-list li{
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 8px 0;
-            font-size: 14px;
-            color: #475569;
-            border-bottom: 1px solid #F1F5F9;
-        }
-        .meaning-list li:last-child{ border: none; }
-        .meaning-list li strong{
-            color: #0F172A;
-            min-width: 70px;
-            flex-shrink: 0;
-        }
-
-        /* ---- Footer ---- */
-        .footer{
-            background: #0F172A;
-            color: #CBD5E1;
-            padding: 60px 48px 0;
-        }
-        .footer-grid{
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 48px;
-            padding-bottom: 40px;
-            border-bottom: 1px solid #1E293B;
-        }
-        .footer-col h4{
-            color: #FFFFFF;
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 16px;
-        }
-        .footer-col p{
-            font-size: 14px;
-            line-height: 1.7;
-            color: #94A3B8;
-        }
-        .footer-col ul{
-            list-style: none;
-            padding: 0;
-        }
-        .footer-col ul li{
-            margin-bottom: 10px;
-        }
-        .footer-col ul li a{
-            color: #94A3B8;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.2s;
-        }
-        .footer-col ul li a:hover{ color: #FFFFFF; }
-
-        .footer-bottom{
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: #64748B;
-        }
-        .footer-bottom .team-names{
-            display: flex;
-            gap: 24px;
-        }
-        .footer-bottom .team-names span{
-            color: #94A3B8;
-        }
-
-        @media(max-width: 900px){
-            .hero{
-                flex-direction: column;
-                padding: 110px 24px 48px;
-                text-align: center;
-            }
-            .hero h1{ font-size: 36px; }
-            .hero p{ max-width: 100%; }
-            .hero-buttons{ justify-content: center; }
-            .hero-visual{ width: 100%; }
-            .feature-grid{ grid-template-columns: 1fr 1fr; }
-            .stats-grid{ grid-template-columns: repeat(2, 1fr); }
-            .footer-grid{ grid-template-columns: 1fr 1fr; }
-            .logo-section .logo-showcase{
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
-        @media(max-width: 600px){
-            .nav{ padding: 12px 20px; }
-            .nav-links{ gap: 16px; }
-            .nav-links a:not(.nav-cta){ display: none; }
-            .feature-grid{ grid-template-columns: 1fr; }
-            .stats-grid{ grid-template-columns: 1fr; }
-            .hero h1{ font-size: 28px; }
-            .hero{ padding: 100px 20px 40px; }
-            .footer-grid{ grid-template-columns: 1fr; }
-            .footer-bottom{ flex-direction: column; gap: 8px; }
-        }
-
-        .animate-in{
-            animation: fadeUp 0.6s ease forwards;
-            opacity: 0;
-        }
-        .animate-in:nth-child(2){ animation-delay: 0.1s; }
-        .animate-in:nth-child(3){ animation-delay: 0.2s; }
-
-        @keyframes fadeUp{
-            from{ opacity: 0; transform: translateY(20px); }
-            to{ opacity: 1; transform: translateY(0); }
-        }
-
-        /* ---- Architecture Section ---- */
-        .arch-section{
-            padding: 80px 48px;
-            background: #F8FAFC;
-            border-top: 1px solid #E2E8F0;
-            border-bottom: 1px solid #E2E8F0;
-        }
-        .arch-inner{
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .arch-layout{
-            display: flex;
-            gap: 60px;
-            align-items: flex-start;
-            margin-top: 40px;
-        }
-        .arch-diagram{
-            flex: 1.2;
-            min-width: 0;
-        }
-        .arch-desc{
-            flex: 1;
-            padding-top: 10px;
-        }
-        .arch-desc h3{
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #0F172A;
-        }
-        .arch-desc p{
-            color: #64748B;
-            font-size: 15px;
-            line-height: 1.7;
-            margin-bottom: 16px;
-        }
-        .arch-step{
-            display: flex;
-            gap: 14px;
-            padding: 10px 0;
-            border-bottom: 1px solid #F1F5F9;
-            align-items: flex-start;
-        }
-        .arch-step:last-child{ border: none; }
-        .arch-step-num{
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            background: #EFF6FF;
-            color: #1D4ED8;
-            font-weight: 700;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-        .arch-step-content{ flex: 1; }
-        .arch-step-content strong{
-            display: block;
-            font-size: 14px;
-            color: #0F172A;
-            margin-bottom: 2px;
-        }
-        .arch-step-content span{
-            font-size: 13px;
-            color: #64748B;
-            line-height: 1.5;
-        }
-
-        .arch-box{
-            border: 2px solid #E2E8F0;
-            border-radius: 12px;
-            padding: 16px 20px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 15px;
-            color: #0F172A;
-            background: white;
-            position: relative;
-            transition: all 0.2s;
-        }
-        .arch-box:hover{
-            border-color: #BFDBFE;
-            box-shadow: 0 2px 8px rgba(37,99,235,0.1);
-        }
-        .arch-box.top{ background: #2563EB; color: white; border-color: #2563EB; }
-        .arch-box.sub{ border-color: #DBEAFE; background: #EFF6FF; font-weight: 600; font-size: 13px; padding: 10px 14px; margin-top: 6px; }
-        .arch-box.sub:first-of-type{ margin-top: 8px; }
-        .arch-box.sub.last{ border-color: #D1FAE5; background: #ECFDF5; color: #065F46; }
-        .arch-arrow{
-            text-align: center;
-            font-size: 13px;
-            font-weight: 600;
-            color: #94A3B8;
-            padding: 6px 0;
-            letter-spacing: 0.02em;
-        }
-        .arch-arrow svg{
-            display: block;
-            margin: 0 auto 2px;
-        }
-        .arch-spring-box{
-            border: 2px solid #BFDBFE;
-            border-radius: 14px;
-            padding: 12px 12px 14px;
-            background: white;
-            position: relative;
-        }
-        .arch-spring-label{
-            position: absolute;
-            top: -11px;
-            left: 20px;
-            background: white;
-            padding: 0 10px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #2563EB;
-            letter-spacing: 0.02em;
-        }
-
-        @media(max-width: 1000px){
-            .arch-layout{ flex-direction: column; }
-        }
-    </style>
+    @media (max-width: 768px) {
+      .lp-nav { gap: 12px; padding: 6px 16px; font-size: 12px; }
+      .lp-nav a { font-size: 12px; }
+      .lp-nav .nav-login { padding: 6px 14px; font-size: 12px; }
+      .lp-hero { padding: 100px 16px 24px; }
+      .lp-section { padding: 48px 16px; }
+      .lp-section-header h2 { font-size: 26px; }
+      .lp-stats { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .lp-stat-divider { display: none; }
+      .lp-arch-grid { grid-template-columns: 1fr; }
+      .lp-qr-card { grid-template-columns: 1fr; padding: 32px; }
+      .lp-cta { padding: 40px 24px; }
+      .lp-footer { flex-direction: column; gap: 16px; text-align: center; }
+      .lp-tech-table { font-size: 12px; }
+    }
+    @media (max-width: 480px) {
+      .lp-stats { grid-template-columns: 1fr; gap: 20px; }
+      .lp-nav .nav-label { display: none; }
+    }
+  </style>
 </head>
 <body>
 
-<nav class="nav">
-    <a href="/" class="logo">
-        <img src="/logo.png" alt="Q-Park Logo" class="logo-img">
-        <div class="logo-text">
-            <div class="logo-title"><span>Q</span>-Park</div>
-            <div class="logo-sub">Quick &amp; Smart Parking</div>
-        </div>
-    </a>
-    <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#logo">Our Logo</a>
-        <a href="#stats">Overview</a>
-        <a href="/login" class="nav-cta">Login</a>
-    </div>
-</nav>
+  <!-- ============ FLOATING NAV ============ -->
+  <nav class="lp-nav" aria-label="Main navigation">
+    <a href="#features" class="nav-label">Features</a>
+    <a href="#tech-stack" class="nav-label">Tech Stack</a>
+    <a href="#faq" class="nav-label">FAQ</a>
+    <a href="/login" class="nav-login">Sign In</a>
+  </nav>
 
-<section class="hero">
-    <div class="hero-content">
-        <div class="hero-badge">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#1D4ED8"><circle cx="12" cy="12" r="8"/></svg>
-            Quick &amp; Smart Parking
+  <!-- ============ HERO ============ -->
+  <header class="lp-hero">
+    <img src="/hero-banner.webp" alt="QSpark Smart Parking Management Dashboard — 480 parking slots, real-time grid, and QR vehicle identification" width="1920" height="1080" loading="eager" fetchpriority="high">
+  </header>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="lp-section" id="features" aria-labelledby="features-heading">
+    <div class="lp-section-header">
+      <span class="lp-label">Features</span>
+      <h2 id="features-heading">What does QSpark offer?</h2>
+      <p>QSpark is a production-grade smart parking management system that digitizes the entire parking lifecycle — from booking and real-time tracking to QR-based vehicle identification and audit trails. Below are the core capabilities.</p>
+    </div>
+
+    <h2 class="lp-section-header" style="font-size:24px; font-weight:700; margin-bottom:32px; text-align:center;">What features does QSpark offer for parking management?</h2>
+    <p style="text-align:center; max-width:700px; margin: 0 auto 40px; color:var(--lp-text-muted); font-size:15px; line-height:1.6;">
+      QSpark provides a complete digital parking operations platform. Administrators can book slots across 480 bays, scan QR codes for instant vehicle identification, track active and historical parking records, and export data. Every action is secured with Spring Security, BCrypt hashing, and CSRF protection.
+    </p>
+
+    <div class="lp-features">
+
+      <article class="lp-feature-card">
+        <div class="lp-feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 1 1 0 6H9"/></svg>
         </div>
-        <h1><span>Q</span>-Park</h1>
-        <div class="hero-tagline">Quick. Smart. Reliable.</div>
+        <h3>480-Slot Dashboard</h3>
+        <p>Manage 4 basements with 120 slots each. Real-time color-coded grid shows occupied vs. free slots instantly. Quick-jump navigation for fast slot selection.</p>
+      </article>
+
+      <article class="lp-feature-card">
+        <div class="lp-feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="3" width="6" height="6"/><rect x="3" y="15" width="6" height="6"/><path d="M21 15h-6v6"/></svg>
+        </div>
+        <h3>QR Code Vehicle ID</h3>
+        <p>Generate QR codes via ZXing for any vehicle registration. Scan with your camera to auto-fill the dashboard booking form — no manual data entry for repeat visitors.</p>
+      </article>
+
+      <article class="lp-feature-card">
+        <div class="lp-feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3>Spring Security + BCrypt</h3>
+        <p>Enterprise-grade authentication with BCrypt password hashing, form-based login, CSRF protection on every form and AJAX call, and secure headers (XSS, frame-deny, nosniff).</p>
+      </article>
+
+      <article class="lp-feature-card">
+        <div class="lp-feature-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Full Audit Trail</h3>
+        <p>Every booking records entry and exit timestamps. History tab preserves all completed parking sessions with search, sort, pagination, and CSV export.</p>
+      </article>
+
+      <article class="lp-feature-card">
+        <div class="lp-feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <h3>Dual Database Support</h3>
+        <p>MySQL for production and H2 in-memory for development. Seamless switching via Spring profiles. No MySQL installation needed to start developing.</p>
+      </article>
+
+      <article class="lp-feature-card">
+        <div class="lp-feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+        </div>
+        <h3>Client-Side Analytics</h3>
+        <p>Built-in search, multi-column sorting, client-side pagination, and one-click CSV export. Monitor active occupancy ratios in real time from the stats bar.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ TECH STACK ============ -->
+  <section class="lp-section" id="tech-stack" aria-labelledby="tech-heading">
+    <div class="lp-section-header">
+      <span class="lp-label">Technology</span>
+      <h2 id="tech-heading">What technology stack does QSpark use?</h2>
+      <p>QSpark is built with Java 17 and Spring Boot 3.3.1, server-rendered with Thymeleaf, and secured with Spring Security 6.0 using BCrypt password hashing and CSRF protection. Below is the complete technology breakdown.</p>
+    </div>
+
+    <table class="lp-tech-table" aria-label="QSpark technology stack breakdown by layer">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Technology</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Backend</strong></td><td>Java 17, Spring Boot 3.3.1</td><td>MVC framework with dependency injection and embedded server</td></tr>
+        <tr><td><strong>Security</strong></td><td>Spring Security 6.0, BCrypt</td><td>Authentication, authorization, CSRF tokens, secure headers</td></tr>
+        <tr><td><strong>Database</strong></td><td>MySQL 8.0 (prod), H2 (dev)</td><td>Relational persistence with Spring Data JPA + Hibernate ORM</td></tr>
+        <tr><td><strong>Frontend</strong></td><td>Thymeleaf 3.1, Vanilla JS</td><td>Server-rendered templates with progressive JavaScript enhancement</td></tr>
+        <tr><td><strong>QR Code</strong></td><td>ZXing 3.5.3</td><td>QR code generation and PNG download</td></tr>
+        <tr><td><strong>Build</strong></td><td>Maven Wrapper (mvnw)</td><td>Cross-platform build, test, and run</td></tr>
+        <tr><td><strong>Testing</strong></td><td>JUnit 5, MockMvc, AssertJ</td><td>63 unit and integration tests covering controllers, repositories, and validation</td></tr>
+        <tr><td><strong>License</strong></td><td>GNU GPLv3</td><td>Free software — you may redistribute and modify under GPLv3 terms</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="lp-section" aria-label="Project statistics" style="padding-top:20px;padding-bottom:20px;">
+    <div class="lp-stats">
+      <div><div class="lp-stat-value">480</div><div class="lp-stat-label">Parking Slots</div></div>
+      <div class="lp-stat-divider" aria-hidden="true"></div>
+      <div><div class="lp-stat-value">4</div><div class="lp-stat-label">Basements</div></div>
+      <div class="lp-stat-divider" aria-hidden="true"></div>
+      <div><div class="lp-stat-value">63</div><div class="lp-stat-label">Passing Tests</div></div>
+      <div class="lp-stat-divider" aria-hidden="true"></div>
+      <div><div class="lp-stat-value">Java 17</div><div class="lp-stat-label">Runtime</div></div>
+    </div>
+  </section>
+
+  <!-- ============ ARCHITECTURE ============ -->
+  <section class="lp-section" aria-labelledby="arch-heading">
+    <div class="lp-section-header">
+      <span class="lp-label">Architecture</span>
+      <h2 id="arch-heading">System Architecture</h2>
+      <p>QSpark follows a three-tier server-rendered MVC architecture. The browser receives complete HTML from Thymeleaf, which the server populates by querying the database through Spring Data JPA repositories. Spring Security guards every request at the controller boundary.</p>
+    </div>
+    <div class="lp-arch">
+      <div class="lp-arch-grid">
+        <div class="lp-arch-tier">
+          <h4>Presentation Tier</h4>
+          <p><span class="arch-accent">Thymeleaf</span> templates (<code>index.html</code>, <code>login.html</code>, <code>qrcode.html</code>) rendered server-side. Vanilla JS for toasts, dark mode, table sorting, pagination, and QR scanning.</p>
+        </div>
+        <div class="lp-arch-tier">
+          <h4>Application Tier</h4>
+          <p><span class="arch-accent">Spring Boot</span> controllers handle auth (<code>LoginController</code>), CRUD (<code>ParkingController</code>), and QR operations (<code>QRCodeController</code>). <span class="arch-accent">Spring Security</span> enforces auth before any controller logic runs.</p>
+        </div>
+        <div class="lp-arch-tier">
+          <h4>Data Tier</h4>
+          <p><span class="arch-accent">JPA Repositories</span> with Hibernate ORM. Three tables: <code>admin</code> (BCrypt passwords), <code>parking_slot</code> (bookings with entry/exit times), <code>vehicle_registration</code> (QR vehicle registry).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QR SHOWCASE ============ -->
+  <section class="lp-section" aria-labelledby="qr-heading">
+    <div class="lp-qr-card">
+      <div class="qr-content">
+        <span class="lp-label">Vehicle Identification</span>
+        <h2 id="qr-heading">How does QR scanning work in QSpark?</h2>
         <p>
-            Q-Park gives you complete control over your parking facility: 
-            manage bookings, track vehicles, and optimize slot usage 
-            from a single, powerful dashboard.
+          QSpark uses the ZXing library to generate QR codes encoding vehicle registration numbers. Administrators generate a QR PNG from the QR Code Management page, which registers the vehicle in the database. On re-entry, staff use the camera-based scanner (powered by html5-qrcode) to scan the printed QR. The decoded vehicle number is looked up in the <code>vehicle_registration</code> table, and if found, the dashboard booking form is auto-filled with owner name, vehicle type, and mobile number — no typing required.
         </p>
-        <div class="hero-buttons">
-            <a href="/login" class="btn-primary">
-                Get Started
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-            <a href="#features" class="btn-secondary">Learn More</a>
+        <p><strong>QR scan flow:</strong> Scan → lookup registration → redirect to dashboard with pre-filled form → select slot → confirm booking.</p>
+      </div>
+      <div style="background:var(--lp-bg); border-radius:20px; padding:32px; text-align:center;">
+        <div style="background:#fff; border-radius:14px; padding:24px; display:inline-block; box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+          <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="var(--lp-primary)" stroke-width="1.2" stroke-linecap="round">
+            <rect x="2" y="2" width="8" height="8" rx="1"/>
+            <rect x="14" y="2" width="8" height="8" rx="1"/>
+            <rect x="2" y="14" width="8" height="8" rx="1"/>
+            <path d="M14 14h4v4h-4zM20 14h2v2h-2zM14 20h2v2h-2zM18 18h2v2h-2z"/>
+          </svg>
+          <p style="font-size:13px; color:var(--lp-text-muted); margin:12px 0 0; font-weight:600;">VEHICLE QR</p>
         </div>
+      </div>
     </div>
-    <div class="hero-visual">
-        <div class="visual-card animate-in">
-            <div class="visual-dot dot-blue">P</div>
-            <div class="visual-info">
-                <h3>Premium Parking</h3>
-                <p>Slot B1-01 &middot; Reserved</p>
-            </div>
-            <span class="visual-status status-active">Active</span>
-        </div>
-        <div class="visual-card animate-in">
-            <div class="visual-dot dot-green">S</div>
-            <div class="visual-info">
-                <h3>Standard Parking</h3>
-                <p>Slot B2-15 &middot; Occupied</p>
-            </div>
-            <span class="visual-status status-occupied">Occupied</span>
-        </div>
-        <div class="visual-card animate-in">
-            <div class="visual-dot dot-amber">V</div>
-            <div class="visual-info">
-                <h3>Visitor Parking</h3>
-                <p>Slot B3-30 &middot; Available</p>
-            </div>
-            <span class="visual-status status-pending">Pending</span>
-        </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="lp-section" id="faq" aria-labelledby="faq-heading">
+    <div class="lp-section-header">
+      <span class="lp-label">FAQ</span>
+      <h2 id="faq-heading">Frequently asked questions</h2>
     </div>
-</section>
+    <div class="lp-faq-list">
 
-<section class="features" id="features">
-    <div class="section-label">Features</div>
-    <h2>Everything You Need to Manage Parking</h2>
-    <p>From booking to tracking, Q-Park provides a complete toolkit for modern parking management.</p>
+      <article class="lp-faq-item">
+        <h3 class="lp-faq-question">What is QSpark?</h3>
+        <p class="lp-faq-answer">QSpark is an open-source, production-grade smart parking management system built with Java 17 and Spring Boot 3.3.1. It manages 480 parking slots across 4 basements, provides QR-code-based vehicle identification, and includes full audit history with entry/exit timestamps. It is licensed under GNU GPLv3.</p>
+      </article>
 
-    <div class="feature-grid">
-        <div class="feature-card">
-            <div class="feature-icon" style="background:#EFF6FF;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 17V7h4a3 3 0 1 1 0 6H9"/></svg>
-            </div>
-            <h3>Slot Booking</h3>
-            <p>Create and manage parking bookings across 200 slots in 4 basements with instant confirmation.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon" style="background:#FEF3C7;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            </div>
-            <h3>Smart Search</h3>
-            <p>Instantly find any booking by vehicle number with case-insensitive partial match search.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon" style="background:#D1FAE5;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
-            </div>
-            <h3>Duplicate Protection</h3>
-            <p>Never double-book a slot. Our system checks availability before every booking.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon" style="background:#F3E8FF;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            </div>
-            <h3>Session Security</h3>
-            <p>Every action is protected by session-based authentication. Unauthorized access is blocked.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon" style="background:#FEE2E2;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            </div>
-            <h3>Edit &amp; Delete</h3>
-            <p>Full CRUD capabilities - update booking details or remove records with a single click.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon" style="background:#E0F2FE;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            </div>
-            <h3>Indian Plate Validation</h3>
-            <p>Automatic validation of Indian vehicle number formats (KA 01 AB 1234 / 26 BH 9876 AB) at both frontend and backend.</p>
-        </div>
+      <article class="lp-faq-item">
+        <h3 class="lp-faq-question">How do I install and run QSpark?</h3>
+        <p class="lp-faq-answer">Clone the repository, ensure Java 17 is installed, and run <code>./mvnw spring-boot:run "-Dspring-boot.run.profiles=h2"</code> for the H2 development profile (no MySQL required). For MySQL, set the <code>DB_PASSWORD</code> environment variable and run without the H2 profile. The application starts on port 8081. Default login: <code>QSparker</code> / <code>QSpark@Secure</code>.</p>
+      </article>
+
+      <article class="lp-faq-item">
+        <h3 class="lp-faq-question">How does QR code vehicle identification work?</h3>
+        <p class="lp-faq-answer">Administrators generate QR codes from the QR Code Management page. The QR encodes the vehicle registration number. On re-entry, staff scan the QR using a device camera (via the html5-qrcode library). The system looks up the vehicle in the registration database and auto-fills the booking form with owner details — eliminating manual data entry.</p>
+      </article>
+
+      <article class="lp-faq-item">
+        <h3 class="lp-faq-question">What security measures does QSpark implement?</h3>
+        <p class="lp-faq-answer">QSpark uses Spring Security 6.0 with BCrypt password hashing (60-character column), form-based authentication, CSRF protection on every POST form and AJAX call, session invalidation on logout, and secure HTTP headers (X-XSS-Protection, X-Content-Type-Options: nosniff, X-Frame-Options: DENY, Referrer-Policy: same-origin). API endpoints return 401 instead of 302 to prevent login page leakage.</p>
+      </article>
+
+      <article class="lp-faq-item">
+        <h3 class="lp-faq-question">Can I contribute to QSpark?</h3>
+        <p class="lp-faq-answer">Yes. QSpark is free software under GNU GPLv3. Fork the repository at <a href="https://github.com/PawanSimha/QSpark">github.com/PawanSimha/QSpark</a>, create a feature branch, and submit a pull request. All 63 tests must pass before merging.</p>
+      </article>
+
+      <article class="lp-faq-item">
+        <h3 class="lp-faq-question">What database options are available?</h3>
+        <p class="lp-faq-answer">QSpark supports two database profiles: MySQL 8.0 for production deployments and H2 in-memory for local development and testing. The H2 profile requires zero configuration — the database is created automatically with schema auto-generation. Seed data (admin user) is handled by DataInitializer with BCrypt-encoded password.</p>
+      </article>
+
+      <article class="lp-faq-item">
+        <h3 class="lp-faq-question">Does QSpark require an internet connection?</h3>
+        <p class="lp-faq-answer">No. QSpark is a self-hosted web application. Once deployed on a local server, it operates entirely on the local network. The only external dependency is the html5-qrcode library loaded from CDN for camera scanning — which can be vendored for air-gapped deployments.</p>
+      </article>
+
+      <article class="lp-faq-item">
+        <h3 class="lp-faq-question">What vehicle number formats are supported?</h3>
+        <p class="lp-faq-answer">QSpark supports four Indian registration formats enforced by regex: Standard 1-letter (KA 04 A 2256), Standard 2-letter (DL 03 CA 1234), Standard 3-letter (ML 04 ASD 5256), and Bharat Series (26 BH 9876 AB). Invalid formats are rejected with user-friendly error messages.</p>
+      </article>
+
     </div>
-</section>
+  </section>
 
-<section class="arch-section" id="architecture">
-    <div class="arch-inner">
-        <div class="section-label">Architecture</div>
-        <h2 style="text-align:center;font-size:36px;font-weight:800;letter-spacing:-0.025em;margin-bottom:8px;">How It Works Under the Hood</h2>
-        <p style="text-align:center;color:#64748B;font-size:17px;max-width:600px;margin:0 auto;">A clean 3-tier architecture connecting the browser through Spring Boot to MySQL (or H2), with client-side JavaScript for a smooth live experience.</p>
-        <div class="arch-layout">
-            <div class="arch-diagram">
+  <!-- ============ CTA ============ -->
+  <section class="lp-cta" aria-labelledby="cta-heading">
+    <h2 id="cta-heading">Ready to digitize your parking operations?</h2>
+    <p>QSpark is free, open-source, and ready to deploy. Sign in to the demo or fork the repository on GitHub.</p>
+    <a href="/login" class="cta-btn">Sign In to Dashboard</a>
+    <br><br>
+    <a href="https://github.com/PawanSimha/QSpark" style="color:rgba(255,255,255,0.5); font-size:14px; text-decoration:underline;">View on GitHub →</a>
+  </section>
 
-                <div class="arch-box top">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    BROWSER (Client)
-                </div>
+  <!-- ============ FOOTER ============ -->
+  <footer class="lp-footer">
+    <img src="/logo.webp" alt="QSpark" width="90" height="32" loading="lazy">
+    <span>&copy; 2026 PawanSimha. GNU GPLv3 — Free Software.</span>
+  </footer>
 
-                <div class="arch-arrow">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
-                    HTTP Request / Thymeleaf HTML
-                </div>
-
-                <div class="arch-spring-box">
-                    <div class="arch-spring-label">SPRING BOOT - localhost:8080</div>
-
-                    <div class="arch-box sub" style="border-left:3px solid #2563EB;">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                        Controller Layer
-                        <span style="display:block;font-weight:400;font-size:11px;color:#64748B;margin-top:2px;">LoginController &bull; ParkingController</span>
-                    </div>
-
-                    <div class="arch-box sub" style="border-left:3px solid #7C3AED;">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-                        Repository Layer
-                        <span style="display:block;font-weight:400;font-size:11px;color:#64748B;margin-top:2px;">AdminRepository &bull; ParkingRepository (Spring Data JPA)</span>
-                    </div>
-
-                    <div class="arch-box sub last" style="border-left:3px solid #059669;">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                        Entity Layer
-                        <span style="display:block;font-weight:400;font-size:11px;color:#64748B;margin-top:2px;">Admin (@Entity) &bull; ParkingSlot (@Entity)</span>
-                    </div>
-
-                </div>
-
-                <div class="arch-arrow">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
-                    JDBC &bull; JPA / Hibernate ORM
-                </div>
-
-                <div class="arch-box top" style="background:#059669;border-color:#059669;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-                    DATABASE (MySQL / H2)
-                </div>
-
-            </div>
-            <div class="arch-desc">
-                <h3>Request Lifecycle</h3>
-                <p>Every action in the dashboard follows this 5-step path through the stack.</p>
-
-                <div class="arch-step">
-                    <div class="arch-step-num">1</div>
-                    <div class="arch-step-content">
-                        <strong>Request</strong>
-                        <span>Browser sends an HTTP request (GET /dashboard or POST /save) to Spring Boot on port 8080.</span>
-                    </div>
-                </div>
-
-                <div class="arch-step">
-                    <div class="arch-step-num">2</div>
-                    <div class="arch-step-content">
-                        <strong>Controller</strong>
-                        <span>Spring MVC maps the URL to the correct method via @GetMapping/@PostMapping. Session guard checks authentication using <code style="background:#F1F5F9;padding:1px 5px;border-radius:3px;font-size:12px;">session.getAttribute("admin")</code>. Business logic executes — save booking, mark vehicle as left (<code style="background:#F1F5F9;padding:1px 5px;border-radius:3px;font-size:12px;">/left/{id}</code>), update, or delete.</span>
-                    </div>
-                </div>
-
-                <div class="arch-step">
-                    <div class="arch-step-num">3</div>
-                    <div class="arch-step-content">
-                        <strong>Repository</strong>
-                        <span>Spring Data JPA auto-generates SQL from method names like <code style="background:#F1F5F9;padding:1px 5px;border-radius:3px;font-size:12px;">findBySlotNumber()</code>. No manual SQL needed.</span>
-                    </div>
-                </div>
-
-                <div class="arch-step">
-                    <div class="arch-step-num">4</div>
-                    <div class="arch-step-content">
-                        <strong>Entity</strong>
-                        <span>JPA maps Java objects (&commat;Entity) to MySQL rows. Hibernate generates INSERT, SELECT, UPDATE, DELETE statements.</span>
-                    </div>
-                </div>
-
-                <div class="arch-step">
-                    <div class="arch-step-num">5</div>
-                    <div class="arch-step-content">
-                        <strong>Response &amp; Client-Side JS</strong>
-                        <span>Thymeleaf processes templates with model data and returns fully-formed HTML. On the browser, JavaScript handles live clock, auto-format vehicle numbers, cascading dropdowns, instant search filtering, and column sorting — all without page reloads.</span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="logo-section" id="logo">
-    <div class="section-label">Our Identity</div>
-    <h2 style="text-align:center;font-size:36px;font-weight:800;letter-spacing:-0.025em;margin-bottom:8px;">Why Q-Park?</h2>
-    <p style="text-align:center;color:#64748B;font-size:17px;max-width:600px;margin:0 auto;">Quick, efficient, and reliable — Q-Park is built for modern parking management.</p>
-    <div class="logo-showcase">
-        <img src="/logo.png" alt="Q-Park Logo">
-        <div class="logo-meaning">
-            <div class="acronym">Q-Park</div>
-            <div class="fullform">Quick &amp; Smart Parking</div>
-            <p>The Q stands for quick — instant bookings, real-time tracking, and seamless management of your parking facility from a single dashboard.</p>
-            <ul class="meaning-list">
-                <li><strong>Q</strong> <span><b>Quick</b> - Instant slot booking, real-time updates, and rapid search across 200 parking bays.</span></li>
-                <li><strong>P</strong> <span><b>Parking</b> - Comprehensive management of 200 slots across 4 basements, all from one dashboard.</span></li>
-                <li><strong>A</strong> <span><b>Automation</b> - Smart validations, duplicate protection, and auto entry/exit time logging.</span></li>
-                <li><strong>R</strong> <span><b>Reliable</b> - Session-secured access with full audit trail and data integrity.</span></li>
-                <li><strong>K</strong> <span><b>Keep Track</b> - Complete history with search, filter, sort, and CSV export for all records.</span></li>
-            </ul>
-        </div>
-    </div>
-</section>
-
-<section class="stats-section" id="stats">
-    <div class="stats-grid">
-        <div class="stat">
-            <h3>200</h3>
-            <p>Parking Slots</p>
-        </div>
-        <div class="stat">
-            <h3>4</h3>
-            <p>Basements</p>
-        </div>
-        <div class="stat">
-            <h3>6</h3>
-            <p>Vehicle Types</p>
-        </div>
-        <div class="stat">
-            <h3>24/7</h3>
-            <p>System Uptime</p>
-        </div>
-    </div>
-</section>
-
-<section class="cta-section" style="padding:80px 48px;text-align:center;">
-    <h2 style="font-size:36px;font-weight:800;letter-spacing:-0.025em;margin-bottom:12px;">Ready to Take Control?</h2>
-    <p style="color:#64748B;font-size:17px;margin-bottom:32px;">Log in to the dashboard and start managing your parking facility in minutes.</p>
-    <a href="/login" class="btn-primary">
-        Go to Dashboard
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-    </a>
-</section>
-
-<footer class="footer">
-    <div class="footer-grid">
-        <div class="footer-col">
-            <h4 style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-                <img src="/logo.png" alt="Q-Park" style="width:28px;height:28px;border-radius:6px;object-fit:cover;">
-                Q-Park
-            </h4>
-            <p>Q-Park is a web-based parking management system built with Java Spring Boot and MySQL. Designed for speed, efficiency, and simplicity.</p>
-        </div>
-        <div class="footer-col">
-            <h4>Platform</h4>
-            <ul>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#logo">Our Logo</a></li>
-                <li><a href="#stats">Overview</a></li>
-                <li><a href="/login">Dashboard</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h4>Tech Stack</h4>
-            <ul>
-                <li><a>Java 17</a></li>
-                <li><a>Spring Boot 4.0</a></li>
-                <li><a>Thymeleaf</a></li>
-                <li><a>MySQL / H2</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <span>&copy; 2026 Q-Park. All rights reserved.</span>
-    </div>
-</footer>
-
+  <script src="/js/app.js"></script>
 </body>
 </html>

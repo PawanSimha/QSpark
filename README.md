@@ -1,15 +1,17 @@
 <div align="center">
-  <img src="logo.png" alt="Q-Park Logo" width="90"/>
-  <h1 align="center">Q-Park</h1>
-  <p align="center"><i>Quick &amp; Smart Parking — Quick. Smart. Reliable.</i></p>
+  <img src="/logo.webp" alt="QSpark Logo" width="90"/>
+  <h1 align="center">QSpark</h1>
+  <p align="center"><i>Quick &amp; Smart Parking - Quick. Smart. Reliable.</i></p>
 
   <p align="center">
     <img src="https://img.shields.io/badge/Java-17-%23ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java 17"/>
     <img src="https://img.shields.io/badge/Spring_Boot-3.3.1-%236DB33F?style=flat-square&logo=springboot&logoColor=white" alt="Spring Boot 3.3.1"/>
+    <img src="https://img.shields.io/badge/Spring_Security-6.0-%236DB33F?style=flat-square&logo=springsecurity&logoColor=white" alt="Spring Security 6.0"/>
     <img src="https://img.shields.io/badge/Thymeleaf-3.1-%23005C0F?style=flat-square&logo=thymeleaf&logoColor=white" alt="Thymeleaf"/>
     <img src="https://img.shields.io/badge/MySQL-8.0-%234479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL 8.0"/>
-    <img src="https://img.shields.io/badge/License-MIT-%23ccc?style=flat-square" alt="License MIT"/>
-    <img src="https://img.shields.io/badge/Status-Production_Ready-%2322c55e?style=flat-square" alt="Production Ready"/>
+    <img src="https://img.shields.io/badge/QR_Code-ZXing_3.5.3-%23FF8800?style=flat-square" alt="ZXing 3.5.3"/>
+    <img src="https://img.shields.io/badge/License-GPLv3-%23A12E2E?style=flat-square&logo=gnu&logoColor=white" alt="License GPLv3"/>
+    <img src="https://img.shields.io/badge/Tests-63_Passing-%2322c55e?style=flat-square" alt="Tests 63 Passing"/>
   </p>
 </div>
 
@@ -17,9 +19,9 @@
 
 ##  Product Strategy
 
-**Problem:** Parking lots in commercial buildings suffer from manual logbooks, double-booking conflicts, no real-time slot visibility, and zero historical tracking — leading to wasted time, frustrated drivers, and administrative chaos.
+**Problem:** Parking lots in commercial buildings rely on manual logbooks, suffer from double-booking conflicts, offer no real-time slot visibility, and lack historical tracking - wasting time, frustrating drivers, and creating administrative chaos.
 
-**Solution:** Q-Park is a production-grade web application that digitizes parking management with session‑based admin access, a real‑time three‑tab dashboard, cascading slot selection across 200 bays, QR-based vehicle identification, and full audit history. Built on Spring Boot with MySQL persistence and a clean vanilla‑JS frontend — no frameworks, no bloat.
+**Solution:** QSpark is a production-grade parking management system that digitizes the entire workflow. It manages **480 parking slots** across **4 basements** with a server-rendered MVC dashboard, QR-based vehicle identification, session-based admin authentication (Spring Security + BCrypt), and full audit history. Every booking is tracked from entry to exit with timestamps.
 
 ---
 
@@ -28,147 +30,149 @@
 ###  Admin Dashboard
 | Feature | Detail |
 |---------|--------|
-| **Live Clock** | HH:MM:SS display synced to the browser in the header |
-| **Three‑Tab Slider** | Booking (new entries), Occupied (active), History (completed) — CSS‑translated pages, zero navigation |
-| **Instant Search** | Client‑side `filterTable()` matches across all columns in real time |
-| **Column Sorting** | Sort by Vehicle Type, Slot Number, or Entry Time with Asc / Desc toggle |
+| **Live Clock** | HH:MM:SS display with live date/time in the top bar |
+| **Three-Tab Panel** | Booking (new entries with 4×120 slot grid), Occupied (active bookings), History (completed) |
+| **Real-Time Slot Grid** | Clickable 15-column grid per basement - occupied slots disabled, quick-jump navigation |
+| **Instant Search** | Client-side `filterTable()` matches across all columns in real time |
+| **Column Sorting** | Click-to-sort with asc/desc indicators on any column |
+| **CSV Export** | Download visible (filtered) rows from Occupied and History tables |
+| **Pagination** | Client-side pagination with configurable rows-per-page |
 
 ###  Booking Management
 | Feature | Detail |
 |---------|--------|
-| **200 Slots / 4 Basements** | B1–B4, 50 slots each; cascading dropdowns with occupied bays shown red & disabled |
-| **6 Vehicle Types** | Car, Bike, Scooter, Auto Rickshaw, Electric Car, Electric Two Wheeler |
-| **Indian Plate Validation** | Supports standard (`KA 01 AB 1234`, `ML 04 ASD 5256`) and Bharat series (`26 BH 9876 AB`); `@Pattern` backend validation |
-| **10‑Digit Mobile** | `maxlength="10"` + JS strips every non‑numeric keystroke |
-| **Auto Entry Time** | `LocalDateTime.now()` recorded server‑side on booking — no user input |
-| **Duplicate Protection** | Slot-level: `findBySlotNumber()` checks `exitTime IS NULL`. Vehicle-level: `existsByVehicleNumberAndExitTimeIsNull()` prevents same vehicle parking twice while active |
+| **Cascading Slot Selection** | Select basement → auto-generates 120 slot options |
+| **Vehicle Number Validation** | Regex-enforced Indian formats: `KA 04 A 2256`, `DL 03 CA 1234`, `ML 04 ASD 5256`, `26 BH 9876 AB` |
+| **Duplicate Detection** | Prevents double-booking a slot and duplicate active vehicle entries |
+| **Mark as Left** | One-click exit time recording for completed parking |
+| **Edit & Update** | Full CRUD with server-side validation and entry time preservation |
 
-###  Operations & History
+###  QR Code Integration
 | Feature | Detail |
 |---------|--------|
-| **Left Button** | Green action per row calls `GET /left/{id}` → sets `exitTime = now` → record moves to History |
-| **Full CRUD** | Create, Read, Update (edit form preserves original entry time), Delete |
-| **Audit Trail** | History tab shows every completed parking record with entry time and exit time |
+| **Generate QR** | Creates downloadable QR PNG via ZXing with vehicle details |
+| **Scan QR** | Camera-based scanning via `html5-qrcode` - auto-fills dashboard booking form |
+| **Vehicle Registration** | QR generation registers the vehicle; unregistered scans show error |
+| **Registered Vehicles Table** | Lists all vehicles that have been issued QR codes |
 
-###  QR Code Management
+###  Security & UX
 | Feature | Detail |
 |---------|--------|
-| **Generate QR** | Enter owner name, vehicle number, vehicle type, mobile → server generates PNG via ZXing → browser downloads it as attachment |
-| **Scan QR** | Browser-based camera scanning via html5-qrcode CDN (rear camera, `environment` facing mode) |
-| **Auto-fill Dashboard** | Scanned QR pre-fills all 4 fields (name, vehicle, type, mobile) as readonly — admin only picks a slot |
-| **Vehicle Registration** | Separate `vehicle_registration` table stores all details (UNIQUE vehicle number) |
-| **Duplicate Prevention** | Re-generating QR updates existing record; scanning unregistered vehicle shows error |
-
-###  Security
-| Feature | Detail |
-|---------|--------|
-| **Session‑Based Auth** | Every guarded endpoint checks `session.getAttribute("admin")` before execution |
-| **Unique Admin** | `@Column(unique = true)` on username + `INSERT IGNORE` seed — no duplicate accounts |
+| **Spring Security Auth** | BCrypt password hashing, form login/logout, CSRF protection on all forms |
+| **Session Management** | Session invalidation on logout, secure headers (XSS, frame-deny, nosniff) |
+| **Dark Mode** | Persisted preference via `localStorage`, toggle across all pages |
+| **Responsive Design** | Breakpoints at 1024px, 768px, 480px |
+| **Toast Notifications** | Auto-dismissing success/error/info toasts with optional undo |
+| **Empty States** | Contextual empty-state UI for tables with no data |
 
 ---
 
-##  Architecture
+##  Visual Architecture
 
 ```
-                    ┌──────────────────────────────────────┐
-                    │          BROWSER (Client)             │
-                    │  HTML5 · CSS3 · Vanilla JS · Thymeleaf│
-                    └──────────────┬───────────────────────┘
-                                   │  HTTP / Thymeleaf
-                                   ▼
-        ┌─────────────────────────────────────────────────────────┐
-                 │              SPRING BOOT 3.3 (localhost:8081)            │
-        │                                                          │
-        │  ┌──────────────────────────────────────────────────┐    │
-        │  │          Controller Layer                         │    │
-         │  │  LoginController.java  │  ParkingController.java  │  QRCodeController.java  │    │
-         │  │  @GetMapping / @PostMapping · Session Guard                         │    │
-        │  └──────────────────────┬───────────────────────────┘    │
-        │                         ▼                                │
-        │  ┌──────────────────────────────────────────────────┐    │
-        │  │          Repository Layer (Spring Data JPA)       │    │
-         │  │  AdminRepository  │  ParkingRepository  │  VehicleRegistrationRepository  │    │
-        │  └──────────────────────┬───────────────────────────┘    │
-        │                         ▼                                │
-        │  ┌──────────────────────────────────────────────────┐    │
-        │  │          Entity Layer (JPA / Hibernate)           │    │
-         │  │  Admin · ParkingSlot · VehicleRegistration         │    │
-        │  └──────────────────────┬───────────────────────────┘    │
-        └─────────────────────────┼───────────────────────────────┘
-                                  │ JDBC / Hibernate ORM
-                                  ▼
-                    ┌──────────────────────────┐
-                    │   MySQL 8.0  /  H2        │
-                    │   database: parkease      │
-                    └──────────────────────────┘
+Browser (HTML + CSS + JS)   ← Thymeleaf renders HTML
+        ↓
+Spring Boot (Controllers)   ← Spring Security auth guard
+        ↓
+JPA Repository Layer        ← Hibernate ORM
+        ↓
+Database (MySQL / H2)       ← 3 tables: admin, parking_slot, vehicle_registration
 ```
 
-**Request Lifecycle:**
-1. Browser sends HTTP request to Spring Boot on `:8081`
-2. Controller maps the URL, checks session auth, executes business logic
-3. Repository auto‑generates SQL from method names (e.g. `findBySlotNumber()`)
-4. Hibernate maps Java entities ↔ database rows
-5. Thymeleaf renders HTML; JavaScript powers live clock, cascading dropdowns, instant search, sort, and auto‑format
+### UI Screenshots
+```
++------------------+     +------------------+     +------------------+
+|  Landing Page    |     |  Login Page      |     |  Dashboard       |
+|  Marketing hero  | --> |  2-column auth   | --> |  3-tab layout    |
+|  Features/FAQ    |     |  CSRF + BCrypt   |     |  Slot grid/CRUD  |
++------------------+     +------------------+     +------------------+
+                                                         |        |
+                                                    +---------+ +---------+
+                                                    | QR Page  | | Edit    |
+                                                    | Gen/Scan | | Booking |
+                                                    +---------+ +---------+
+```
 
 ---
 
 ##  Tech Stack
 
-| Layer | Technology | Version |
+| Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Language** | Java | 17 |
-| **Framework** | Spring Boot (embedded Tomcat) | 3.3.1 |
-| **ORM** | Hibernate (via Spring Data JPA) | 6.x |
-| **Template Engine** | Thymeleaf | 3.1 |
-| **Validation** | Hibernate Validator (`spring-boot-starter-validation`) | — |
-| **Primary Database** | MySQL | 8.0 |
-| **Demo Database** | H2 (in‑memory, profile: `h2`) | 2.x |
-| **Frontend** | HTML5 · CSS3 · Vanilla JavaScript | — |
-| **Typography** | Inter (Google Fonts) | — |
-| **Icons** | Font Awesome (CDN) | — |
-| **Build Tool** | Maven (wrapped: `mvnw.cmd`) | 3.9+ |
-| **QR Generation** | ZXing (core + javase) | 3.5.3 |
-| **QR Scanning** | html5-qrcode (CDN, browser camera API) | — |
-| **Auth** | Session‑based (no JWT, no Spring Security) | — |
+| **Backend** | Java 17, Spring Boot 3.3.1 | MVC framework, dependency injection |
+| **Security** | Spring Security 6.0, BCrypt | Authentication, authorization, CSRF |
+| **Database** | MySQL 8.0 (prod), H2 (dev) | Relational persistence |
+| **ORM** | Spring Data JPA, Hibernate | Repository pattern, auto-DDL |
+| **Frontend** | Thymeleaf 3.1, HTML5, CSS3 | Server-rendered templates |
+| **UI Enhancements** | Vanilla JavaScript (625 lines) | Tab switching, toast, modal, sorting, search, CSV export, pagination, dark mode, vehicle format helpers, slot grid builder |
+| **CSS** | Custom design system (1403 lines) | Design tokens, dark mode, responsive, animations |
+| **QR Code** | ZXing 3.5.3 (core + javase) | QR generation and PNG output |
+| **Scanner** | html5-qrcode (CDN) | Camera-based QR scanning |
+| **Build** | Maven Wrapper (mvnw.cmd) | Build, test, run |
+| **Validation** | Jakarta Validation (`@Pattern`) | Vehicle number format enforcement |
 
 ---
 
 ##  Project Structure
 
 ```
-ParkEase/
-├── pom.xml                              # Maven dependencies & build config
-├── mvnw.cmd                             # Maven wrapper (Windows)
-├── start_app.bat                        # One‑click launcher
-├── logo.png                             # Q-Park brand logo
+QSpark/
+├── pom.xml                          # Maven config (Spring Boot 3.3.1)
+├── mvnw.cmd / mvnw                  # Maven wrapper
+├── QSpark.bat                       # Windows launcher
+├── AGENTS.md                        # AI agent guide
+├── README.md                        # This file
+├── .gitignore / .gitattributes
+├── data.sql / data-h2.sql           # Seed files (admin seed moved to DataInitializer)
 │
-├── src/main/java/com/parkease/
-│   ├── ParkEaseApplication.java         # @SpringBootApplication entry point
+├── src/main/java/com/qspark/
+│   ├── QSparkApplication.java       # Entry point
+│   ├── config/
+│   │   ├── SecurityConfig.java      # Spring Security filter chain (71 lines)
+│   │   ├── AdminDetailsService.java # UserDetailsService impl (31 lines)
+│   │   └── DataInitializer.java     # Seeds admin with BCrypt password (29 lines)
 │   ├── controller/
-│   │   ├── LoginController.java         # /login, /logout, landing page
-│   │   ├── ParkingController.java       # /dashboard, /save, /edit, /update, /delete, /left
-│   │   └── QRCodeController.java        # /qrcode, /qrcode/generate, /qrcode/scan, /qrcode/list
+│   │   ├── LoginController.java     # GET /, /login (36 lines)
+│   │   ├── ParkingController.java   # Dashboard + CRUD (245 lines)
+│   │   └── QRCodeController.java    # QR generate/scan/list (121 lines)
 │   ├── model/
-│   │   ├── Admin.java                   # @Entity — id, username, password
-│   │   ├── ParkingSlot.java             # @Entity — 8 fields, entry/exit timestamps
-│   │   └── VehicleRegistration.java     # @Entity — id, vehicleNumber (UNIQUE), createdAt
+│   │   ├── Admin.java               # Admin entity (60 lines)
+│   │   ├── ParkingSlot.java         # Parking booking entity (124 lines)
+│   │   └── VehicleRegistration.java # QR vehicle registry (69 lines)
 │   └── repository/
-│       ├── AdminRepository.java         # findByUsernameAndPassword()
-│       ├── ParkingRepository.java       # findBySlotNumber(), findByVehicleNumberContainingIgnoreCase(), existsByVehicleNumberAndExitTimeIsNull()
-│       └── VehicleRegistrationRepository.java  # findByVehicleNumber(), existsByVehicleNumber()
+│       ├── AdminRepository.java     # findByUsername (29 lines)
+│       ├── ParkingRepository.java   # Slot + vehicle queries (34 lines)
+│       └── VehicleRegistrationRepository.java  # findByVehicleNumber (28 lines)
 │
-└── src/main/resources/
-    ├── application.properties           # MySQL connection + JPA config
-    ├── application-h2.properties        # H2 demo profile override
-    ├── data.sql                         # Admin seed (INSERT IGNORE)
-    ├── static/
-    │   └── logo.png                     # Served at /logo.png
-    └── templates/
-        ├── landing.html                 # Marketing page (hero, features, architecture)
-        ├── login.html                   # Auth form (two‑column layout)
-        ├── index.html                   # Dashboard (Booking / Occupied / History tabs)
-        ├── edit.html                    # Edit booking form
-        └── qrcode.html                  # QR code generation & camera scanning
+├── src/main/resources/
+│   ├── application.properties       # MySQL profile
+│   ├── application-h2.properties    # H2 dev profile
+│   ├── templates/                   # Thymeleaf views
+│   │   ├── landing.html             # Marketing page (514 lines)
+│   │   ├── login.html               # Auth page (309 lines)
+│   │   ├── index.html               # Dashboard (490 lines)
+│   │   ├── edit.html                # Edit booking (216 lines)
+│   │   └── qrcode.html              # QR management (391 lines)
+│   └── static/                      # Static assets
+│       ├── css/styles.css           # Full design system (1403 lines)
+│       ├── js/app.js                # Shared JS utilities (625 lines)
+│       ├── logo.webp                # Brand logo
+│       ├── hero-banner.webp         # Landing page hero image
+│       └── favicon.ico              # Favicon
+│
+└── src/test/java/com/qspark/        # 63 tests
+    ├── QSparkApplicationTests.java
+    ├── controller/
+    │   ├── LoginControllerTest.java       # 2 tests (public endpoints)
+    │   ├── LoginIntegrationTest.java      # 4 tests (full-stack auth)
+    │   ├── ParkingControllerTest.java     # 23 tests (CRUD + auth)
+    │   └── QRCodeControllerTest.java      # 8 tests (QR + auth)
+    ├── model/
+    │   └── ParkingSlotValidationTest.java # 9 tests (regex patterns)
+    └── repository/
+        ├── AdminRepositoryTest.java       # 4 tests
+        ├── ParkingRepositoryTest.java     # 6 tests
+        └── VehicleRegistrationRepositoryTest.java  # 6 tests
 ```
 
 ---
@@ -176,156 +180,133 @@ ParkEase/
 ##  Quick Start
 
 ### Prerequisites
+- Java 17+
+- MySQL 8.0+ (or use H2 for development without MySQL)
 
-- **Java 17+** ([Download](https://adoptium.net/))
-- **Maven 3.9+** (bundled as `mvnw.cmd` — no separate install needed)
-- **MySQL 8.0** (optional — use H2 profile to skip)
-
-### 1. Clone & Enter
-
+### 1. Clone & Navigate
 ```bash
-cd ParkEase
+git clone <repo-url>
+cd QSpark
 ```
 
-### 2. Create MySQL Database (skip for H2)
-
-```sql
-CREATE DATABASE parkease;
+### 2. Run with H2 (No MySQL Needed)
+```powershell
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
 ```
+The application starts at **http://localhost:8081**.
 
-Update your MySQL password in `src/main/resources/application.properties`:
+### 3. Run with MySQL
+```powershell
+# Set your MySQL password as environment variable
+$env:DB_PASSWORD = "your_password"
 
-```properties
-spring.datasource.password=your_password
-```
-
-### 3. Run the Application
-
-**Option A — One‑Click (Windows)**
-
-Double‑click `start_app.bat`:
-- Detects port 8081 (opens browser if already running)
-- Launches Maven in a minimized window
-- Polls every 3 seconds until the server is ready
-- Opens `http://localhost:8081/` automatically
-- Press any key to cleanly kill the server
-
-**Option B — Terminal (MySQL)**
-
-```bash
-mvnw.cmd spring-boot:run
-```
-
-**Option C — Terminal (H2, no MySQL)**
-
-```bash
-mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
+# Ensure MySQL is running and database 'qspark' exists
+.\mvnw.cmd spring-boot:run
 ```
 
 ### 4. Login
+- **URL:** http://localhost:8081
+- **Username:** `QSparker`
+- **Password:** `QSpark@Secure`
 
-| Field | Value |
-|-------|-------|
-| **URL** | `http://localhost:8081/` |
-| **Username** | `SPPN` |
-| **Password** | `[REDACTED]` |
+### 5. Windows Quick Launcher
+Double-click `QSpark.bat` - it checks port 8081, launches with H2 profile in a minimized window, opens the browser automatically.
 
 ---
 
 ##  API Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `GET` | `/` | Landing / marketing page | ✗ |
-| `GET` | `/login` | Login form | ✗ |
-| `POST` | `/login` | Authenticate admin | ✗ |
-| `GET` | `/logout` | Invalidate session | ✓ |
-| `GET` | `/dashboard` | Admin dashboard (active + history) | ✓ |
-| `POST` | `/save` | Create a new parking booking | ✓ |
-| `GET` | `/edit/{id}` | Edit booking form | ✓ |
-| `POST` | `/update` | Update existing booking | ✓ |
-| `GET` | `/delete/{id}` | Delete a booking record | ✓ |
-| `GET` | `/left/{id}` | Mark vehicle as exited (sets `exit_time`) | ✓ |
-| `GET` | `/qrcode` | QR management page (generate / scan) | ✓ |
-| `POST` | `/qrcode/generate` | Generate QR code PNG for a vehicle number | ✓ |
-| `POST` | `/qrcode/scan` | Validate scanned QR code & redirect to dashboard | ✓ |
-| `GET` | `/qrcode/list` | JSON list of all registered vehicles | ✓ |
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/` | Public | Landing/marketing page |
+| `GET` | `/login` | Public | Login form |
+| `POST` | `/login` | Public | Login submission (Spring Security) |
+| `POST` | `/logout` | Authenticated | Logout (POST with CSRF) |
+| `GET` | `/dashboard` | Authenticated | Main dashboard with booking form, occupied, history |
+| `POST` | `/save` | Authenticated | Create a new parking booking |
+| `POST` | `/update` | Authenticated | Update an existing booking |
+| `GET` | `/edit/{id}` | Authenticated | Edit form for a booking |
+| `GET` | `/delete/{id}` | Authenticated | Delete a booking |
+| `GET` | `/left/{id}` | Authenticated | Mark vehicle as exited |
+| `GET` | `/qrcode` | Authenticated | QR code management page |
+| `POST` | `/qrcode/generate` | Authenticated | Generate QR PNG (returns image) |
+| `POST` | `/qrcode/scan` | Authenticated | Scan QR and redirect to dashboard |
+| `GET` | `/qrcode/list` | Authenticated | List registered vehicles (JSON) |
 
-### Database Schema
+---
 
-**`admin`** table:
+##  Database Schema
+
+### `admin`
 | Column | Type | Constraints |
 |--------|------|:-----------:|
 | `id` | `INT` | PK, AUTO_INCREMENT |
 | `username` | `VARCHAR` | UNIQUE |
-| `password` | `VARCHAR` | NOT NULL |
+| `password` | `VARCHAR(60)` | BCrypt hash |
 
-**`parking_slot`** table:
-| Column | Type | Notes |
-|--------|------|-------|
-| `id` | `INT` | PK, AUTO_INCREMENT |
-| `owner_name` | `VARCHAR` | — |
-| `vehicle_number` | `VARCHAR` | Format: `KA 01 AB 1234` / `26 BH 9876 AB` |
-| `vehicle_type` | `VARCHAR` | 6 vehicle types |
-| `slot_number` | `VARCHAR` | `B1-01` … `B4-50` |
-| `mobile_number` | `VARCHAR` | 10 digits |
-| `entry_time` | `DATETIME` | Set server‑side on booking |
-| `exit_time` | `DATETIME` | `NULL` while active; set on "Left" action |
-
-**`vehicle_registration`** table:
+### `parking_slot`
 | Column | Type | Constraints |
 |--------|------|:-----------:|
 | `id` | `INT` | PK, AUTO_INCREMENT |
+| `owner_name` | `VARCHAR` | |
+| `vehicle_number` | `VARCHAR` | Validated by `@Pattern` regex |
+| `vehicle_type` | `VARCHAR` | Car, Bike, Scooter, Auto Rickshaw, Electric Car, Electric Two Wheeler |
+| `slot_number` | `VARCHAR` | Format: `B1-001` through `B4-120` |
+| `mobile_number` | `VARCHAR` | 10 digits |
+| `entry_time` | `DATETIME` | Set on booking |
+| `exit_time` | `DATETIME` | `NULL` while active |
+
+### `vehicle_registration`
+| Column | Type | Constraints |
+|--------|------|:-----------:|
+| `id` | `BIGINT` | PK, AUTO_INCREMENT |
 | `vehicle_number` | `VARCHAR` | UNIQUE, NOT NULL |
-| `created_at` | `DATETIME` | Set on registration |
+| `owner_name` | `VARCHAR` | |
+| `vehicle_type` | `VARCHAR` | Same 6 types as parking_slot |
+| `mobile_number` | `VARCHAR` | 10 digits |
+| `created_at` | `DATETIME` | Set via constructor |
 
 ---
 
 ##  Product Roadmap
 
-- [x] **QR Code Entry / Exit** — Generate QR for vehicle identification, scan with camera, pre-fill dashboard for slot assignment
-- [ ] **Receipt / Invoice Generation** — PDF download for completed parking records
-- [ ] **Multi‑Admin Support** — Role‑based access (operator vs. owner)
-- [ ] **Real‑Time Dashboard Push** — WebSocket integration for live slot updates across open browser tabs
+- **Rate Limiting** - Add login attempt throttling to `/login` to prevent brute-force attacks
+- **PDF Receipts** - Generate printable parking receipts with QR code on exit
+- **Multi-Admin Roles** - Role-based access (super admin, operator, viewer) with distinct permissions
+- **REST API** - Expose CRUD operations via REST endpoints for third-party integrations
+- **Real-Time Dashboard** - WebSocket-based slot grid updates without page reload
 
 ---
 
 ##  Developer Experience
 
-### Troubleshooting
+### Running Tests
+```powershell
+# Run all 63 tests
+.\mvnw.cmd test
 
-| Symptom | Likely Cause | Fix |
-|---------|-------------|-----|
-| `500` on login after restart | Duplicate admin rows | Run `DELETE FROM admin WHERE id > 1; ALTER TABLE admin ADD UNIQUE (username);` in MySQL |
-| `404` on page refresh inside dashboard | Client‑side routing | Always navigate via buttons — the app uses server‑side rendering |
-| `Port 8081 already in use` | Another instance running | Close the old CMD window or run `taskkill /f /im java.exe` |
-| MySQL connection refused | MySQL service stopped | Start MySQL: `net start MySQL80` |
-| `404` at `/qrcode` | Stale target/ after adding new classes | Run `mvnw.cmd clean compile` to rebuild |
-| Camera not working on QR scan page | Browser permissions or HTTP (non-HTTPS) | Use `localhost` (allowed by browsers) or serve via HTTPS |
-| `Vehicle not registered` on scan | QR scanned but vehicle never had QR generated | Generate QR first via the Generate tab |
+# Run a specific test class
+.\mvnw.cmd test -Dtest=ParkingControllerTest
+
+# Run with H2 profile
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
+```
+
+### CI/CD
+- All tests pass before build (`mvn clean test`)
+- Context loads successfully verified by `QSparkApplicationTests`
+- Controller tests use `@WebMvcTest` with mocked repositories
+- Integration tests use `@SpringBootTest` with H2 in-memory database
 
 ### Contributing
-
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/your-idea`).
-3. Commit your changes.
-4. Push to your branch and open a Pull Request.
-
-All contributions are welcome — bug fixes, new features, UI polish, or documentation improvements.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ---
 
-##  Author & License
+##  License
 
-
-*Academic project for Q-Park system demonstration.*
-
-This project is licensed under the **MIT License**. See the `LICENSE` file for details.
-
----
-
-<div align="center">
-  <sub>Made with ❤️ by the Q-Park Team</sub>
-  <br/>
-  <sub>© 2026 Q-Park — Quick &amp; Smart Parking</sub>
-</div>
+Distributed under the GNU General Public License v3.0. See `LICENSE` for more information.

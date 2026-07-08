@@ -3,7 +3,7 @@ cd /d "%~dp0"
 title QSpark - Launcher
 
 echo ============================================
-echo    Q-Park - Smart Parking System
+echo    QSpark - Smart Parking System
 echo ============================================
 echo.
 
@@ -38,7 +38,7 @@ echo ============================================
 echo    App is running at:
 echo    http://localhost:8081/
 echo.
-echo    Login: SPPN / [REDACTED]
+echo    Login: QSparker / QSpark@Secure
 echo ============================================
 echo.
 echo Press any key to STOP the server and exit.
