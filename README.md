@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/logo.webp" alt="QSpark Logo" width="90"/>
+  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/favicon.ico" alt="QSpark Logo" width="48"/>
   <h1 align="center">QSpark</h1>
   <p align="center"><i>Quick &amp; Smart Parking - Quick. Smart. Reliable.</i></p>
 
@@ -16,6 +16,10 @@
 </div>
 
 ---
+
+<p align="center">
+  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/hero-banner.webp" alt="QSpark Hero Banner" width="100%" style="border-radius: 12px; max-width: 900px;"/>
+</p>
 
 ##  Product Strategy
 
@@ -78,14 +82,6 @@ JPA Repository Layer        ← Hibernate ORM
         ↓
 Database (MySQL / H2)       ← 3 tables: admin, parking_slot, vehicle_registration
 ```
-
-### UI Screenshots
-
-<p align="center">
-  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/hero-banner.webp" alt="QSpark Landing Page Hero" width="100%" style="border-radius: 12px; max-width: 800px;"/>
-  <br/>
-  <em>Landing page hero banner — full-width WebP image (1920x1080)</em>
-</p>
 
 ---
 
