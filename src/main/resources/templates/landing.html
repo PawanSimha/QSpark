@@ -148,75 +148,81 @@
       --lp-radius: 24px;
     }
     html { height: auto; min-height: 100%; }
-    body { font-family: 'Inter', system-ui, sans-serif; background: var(--lp-bg); color: var(--lp-text); -webkit-font-smoothing: antialiased; margin: 0; padding-bottom: 80px; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--lp-bg); color: var(--lp-text); -webkit-font-smoothing: antialiased; margin: 0; padding-bottom: 32px; }
     a { color: var(--lp-primary); text-decoration: none; }
 
     /* Floating pill nav */
+    /* ===== NAV ===== */
     .lp-nav {
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;
-      background: rgba(255,255,255,0.72); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.35); border-radius: 999px;
-      padding: 6px 24px 6px 32px; min-width: 640px;
-      display: flex; align-items: center; justify-content: space-between; white-space: nowrap;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.03), 0 8px 48px rgba(0,0,0,0.03);
+      position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 1000;
+      background: rgba(255,255,255,0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 9999px;
+      padding: 8px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      width: 88%; max-width: 1100px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.08);
       transition: all 0.3s ease;
+      animation: navFadeIn 0.6s ease both;
     }
-    .lp-nav.scrolled { top: 12px; padding-top: 4px; padding-bottom: 4px; backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); box-shadow: 0 4px 32px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04), 0 8px 56px rgba(0,0,0,0.05); }
+    @keyframes navFadeIn { 0% { opacity: 0; transform: translateX(-50%) translateY(-12px); } 100% { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    .lp-nav.scrolled { top: 16px; background: rgba(255,255,255,0.78); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); box-shadow: 0 10px 32px rgba(0,0,0,0.1); }
 
-    .lp-nav img { width: auto; height: 28px; display: block; cursor: pointer; transition: transform 0.25s ease, filter 0.25s ease; }
-    .lp-nav img:hover { transform: scale(1.03); filter: brightness(1.1); }
+    /* Logo — far left */
+    .lp-nav .nav-logo {
+      display: flex; align-items: center; flex-shrink: 0;
+      text-decoration: none; transition: opacity 0.25s ease;
+    }
+    .lp-nav .nav-logo:hover { opacity: 0.8; }
+    .lp-nav .nav-logo img { height: 32px; width: auto; display: block; }
 
-    .lp-nav .nav-center { display: flex; align-items: center; gap: 6px; }
+    /* Links — perfectly centered */
+    .lp-nav .nav-center {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 2px;
+    }
     .lp-nav .nav-label {
-      font-size: 0.95rem; font-weight: 500; color: var(--lp-text-muted);
-      padding: 8px 18px; border-radius: 9999px; border: 1px solid transparent;
+      font-size: 0.875rem; font-weight: 500; color: rgba(0,0,0,0.65);
+      padding: 7px 14px; border-radius: 9999px;
       transition: all 0.25s ease; cursor: pointer; user-select: none;
+      text-decoration: none;
     }
-    .lp-nav .nav-label:hover { background: #EFF6FF; color: var(--lp-primary); transform: translateY(-2px); font-weight: 600; }
-    .lp-nav .nav-label.active { background: #EFF6FF; color: var(--lp-primary); font-weight: 600; position: relative; }
-    .lp-nav .nav-label.active::after {
-      content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
-      width: 16px; height: 2px; background: var(--lp-primary); border-radius: 2px;
-      animation: navActiveLine 0.3s ease;
-    }
-    @keyframes navActiveLine { from { width: 0; opacity: 0; } to { width: 16px; opacity: 1; } }
+    .lp-nav .nav-label:hover { color: #000; background: rgba(0,0,0,0.06); }
+    .lp-nav .nav-label.active { color: #000; background: rgba(0,0,0,0.1); }
 
-    .lp-nav .nav-login {
-      background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
-      color: #fff !important; padding: 8px 22px; border-radius: 999px;
-      font-weight: 600; font-size: 0.9rem; letter-spacing: 0.01em;
-      transition: all 0.25s ease; display: inline-flex; align-items: center; gap: 6px;
-      box-shadow: 0 2px 8px rgba(37,99,235,0.2);
+    /* CTA Button — far right */
+    .lp-nav .nav-cta {
+      background: #2563EB; color: #fff !important; padding: 8px 22px; border-radius: 9999px;
+      font-weight: 600; font-size: 0.85rem;
+      transition: all 0.25s ease; text-decoration: none;
     }
-    .lp-nav .nav-login:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 24px rgba(37,99,235,0.3); }
-    .lp-nav .nav-login .btn-arrow { display: inline-block; transition: transform 0.25s ease; }
-    .lp-nav .nav-login:hover .btn-arrow { transform: translateX(3px); }
+    .lp-nav .nav-cta:hover { background: #1d4ed8; transform: scale(1.04); }
 
+    /* Hamburger */
     .lp-nav .nav-hamburger { display: none; }
 
     /* Mobile Drawer */
     .nav-drawer {
       display: none; position: fixed; top: 0; right: 0; width: 280px; height: 100vh; z-index: 999;
-      background: rgba(255,255,255,0.96); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
-      box-shadow: -8px 0 40px rgba(0,0,0,0.08); padding: 80px 32px 32px;
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
+      padding: 80px 24px 32px;
       transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-      flex-direction: column; gap: 8px;
+      flex-direction: column; gap: 4px;
     }
     .nav-drawer.open { transform: translateX(0); }
     .nav-drawer .nav-label {
-      font-size: 1.05rem; font-weight: 500; color: var(--lp-text-muted);
-      padding: 14px 20px; border-radius: 16px; transition: all 0.2s; display: block;
+      font-size: 1rem; font-weight: 500; color: rgba(0,0,0,0.6);
+      padding: 12px 18px; border-radius: 12px; transition: all 0.2s; display: block;
+      text-decoration: none;
     }
-    .nav-drawer .nav-label:hover { background: #EFF6FF; color: var(--lp-primary); }
-    .nav-drawer .nav-login {
-      background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
-      color: #fff !important; padding: 14px 24px; border-radius: 16px;
-      font-weight: 600; font-size: 1rem; text-align: center; margin-top: 12px;
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    .nav-drawer .nav-label:hover { background: rgba(0,0,0,0.05); color: #000; }
+    .nav-drawer .nav-cta {
+      background: #2563EB; color: #fff !important; padding: 12px 24px; border-radius: 12px;
+      font-weight: 600; font-size: 1rem; text-align: center; margin-top: 16px;
+      display: block; text-decoration: none;
     }
     .nav-overlay {
       display: none; position: fixed; inset: 0; z-index: 998;
-      background: rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.35s ease;
+      background: rgba(0,0,0,0.25); opacity: 0; transition: opacity 0.35s ease;
     }
     .nav-overlay.open { opacity: 1; }
     .nav-hamburger {
@@ -224,8 +230,8 @@
       background: none; border: none; padding: 8px; border-radius: 12px;
       transition: background 0.2s;
     }
-    .nav-hamburger:hover { background: rgba(0,0,0,0.04); }
-    .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--lp-text); border-radius: 2px; transition: all 0.3s ease; transform-origin: center; }
+    .nav-hamburger:hover { background: rgba(0,0,0,0.05); }
+    .nav-hamburger span { display: block; width: 20px; height: 2px; background: rgba(0,0,0,0.5); border-radius: 2px; transition: all 0.3s ease; transform-origin: center; }
     .nav-hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .nav-hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .nav-hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -236,9 +242,9 @@
 
     /* Sections */
     .lp-section { padding: 80px 24px; max-width: 1200px; margin: 0 auto; }
-    .lp-section-header { text-align: center; margin-bottom: 48px; }
-    .lp-section-header h2 { font-size: 36px; font-weight: 800; letter-spacing: -0.025em; margin: 0 0 12px; }
-    .lp-section-header p { font-size: 16px; color: var(--lp-text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+    .lp-section-header { text-align: center; margin-bottom: 40px; }
+    .lp-section-header h2 { font-size: 32px; font-weight: 800; letter-spacing: -0.025em; margin: 0 0 10px; }
+    .lp-section-header p { font-size: 15px; color: var(--lp-text-muted); max-width: 560px; margin: 0 auto; line-height: 1.6; }
     .lp-label {
       display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
       color: var(--lp-primary); margin-bottom: 8px;
@@ -248,26 +254,27 @@
     .lp-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
     .lp-feature-card {
       background: var(--lp-card-bg); border-radius: var(--lp-radius); padding: 32px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     }
-    .lp-feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+    .lp-feature-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
     .lp-feature-icon {
       width: 48px; height: 48px; background: var(--lp-bg); border-radius: 14px;
       display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
     }
     .lp-feature-icon svg { width: 24px; height: 24px; stroke: var(--lp-primary); fill: none; stroke-width: 1.8; }
-    .lp-feature-card h3 { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
-    .lp-feature-card p { font-size: 14px; color: var(--lp-text-muted); margin: 0; line-height: 1.6; }
+    .lp-feature-card h3 { font-size: 18px; font-weight: 700; margin: 0 0 6px; }
+    .lp-feature-card p { font-size: 14px; color: var(--lp-text-muted); margin: 0; line-height: 1.5; }
 
     /* Architecture - Visual Pipeline */
-    .lp-arch-wrap { background: var(--lp-card-bg); border-radius: var(--lp-radius); padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .lp-arch-wrap { background: var(--lp-card-bg); border-radius: var(--lp-radius); padding: 40px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 48px; align-items: start; }
 
     /* Pipeline (left) */
     .lp-arch-diagram { display: flex; flex-direction: column; gap: 0; position: relative; padding: 24px 0; }
     .arch-backbone { position: absolute; left: 39px; top: 0; bottom: 0; width: 2px; background: var(--lp-border); z-index: 0; }
-    .arch-particle { position: absolute; left: 36px; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 1; }
+    .arch-particle { position: absolute; left: 36px; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 5; }
     .arch-particle.request { background: var(--lp-primary); box-shadow: 0 0 10px rgba(37,99,235,0.6); animation: particleDown 3s ease-in-out infinite; }
-    .arch-particle.response { background: rgba(37,99,235,0.25); box-shadow: 0 0 6px rgba(37,99,235,0.15); animation: particleUp 3.5s ease-in-out infinite 1.5s; }
+    .arch-particle.response { background: var(--lp-primary); opacity: 0.45; box-shadow: 0 0 8px rgba(37,99,235,0.3); animation: particleUp 3.5s ease-in-out infinite 1.5s; }
 
     @keyframes particleDown {
       0% { top: 6%; opacity: 0; transform: scale(0.4); }
@@ -283,22 +290,23 @@
     }
 
     .lp-arch-layer { display: flex; align-items: center; gap: 16px; padding: 14px 20px; background: var(--lp-bg); border: 1px solid var(--lp-border); border-radius: 14px; position: relative; z-index: 2; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); cursor: default; }
-    .lp-arch-layer:hover { border-color: var(--lp-primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1), 0 4px 20px rgba(37,99,235,0.08); transform: translateX(4px); }
-    .lp-arch-layer .layer-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .lp-arch-layer:hover { border-color: var(--lp-primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1), 0 12px 40px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .lp-arch-layer .layer-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .lp-arch-layer .layer-icon svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .lp-arch-layer .layer-icon.blue { background: var(--lp-primary); }
     .lp-arch-layer .layer-icon.red { background: var(--lp-accent); }
     .lp-arch-layer .layer-icon.gray { background: var(--lp-text-muted); }
-    .lp-arch-layer .layer-info { flex: 1; }
+    .lp-arch-layer .layer-info { flex: 1; min-width: 0; }
     .lp-arch-layer .layer-info strong { display: block; font-size: 14px; font-weight: 700; }
     .lp-arch-layer .layer-info span { font-size: 12px; color: var(--lp-text-muted); }
-    .lp-arch-connector { width: 2px; height: 22px; background: var(--lp-border); margin-left: 19px; position: relative; z-index: 2; }
+    .lp-arch-layer .layer-tag { font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--lp-bg); border: 1px solid var(--lp-border); color: var(--lp-text-muted); letter-spacing: 0.05em; text-transform: uppercase; flex-shrink: 0; margin-left: auto; }
+    .lp-arch-connector { width: 2px; height: 22px; background: var(--lp-border); margin-left: 39px; position: relative; z-index: 2; }
 
     /* Feature Cards (right) */
     .lp-arch-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .lp-arch-card { background: var(--lp-bg); border-radius: 14px; padding: 18px; border: 1px solid var(--lp-border); transition: all 0.3s cubic-bezier(0.4,0,0.2,1); opacity: 0; transform: translateY(16px); }
+    .lp-arch-card { background: var(--lp-bg); border-radius: 16px; padding: 18px; border: 1px solid var(--lp-border); transition: all 0.3s cubic-bezier(0.4,0,0.2,1); opacity: 0; transform: translateY(16px); }
     .lp-arch-card.visible { opacity: 1; transform: translateY(0); }
-    .lp-arch-card:hover { border-color: var(--lp-primary); box-shadow: 0 4px 16px rgba(37,99,235,0.08); transform: translateY(-2px); }
+    .lp-arch-card:hover { border-color: var(--lp-primary); box-shadow: 0 12px 40px rgba(0,0,0,0.08); transform: translateY(-4px); }
     .lp-arch-card .card-icon { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
     .lp-arch-card .card-icon svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .lp-arch-card .card-icon.blue { background: var(--lp-primary); }
@@ -316,7 +324,7 @@
     .lp-arch-tech .tech-badge:hover { border-color: var(--lp-primary); color: var(--lp-primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,99,235,0.1); }
 
     /* Stats */
-    .lp-stats { display: flex; justify-content: space-around; align-items: center; gap: 0; padding: 40px 0; }
+    .lp-hero .lp-stats { display: flex; justify-content: space-around; align-items: center; gap: 0; padding: 40px 0 0; max-width: 1200px; margin: 0 auto; }
     .lp-stat-item { text-align: center; flex: 1; }
     .lp-stat-value { font-size: 36px; font-weight: 900; letter-spacing: -0.03em; }
     .lp-stat-label { font-size: 13px; color: var(--lp-text-muted); margin-top: 2px; font-weight: 500; }
@@ -325,7 +333,7 @@
     /* QR Showcase */
     .lp-qr-wrap { background: var(--lp-card-bg); border-radius: var(--lp-radius); padding: 40px; box-shadow: var(--lp-shadow); }
     .lp-qr-showcase { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-    .lp-qr-content h2 { font-size: 28px; font-weight: 800; margin: 0 0 12px; }
+    .lp-qr-content h2 { font-size: 32px; font-weight: 800; margin: 0 0 10px; }
     .lp-qr-content h2 .highlight-blue { color: var(--lp-primary); }
     .lp-qr-content h2 .highlight-red { color: var(--lp-accent); }
     .lp-qr-content p { font-size: 15px; color: var(--lp-text-muted); line-height: 1.7; margin: 0 0 28px; }
@@ -333,179 +341,134 @@
     /* Steps - vertical timeline */
     .lp-qr-steps { display: flex; flex-direction: column; margin-bottom: 24px; }
     .lp-qr-step { display: flex; align-items: center; gap: 14px; cursor: pointer; }
-    .lp-qr-step .step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--lp-bg); border: 1.5px solid var(--lp-border); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--lp-text-muted); flex-shrink: 0; transition: all 0.3s; }
+    .lp-qr-step .step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--lp-bg); border: 1.5px solid var(--lp-border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--lp-text-muted); flex-shrink: 0; transition: all 0.3s; }
     .lp-qr-step .step-num.active { background: var(--lp-primary); border-color: var(--lp-primary); color: #fff; box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
     .lp-qr-step .step-num.completed { background: #22C55E; border-color: #22C55E; color: #fff; }
     .lp-qr-step .step-label { font-size: 15px; font-weight: 600; color: var(--lp-text); transition: color 0.3s; }
 
-    .lp-qr-connector { width: 2px; height: 24px; background: var(--lp-border); margin-left: 17px; transition: background 0.3s; }
+    .lp-qr-connector { width: 2px; height: 16px; background: var(--lp-border); margin-left: 15px; transition: background 0.3s; }
 
     .lp-qr-cta-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--lp-primary); color: #fff; padding: 12px 28px; border-radius: 999px; font-weight: 700; font-size: 15px; transition: all 0.25s; }
     .lp-qr-cta-btn:hover { opacity: 1; transform: translateY(-2px); box-shadow: 0 0 24px rgba(37,99,235,0.25); }
     .lp-qr-cta-btn .btn-arrow { display: inline-block; transition: transform 0.25s; }
     .lp-qr-cta-btn:hover .btn-arrow { transform: translateX(4px); }
 
-    /* Scene */
-    .lp-qr-scene { position: relative; min-height: 460px; border-radius: var(--lp-radius); background: var(--lp-bg); overflow: hidden; }
-    .lp-qr-scene::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 280px 200px at 25% 35%, rgba(37,99,235,0.1) 0%, transparent 70%), radial-gradient(ellipse 240px 180px at 70% 65%, rgba(220,38,38,0.06) 0%, transparent 70%); pointer-events: none; z-index: 0; }
-    .lp-qr-scene::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+    /* Phone - realistic device mockup */
+    .lp-qr-phone {
+      width: min(255px, 80%); margin: 0 auto;
+      background: linear-gradient(160deg, #1a1a2e 0%, #0f172a 100%);
+      border-radius: 44px; padding: 16px 12px 20px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
+      animation: phoneFloat 5s ease-in-out infinite;
+      position: relative;
+    }
+    /* Side buttons */
+    .lp-qr-phone::before { content: ''; position: absolute; left: -3px; top: 90px; width: 3px; height: 18px; background: rgba(255,255,255,0.08); border-radius: 2px 0 0 2px; }
+    .lp-qr-phone::after { content: ''; position: absolute; left: -3px; top: 116px; width: 3px; height: 18px; background: rgba(255,255,255,0.08); border-radius: 2px 0 0 2px; }
 
-    /* QR Card */
-    .lp-qr-card { position: absolute; top: 10%; left: 8%; z-index: 3; background: var(--lp-card-bg); border-radius: 20px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.12); text-align: center; width: 140px; transform: rotate(-2deg); animation: qrCardFloat 4s ease-in-out infinite; }
-    .lp-qr-card svg { display: block; margin: 0 auto; width: 64px; height: 64px; }
-    .lp-qr-card .card-label { font-size: 10px; font-weight: 700; color: var(--lp-text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 8px; }
+    .lp-qr-phone .p-notch { width: 72px; height: 7px; background: rgba(255,255,255,0.08); border-radius: 999px; margin: 0 auto 12px; }
+    .lp-qr-phone .p-screen {
+      background: var(--lp-card-bg); border-radius: 16px; overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .lp-qr-phone .p-screen .phone-status { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px 6px; font-size: 11px; font-weight: 600; color: var(--lp-text-muted); }
+    .lp-qr-phone .p-screen .phone-status .ps-time { font-weight: 700; }
+    .lp-qr-phone .p-screen .phone-status .ps-icons { display: flex; gap: 5px; align-items: center; }
+    .lp-qr-phone .p-screen .phone-status .ps-icons svg { width: 14px; height: 14px; stroke: var(--lp-text-muted); fill: none; stroke-width: 1.5; }
+    .lp-qr-phone .p-screen .phone-header { background: var(--lp-primary); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .lp-qr-phone .p-screen .phone-header span { font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.04em; }
+    .lp-qr-phone .p-screen .phone-header .h-dots { display: flex; gap: 4px; }
+    .lp-qr-phone .p-screen .phone-header .h-dots div { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+    .lp-qr-phone .p-screen .camera-view { padding: 22px 16px 14px; text-align: center; }
+    .lp-qr-phone .p-screen .camera-view .cam-frame { width: 100%; aspect-ratio: 1/0.72; background: var(--lp-bg); border-radius: 12px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .lp-qr-phone .p-screen .camera-view .cam-frame .qr-corner { width: 52px; height: 52px; border: 2.5px solid var(--lp-primary); border-radius: 8px; position: relative; opacity: 0.9; }
+    .lp-qr-phone .p-screen .camera-view .cam-frame .qr-corner::before { content: ''; position: absolute; top: -2.5px; left: -2.5px; width: 12px; height: 12px; border-top: 3px solid var(--lp-primary); border-left: 3px solid var(--lp-primary); border-radius: 2px; }
+    .lp-qr-phone .p-screen .camera-view .cam-frame .qr-corner::after { content: ''; position: absolute; bottom: -2.5px; right: -2.5px; width: 12px; height: 12px; border-bottom: 3px solid var(--lp-primary); border-right: 3px solid var(--lp-primary); border-radius: 2px; }
+    .lp-qr-phone .p-screen .camera-view .cam-frame .scan-beam { position: absolute; left: 14%; right: 14%; height: 2.5px; background: var(--lp-primary); opacity: 0.85; border-radius: 2px; box-shadow: 0 0 12px rgba(37,99,235,0.6); animation: scanMove 1.5s ease-in-out infinite; }
+    .lp-qr-phone .p-screen .camera-view .cam-label { font-size: 11px; font-weight: 600; color: var(--lp-text-muted); letter-spacing: 0.05em; margin-top: 12px; }
 
-    /* Scan Pulse */
-    .lp-scan-pulse { position: absolute; top: 16%; left: 8%; z-index: 2; width: 156px; height: 156px; pointer-events: none; }
-    .lp-scan-pulse .pulse-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(37,99,235,0.12); animation: pulseExpand 2.5s ease-out infinite; }
-    .lp-scan-pulse .pulse-ring:nth-child(2) { animation-delay: 0.8s; }
-    .lp-scan-pulse .pulse-ring:nth-child(3) { animation-delay: 1.6s; }
-
-    /* Phone */
-    .lp-qr-phone { position: absolute; right: 6%; bottom: 6%; z-index: 4; width: 200px; background: #111827; border-radius: 28px; padding: 10px 8px 14px; box-shadow: 0 24px 80px rgba(0,0,0,0.3); transform: perspective(800px) rotateY(-2deg) rotateX(2deg); animation: phoneFloat 5s ease-in-out infinite; }
-    .lp-qr-phone .p-notch { width: 60px; height: 6px; background: rgba(255,255,255,0.15); border-radius: 999px; margin: 0 auto 8px; }
-    .lp-qr-phone .p-screen { background: var(--lp-card-bg); border-radius: 14px; overflow: hidden; }
-    .lp-qr-phone .p-screen .phone-header { background: var(--lp-primary); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
-    .lp-qr-phone .p-screen .phone-header span { font-size: 11px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.04em; }
-    .lp-qr-phone .p-screen .phone-header .h-dots { display: flex; gap: 3px; }
-    .lp-qr-phone .p-screen .phone-header .h-dots div { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.4); }
-    .lp-qr-phone .p-screen .camera-view { padding: 14px 14px 10px; text-align: center; }
-    .lp-qr-phone .p-screen .camera-view .cam-frame { width: 100%; aspect-ratio: 1/0.65; background: var(--lp-bg); border-radius: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-    .lp-qr-phone .p-screen .camera-view .cam-frame .qr-corner { width: 44px; height: 44px; border: 2px solid var(--lp-primary); border-radius: 6px; position: relative; }
-    .lp-qr-phone .p-screen .camera-view .cam-frame .qr-corner::before { content: ''; position: absolute; top: -2px; left: -2px; width: 10px; height: 10px; border-top: 3px solid var(--lp-primary); border-left: 3px solid var(--lp-primary); border-radius: 2px; }
-    .lp-qr-phone .p-screen .camera-view .cam-frame .qr-corner::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px; border-bottom: 3px solid var(--lp-primary); border-right: 3px solid var(--lp-primary); border-radius: 2px; }
-    .lp-qr-phone .p-screen .camera-view .cam-frame .scan-beam { position: absolute; left: 12%; right: 12%; height: 2px; background: var(--lp-primary); opacity: 0.8; border-radius: 2px; box-shadow: 0 0 8px rgba(37,99,235,0.5); animation: scanMove 1.5s ease-in-out infinite; }
-    .lp-qr-phone .p-screen .camera-view .cam-label { font-size: 10px; font-weight: 600; color: var(--lp-text-muted); letter-spacing: 0.05em; margin-top: 8px; }
-    .lp-qr-phone .p-screen .vehicle-details { padding: 0 14px 12px; }
-    .lp-qr-phone .p-screen .vehicle-details .v-success { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 700; color: #fff; background: #22C55E; padding: 3px 8px; border-radius: 999px; margin-bottom: 6px; animation: fadeInUp 0.4s ease-out 0.8s both; }
-    .lp-qr-phone .p-screen .vehicle-details .v-success svg { width: 10px; height: 10px; stroke: #fff; fill: none; stroke-width: 2.5; }
-    .lp-qr-phone .p-screen .vehicle-details .v-number { font-size: 13px; font-weight: 800; color: var(--lp-text); letter-spacing: 0.02em; margin-bottom: 2px; }
-    .lp-qr-phone .p-screen .vehicle-details .v-info { font-size: 10px; color: var(--lp-text-muted); line-height: 1.5; }
+    .lp-qr-phone .p-screen .vehicle-details { padding: 0 16px 14px; }
+    .lp-qr-phone .p-screen .vehicle-details .v-success { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; color: #fff; background: #22C55E; padding: 4px 10px; border-radius: 999px; margin-bottom: 8px; animation: fadeInUp 0.4s ease-out 0.8s both; }
+    .lp-qr-phone .p-screen .vehicle-details .v-success svg { width: 12px; height: 12px; stroke: #fff; fill: none; stroke-width: 2.5; }
+    .lp-qr-phone .p-screen .vehicle-details .v-number { font-size: 15px; font-weight: 800; color: var(--lp-text); letter-spacing: 0.02em; margin-bottom: 3px; }
+    .lp-qr-phone .p-screen .vehicle-details .v-info { font-size: 11px; color: var(--lp-text-muted); line-height: 1.5; }
     .lp-qr-phone .p-screen .vehicle-details .v-info strong { color: var(--lp-text); }
-    .lp-qr-phone .p-screen .vehicle-details .v-btn { display: block; margin-top: 8px; background: var(--lp-primary); color: #fff; font-size: 10px; font-weight: 700; padding: 8px; border-radius: 8px; text-align: center; text-transform: uppercase; letter-spacing: 0.04em; }
+    .lp-qr-phone .p-screen .vehicle-details .v-btn { display: block; margin-top: 10px; background: var(--lp-primary); color: #fff; font-size: 11px; font-weight: 700; padding: 10px; border-radius: 10px; text-align: center; text-transform: uppercase; letter-spacing: 0.04em; }
+    /* Home indicator */
+    .lp-qr-phone .p-screen .p-home-bar { width: 36%; height: 4px; background: var(--lp-text-muted); opacity: 0.15; border-radius: 999px; margin: 6px auto 8px; }
 
-    /* Connection */
-    .lp-qr-connect { position: absolute; z-index: 2; top: 28%; left: 18%; width: 130px; height: 130px; pointer-events: none; }
-    .lp-qr-connect .conn-line { position: absolute; top: 8%; left: 50%; width: 2px; height: 84%; border-left: 2px dashed rgba(37,99,235,0.2); transform: translateX(-50%) rotate(18deg); transform-origin: top center; }
-    .lp-qr-connect .conn-particle { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--lp-primary); box-shadow: 0 0 6px rgba(37,99,235,0.4); opacity: 0; }
-    .lp-qr-connect .conn-particle:nth-child(2) { animation: particleTravel 2.2s ease-in-out infinite 0s; }
-    .lp-qr-connect .conn-particle:nth-child(3) { animation: particleTravel 2.2s ease-in-out infinite 0.45s; }
-    .lp-qr-connect .conn-particle:nth-child(4) { animation: particleTravel 2.2s ease-in-out infinite 0.9s; }
-    .lp-qr-connect .conn-particle:nth-child(5) { animation: particleTravel 2.2s ease-in-out infinite 1.35s; }
-    .lp-qr-connect .conn-particle:nth-child(6) { animation: particleTravel 2.2s ease-in-out infinite 1.8s; }
 
-    .lp-qr-dot { position: absolute; width: 4px; height: 4px; border-radius: 50%; pointer-events: none; z-index: 1; }
-    .lp-qr-dot:nth-child(1) { top: 12%; left: 55%; background: var(--lp-accent); opacity: 0.12; animation: qrDotBounce 5s ease-in-out infinite; }
-    .lp-qr-dot:nth-child(2) { top: 65%; left: 18%; background: var(--lp-primary); opacity: 0.08; animation: qrDotBounce 4s ease-in-out infinite 0.5s; }
-    .lp-qr-dot:nth-child(3) { bottom: 22%; right: 28%; background: var(--lp-accent); opacity: 0.1; animation: qrDotBounce 6s ease-in-out infinite 1s; }
 
     /* Badges below the grid */
     .lp-qr-badges { display: flex; justify-content: center; gap: 20px; margin-top: 28px; flex-wrap: wrap; }
     .lp-qr-badge { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--lp-text-muted); background: var(--lp-bg); padding: 10px 24px; border-radius: 999px; border: 1px solid var(--lp-border); transition: all 0.2s; }
     .lp-qr-badge:hover { border-color: var(--lp-primary); color: var(--lp-primary); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(37,99,235,0.08); }
 
-    @keyframes qrCardFloat { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(-2deg); } }
-    @keyframes phoneFloat { 0%, 100% { transform: perspective(800px) rotateY(-2deg) rotateX(2deg) translateY(0); } 50% { transform: perspective(800px) rotateY(-2deg) rotateX(2deg) translateY(-8px); } }
-    @keyframes scanMove { 0%, 100% { top: 12%; opacity: 0.3; } 50% { top: 72%; opacity: 0.9; } }
-    @keyframes particleTravel { 0% { top: 0; left: 50%; opacity: 0; transform: translate(-50%, 0) scale(0.5); } 15% { opacity: 1; transform: translate(8px, 15%) scale(1); } 85% { opacity: 1; transform: translate(22px, 75%) scale(1); } 100% { opacity: 0; transform: translate(28px, 100%) scale(0.3); } }
-    @keyframes qrDotBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
-    @keyframes pulseExpand { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
-    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes phoneFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes scanMove { 0%, 100% { top: 10%; opacity: 0.3; } 50% { top: 74%; opacity: 0.95; } }
+    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
 
     /* Developers */
     .lp-dev-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
-      max-width: 720px; margin: 0 auto; position: relative;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+      max-width: 1000px; margin: 0 auto;
     }
     .lp-dev-card {
-      background: linear-gradient(135deg, var(--lp-card-bg) 0%, rgba(255,255,255,0.75) 100%);
-      border-radius: 20px; padding: 28px 24px 16px; text-align: center;
-      border: 1px solid var(--lp-border);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      background: #fff; border-radius: 20px; padding: 32px;
+      border: 1px solid #eaeaea;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
       transition: all 0.3s ease;
     }
     .lp-dev-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.08), 0 0 0 1px rgba(37,99,235,0.15);
-      border-color: rgba(37,99,235,0.25);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08), 0 0 0 1px rgba(37,99,235,0.12);
+      border-color: rgba(37,99,235,0.2);
     }
     .lp-dev-avatar {
-      width: 90px; height: 90px; border-radius: 50%; overflow: hidden;
-      margin: 0 auto 10px; position: relative;
-      box-shadow: 0 4px 12px rgba(37,99,235,0.15);
+      width: 170px; height: 170px; border-radius: 50%; overflow: hidden;
+      flex-shrink: 0;
+      border: 3px solid #f0f0f0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
       transition: transform 0.3s ease;
     }
-    .lp-dev-avatar::before {
-      content: ''; position: absolute; inset: -3px; border-radius: 50%;
-      background: linear-gradient(135deg, #2563EB, #60A5FA); z-index: -1;
+    .lp-dev-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .lp-dev-card:hover .lp-dev-avatar { transform: scale(1.05); }
+    .lp-dev-body {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      width: 100%;
     }
-    .lp-dev-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
-    .lp-dev-card:hover .lp-dev-avatar { transform: scale(1.06); }
-    .lp-dev-card h3 { font-size: 18px; font-weight: 700; margin: 0 0 2px; transition: color 0.3s; }
-    .lp-dev-card:hover h3 { color: var(--lp-primary); }
-    .lp-dev-role { font-size: 13px; font-weight: 600; color: var(--lp-primary); margin: 0 0 8px; }
-    .lp-dev-desc { font-size: 12px; color: var(--lp-text-muted); line-height: 1.5; margin: 0 auto 10px; max-width: 260px; }
-    .lp-dev-skills { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-bottom: 10px; }
-    .lp-dev-skill { font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--lp-bg); color: var(--lp-text-muted); border: 1px solid var(--lp-border); }
-    .lp-dev-highlight {
-      display: flex; align-items: center; justify-content: center; gap: 5px;
-      font-size: 12px; font-weight: 600; color: var(--lp-text);
-      margin-bottom: 10px;
-    }
-    .lp-dev-highlight svg { width: 13px; height: 13px; stroke: var(--lp-primary); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-    .lp-dev-links { display: flex; justify-content: center; gap: 6px; margin-bottom: 10px; }
+    .lp-dev-body h3 { font-size: 22px; font-weight: 700; margin: 0 0 2px; color: #111; transition: color 0.3s; }
+    .lp-dev-card:hover h3 { color: #111; }
+    .lp-dev-role { font-size: 14px; font-weight: 600; color: var(--lp-primary); margin: 0 0 10px; }
+    .lp-dev-desc { font-size: 13px; color: var(--lp-text-muted); line-height: 1.6; margin: 0 0 14px; max-width: 360px; }
+    .lp-dev-skills { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-bottom: 12px; }
+    .lp-dev-skill { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 999px; background: #f5f5f5; color: #555; border: 1px solid #eee; transition: all 0.25s; }
+    .lp-dev-card:hover .lp-dev-skill { background: #eef2ff; border-color: rgba(37,99,235,0.15); color: var(--lp-primary); }
+    .lp-dev-links { display: flex; justify-content: center; gap: 8px; }
     .lp-dev-link {
       display: flex; align-items: center; justify-content: center;
-      width: 34px; height: 34px; border-radius: 50%;
-      background: var(--lp-bg); border: 1px solid var(--lp-border);
+      width: 36px; height: 36px; border-radius: 9999px;
+      background: #f5f5f5; border: 1px solid #eee;
       transition: all 0.25s ease; text-decoration: none;
     }
-    .lp-dev-link:hover { background: var(--lp-primary); border-color: var(--lp-primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
-    .lp-dev-link svg { width: 15px; height: 15px; transition: all 0.25s; }
+    .lp-dev-link:hover { background: var(--lp-primary); border-color: var(--lp-primary); transform: translateY(-2px) scale(1.1); box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+    .lp-dev-link svg { width: 16px; height: 16px; transition: all 0.25s; }
     .lp-dev-link:hover svg { filter: brightness(0) invert(1); }
-    .lp-dev-stat { font-size: 11px; color: var(--lp-text-muted); font-weight: 500; padding-top: 10px; border-top: 1px solid var(--lp-border); margin: 0; }
-    .lp-dev-stat strong { color: var(--lp-primary); font-weight: 700; }
-
-    /* Team connector */
-    .lp-dev-grid::before {
-      content: ''; position: absolute;
-      top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 2px; height: 64px;
-      background: linear-gradient(180deg, transparent, var(--lp-primary), transparent);
-      z-index: 1; pointer-events: none;
-    }
-    .lp-dev-connect {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      background: var(--lp-bg); padding: 3px 14px; border-radius: 999px;
-      font-size: 10px; font-weight: 600; color: var(--lp-primary);
-      z-index: 2; pointer-events: none; white-space: nowrap;
-      border: 1px solid var(--lp-border); letter-spacing: 0.03em;
-    }
 
     /* FAQ Accordion */
-    .lp-faq-list { display: grid; gap: 10px; max-width: 720px; margin: 0 auto; }
+    .lp-faq-list { display: grid; gap: 8px; max-width: 720px; margin: 0 auto; }
     .lp-faq-item { background: var(--lp-card-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-    .lp-faq-question { font-size: 16px; font-weight: 700; margin: 0; padding: 20px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; user-select: none; transition: background 0.2s; }
-    .lp-faq-question:hover { background: rgba(0,0,0,0.02); }
+    .lp-faq-question { font-size: 16px; font-weight: 700; margin: 0; padding: 16px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; user-select: none; transition: background 0.2s; }
+    .lp-faq-question:hover { background: rgba(37,99,235,0.04); }
     .lp-faq-question .faq-toggle { width: 24px; height: 24px; border-radius: 50%; background: var(--lp-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.3s; }
     .lp-faq-question .faq-toggle svg { width: 14px; height: 14px; stroke: var(--lp-text-muted); fill: none; stroke-width: 2; stroke-linecap: round; transition: transform 0.3s; }
     .lp-faq-item.active .faq-toggle { background: var(--lp-primary); }
     .lp-faq-item.active .faq-toggle svg { stroke: #fff; transform: rotate(45deg); }
-    .lp-faq-answer { font-size: 14px; color: var(--lp-text-muted); margin: 0; line-height: 1.6; padding: 0 24px 20px; display: none; }
-    .lp-faq-item.active .lp-faq-answer { display: block; }
+    .lp-faq-answer { font-size: 14px; color: var(--lp-text-muted); margin: 0; line-height: 1.6; padding: 0 24px; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.3s ease; }
+    .lp-faq-item.active .lp-faq-answer { max-height: 300px; opacity: 1; padding: 0 24px 20px; }
 
     /* CTA */
-    .lp-cta {
-      text-align: center; padding: 64px 24px; 
-    }
-    .lp-cta h2 { font-size: 32px; font-weight: 800; margin: 0 0 12px; }
-    .lp-cta p { font-size: 16px; color: var(--lp-text-muted); margin: 0 0 28px; max-width: 500px; margin-left: auto; margin-right: auto; }
-    .lp-cta .cta-btn {
-      display: inline-block; background: var(--lp-accent); color: #fff; padding: 16px 40px; border-radius: 999px;
-      font-weight: 700; font-size: 16px; transition: all 0.2s;
-    }
-    .lp-cta .cta-btn:hover { opacity: 0.85; transform: translateY(-2px); }
-    .lp-cta .cta-outline { display: inline-block; color: var(--lp-text-muted); font-size: 14px; margin-left: 16px; text-decoration: underline; }
 
     /* Footer - Glassmorphism Floating */
     .lp-footer {
@@ -530,7 +493,7 @@
     .lp-footer-tech-pills { display: flex; flex-wrap: wrap; gap: 8px; }
     .lp-footer-pill { font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 999px; background: var(--lp-card-bg); color: var(--lp-text-muted); border: 1px solid var(--lp-border); transition: all 0.25s; cursor: default; }
     .lp-footer-pill:hover { border-color: var(--lp-primary); color: var(--lp-primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,99,235,0.1); }
-    .lp-footer-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--lp-border), var(--lp-primary), var(--lp-border), transparent); margin: 32px 0 20px; opacity: 0.6; }
+    .lp-footer-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--lp-border), transparent); margin: 32px 0 20px; opacity: 0.6; }
     .lp-footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
     .lp-footer-bottom span { opacity: 0.7; }
     .lp-footer-bottom .center { text-align: center; }
@@ -542,8 +505,13 @@
 
     /* Dark mode overrides */
     body.dark { --lp-bg: #111; --lp-card-bg: #1a1a1a; --lp-text: #eee; --lp-text-muted: rgba(255,255,255,0.5); --lp-border: rgba(255,255,255,0.1); }
-    body.dark .lp-nav { background: rgba(26,26,26,0.7); border-color: rgba(255,255,255,0.08); }
-    body.dark .lp-nav a { color: var(--lp-text); }
+    body.dark .lp-nav { background: rgba(30,30,35,0.75); border-color: rgba(255,255,255,0.1); }
+    body.dark .lp-nav .nav-logo img { filter: brightness(1.2); }
+    body.dark .lp-nav .nav-label { color: rgba(255,255,255,0.65); }
+    body.dark .lp-nav .nav-label:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    body.dark .lp-nav .nav-label.active { color: #fff; background: rgba(255,255,255,0.15); }
+    body.dark .lp-nav .nav-cta { background: #3B82F6; }
+    body.dark .lp-nav .nav-cta:hover { background: #2563EB; }
     body.dark .lp-feature-card { background: var(--lp-card-bg); }
     body.dark .lp-arch-wrap { background: var(--lp-card-bg); }
     body.dark .arch-backbone { background: var(--lp-border); }
@@ -551,30 +519,28 @@
     body.dark .lp-arch-card { background: var(--lp-bg); border-color: var(--lp-border); }
     body.dark .arch-particle.response { background: rgba(37,99,235,0.2); }
     body.dark .lp-arch-tech .tech-badge { background: var(--lp-bg); border-color: var(--lp-border); }
-    body.dark .lp-dev-card { background: linear-gradient(135deg, rgba(30,30,35,0.9) 0%, rgba(25,25,30,0.75) 100%); border-color: rgba(255,255,255,0.06); }
-    body.dark .lp-dev-link { background: var(--lp-bg); border-color: var(--lp-border); }
-    body.dark .lp-dev-link:hover { background: var(--lp-primary); }
-    body.dark .lp-dev-skill { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
-    body.dark .lp-dev-connect { background: rgba(25,25,30,0.95); border-color: rgba(255,255,255,0.06); }
+    body.dark .lp-dev-card { background: #1a1a1e; border-color: rgba(255,255,255,0.08); }
+    body.dark .lp-dev-body h3 { color: #eee; }
+    body.dark .lp-dev-desc { color: rgba(255,255,255,0.45); }
+    body.dark .lp-dev-skill { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+    body.dark .lp-dev-card:hover .lp-dev-skill { background: rgba(37,99,235,0.15); border-color: rgba(37,99,235,0.25); color: #93b8f7; }
+    body.dark .lp-dev-link { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+    body.dark .lp-dev-link:hover { background: var(--lp-primary); border-color: var(--lp-primary); }
+
     body.dark .lp-qr-wrap { background: var(--lp-card-bg); }
     body.dark .lp-qr-step .step-num { background: var(--lp-bg); border-color: var(--lp-border); color: var(--lp-text-muted); }
-    body.dark .lp-qr-card { background: var(--lp-card-bg); }
-    body.dark .lp-qr-scene { background: var(--lp-card-bg); }
-    body.dark .lp-qr-scene::after { background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px); }
-    body.dark .lp-qr-phone { background: #000; }
+    body.dark .lp-qr-phone { background: linear-gradient(160deg, #0a0a14 0%, #000 100%); }
     body.dark .lp-qr-badge { background: var(--lp-bg); border-color: var(--lp-border); }
     body.dark .lp-faq-item { background: var(--lp-card-bg); }
     body.dark .lp-faq-question:hover { background: rgba(255,255,255,0.03); }
     body.dark .lp-faq-item.active { box-shadow: 0 4px 16px rgba(37,99,235,0.15); }
 
-    body.dark .lp-nav { background: rgba(30,30,35,0.78); border-color: rgba(255,255,255,0.06); }
-    body.dark .lp-nav .nav-label:hover { background: rgba(37,99,235,0.15); }
-    body.dark .lp-nav .nav-label.active { background: rgba(37,99,235,0.15); }
     body.dark .nav-drawer { background: rgba(20,20,25,0.97); }
-    body.dark .nav-drawer .nav-label:hover { background: rgba(37,99,235,0.15); }
-    body.dark .nav-hamburger span { background: #e5e7eb; }
-    body.dark .nav-hamburger:hover { background: rgba(255,255,255,0.06); }
-    body.dark .nav-overlay { background: rgba(0,0,0,0.5); }
+    body.dark .nav-drawer .nav-label { color: rgba(255,255,255,0.6); }
+    body.dark .nav-drawer .nav-label:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    body.dark .nav-drawer .nav-cta { background: #3B82F6; }
+    body.dark .nav-hamburger span { background: rgba(255,255,255,0.6); }
+    body.dark .nav-hamburger:hover { background: rgba(255,255,255,0.08); }
 
     body.dark .lp-footer {
       background: linear-gradient(135deg, rgba(30,30,35,0.88) 0%, rgba(25,25,30,0.82) 100%);
@@ -582,13 +548,13 @@
     }
 
     @media (max-width: 768px) {
-      .lp-nav { gap: 0; padding: 6px 16px 6px 20px; min-width: unset; width: 94vw; }
-      .lp-nav img { height: 24px; }
+      .lp-nav { width: 94vw; padding: 6px 16px; }
       .lp-nav .nav-center { display: none; }
-      .lp-nav .nav-login { display: none; }
+      .lp-nav .nav-cta { display: none; }
       .lp-nav .nav-hamburger { display: flex; }
       .nav-drawer { display: flex; }
       .nav-overlay { display: block; }
+      .lp-nav .nav-logo img { height: 26px; }
       .lp-hero { padding: 60px 16px 24px; }
       .lp-section { padding: 48px 16px; }
       .lp-section-header h2 { font-size: 26px; }
@@ -598,12 +564,9 @@
       .lp-arch-wrap { grid-template-columns: 1fr; gap: 32px; }
       .lp-arch-cards { grid-template-columns: 1fr; }
       .lp-qr-showcase { grid-template-columns: 1fr; gap: 32px; }
-      .lp-qr-scene { min-height: 360px; }
-      .lp-qr-phone { right: 4%; bottom: 4%; width: 140px; }
-      .lp-qr-connect { display: none; }
-      .lp-dev-grid { grid-template-columns: 1fr; }
-      .lp-dev-grid::before { display: none; }
-      .lp-dev-connect { display: none; }
+      .lp-qr-phone { width: min(200px, 75%); }
+      .lp-dev-grid { grid-template-columns: 1fr; gap: 28px; }
+      .lp-dev-avatar { width: 140px; height: 140px; }
       .lp-cta { padding: 48px 20px; }
       .lp-footer-grid { grid-template-columns: 1fr; gap: 32px; }
       .lp-footer { padding: 28px 20px 20px; margin: 60px auto 0; width: calc(100% - 32px); }
@@ -611,7 +574,7 @@
       .lp-footer-bottom .right { text-align: center; }
     }
     @media (max-width: 480px) {
-      .lp-nav .nav-label { display: none; }
+      .lp-nav { padding: 6px 12px; }
     }
   </style>
 </head>
@@ -619,32 +582,35 @@
 
   <!-- ============ FLOATING NAV ============ -->
   <nav class="lp-nav" aria-label="Main navigation">
-    <img src="/logo.webp" alt="QSpark" width="68" height="28" loading="lazy">
+    <a href="#home" class="nav-logo" aria-label="Home">
+      <img src="/logo.webp" alt="QSpark">
+    </a>
     <div class="nav-center">
       <a href="#features" class="nav-label" data-section="features">Features</a>
+      <a href="#how-it-works" class="nav-label" data-section="how-it-works">How It Works</a>
       <a href="#architecture" class="nav-label" data-section="architecture">Architecture</a>
+      <a href="#developers" class="nav-label" data-section="developers">Developers</a>
       <a href="#faq" class="nav-label" data-section="faq">FAQ</a>
     </div>
-    <a href="/login" class="nav-login">Sign In <span class="btn-arrow">→</span></a>
+    <a href="/login" class="nav-cta">Get Started</a>
     <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </nav>
   <div class="nav-overlay" aria-hidden="true"></div>
   <div class="nav-drawer" aria-hidden="true">
-    <a href="#features" class="nav-label">Features</a>
-    <a href="#architecture" class="nav-label">Architecture</a>
-    <a href="#faq" class="nav-label">FAQ</a>
-    <a href="/login" class="nav-login">Sign In <span class="btn-arrow">→</span></a>
+    <a href="#home" class="nav-label" data-section="home">Home</a>
+    <a href="#features" class="nav-label" data-section="features">Features</a>
+    <a href="#how-it-works" class="nav-label" data-section="how-it-works">How It Works</a>
+    <a href="#architecture" class="nav-label" data-section="architecture">Architecture</a>
+    <a href="#developers" class="nav-label" data-section="developers">Developers</a>
+    <a href="#faq" class="nav-label" data-section="faq">FAQ</a>
+    <a href="/login" class="nav-cta">Get Started</a>
   </div>
 
   <!-- ============ HERO ============ -->
-  <header class="lp-hero">
+  <header class="lp-hero" id="home">
     <img src="/hero-banner.webp" alt="QSpark Smart Parking Management Dashboard - 480 parking slots, real-time grid, and QR vehicle identification" width="1920" height="1080" loading="eager" fetchpriority="high">
-  </header>
-
-  <!-- ============ STATS ============ -->
-  <section class="lp-section" aria-label="Project statistics" style="padding-top:20px;padding-bottom:20px;">
     <div class="lp-stats">
       <div class="lp-stat-item"><div class="lp-stat-value">480</div><div class="lp-stat-label">Parking Slots</div></div>
       <div class="lp-stat-divider" aria-hidden="true"></div>
@@ -654,7 +620,7 @@
       <div class="lp-stat-divider" aria-hidden="true"></div>
       <div class="lp-stat-item"><div class="lp-stat-value">Java 17</div><div class="lp-stat-label">Runtime</div></div>
     </div>
-  </section>
+  </header>
 
   <!-- ============ FEATURES ============ -->
   <section class="lp-section" id="features" aria-labelledby="features-heading">
@@ -668,7 +634,7 @@
 
       <article class="lp-feature-card">
         <div class="lp-feature-icon">
-          <svg viewBox="0 0 24 24" stroke="var(--lp-accent)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 1 1 0 6H9"/></svg>
+          <svg viewBox="0 0 24 24" stroke="var(--lp-primary)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 1 1 0 6H9"/></svg>
         </div>
         <h3>480-Slot Dashboard</h3>
         <p>4 basements, 120 slots each. Real-time color-coded grid with quick-jump navigation.</p>
@@ -684,7 +650,7 @@
 
       <article class="lp-feature-card">
         <div class="lp-feature-icon">
-          <svg viewBox="0 0 24 24" stroke="var(--lp-accent)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <svg viewBox="0 0 24 24" stroke="var(--lp-primary)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <h3>Enterprise Security</h3>
         <p>BCrypt hashing, CSRF tokens, secure headers - production-ready out of the box.</p>
@@ -700,7 +666,7 @@
 
       <article class="lp-feature-card">
         <div class="lp-feature-icon">
-          <svg viewBox="0 0 24 24" stroke="var(--lp-accent)"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <svg viewBox="0 0 24 24" stroke="var(--lp-primary)"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
         </div>
         <h3>Dual Database</h3>
         <p>MySQL for production, H2 in-memory for dev. Switch via Spring profiles.</p>
@@ -717,162 +683,8 @@
     </div>
   </section>
 
-  <!-- ============ ARCHITECTURE ============ -->
-  <section class="lp-section" id="architecture" aria-labelledby="arch-heading">
-    <div class="lp-section-header">
-      <span class="lp-label">Architecture</span>
-      <h2 id="arch-heading">How QSpark works under the hood</h2>
-      <p>A clean MVC architecture powered by Spring Boot - from browser to database and back.</p>
-    </div>
-    <div class="lp-arch-wrap">
-      <div class="lp-arch-diagram">
-        <div class="arch-backbone"></div>
-        <div class="arch-particle request"></div>
-        <div class="arch-particle response"></div>
-
-        <div class="lp-arch-layer">
-          <div class="layer-icon blue">
-            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="7" x2="22" y2="7"/><circle cx="5" cy="5" r="1.2"/><circle cx="8" cy="5" r="1.2"/><circle cx="11" cy="5" r="1.2"/></svg>
-          </div>
-          <div class="layer-info"><strong>Browser</strong><span>Thymeleaf HTML + Vanilla JS</span></div>
-        </div>
-        <div class="lp-arch-connector"></div>
-
-        <div class="lp-arch-layer">
-          <div class="layer-icon red">
-            <svg viewBox="0 0 24 24"><path d="M12 2l7 4v5c0 5.25-3.83 9.15-7 10-3.17-.85-7-4.75-7-10V6l7-4z"/><polyline points="9 12 11 14 15 10"/></svg>
-          </div>
-          <div class="layer-info"><strong>Spring Security</strong><span>BCrypt auth, CSRF, secure headers</span></div>
-        </div>
-        <div class="lp-arch-connector"></div>
-
-        <div class="lp-arch-layer">
-          <div class="layer-icon blue">
-            <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          </div>
-          <div class="layer-info"><strong>Controllers</strong><span>Login, Parking, QR - MVC handlers</span></div>
-        </div>
-        <div class="lp-arch-connector"></div>
-
-        <div class="lp-arch-layer">
-          <div class="layer-icon gray">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2M23 12h-2M3 12H1m19.07-7.07l-1.41 1.41M5.34 17.66l-1.41 1.41M17.66 5.34l1.41-1.41M6.34 17.66l-1.41 1.41"/></svg>
-          </div>
-          <div class="layer-info"><strong>Service Layer</strong><span>Business logic, validation, rules</span></div>
-        </div>
-        <div class="lp-arch-connector"></div>
-
-        <div class="lp-arch-layer">
-          <div class="layer-icon red">
-            <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
-          </div>
-          <div class="layer-info"><strong>Repository</strong><span>Spring Data JPA + Hibernate ORM</span></div>
-        </div>
-        <div class="lp-arch-connector"></div>
-
-        <div class="lp-arch-layer">
-          <div class="layer-icon blue">
-            <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="5" rx="1.5"/><rect x="4" y="10" width="16" height="5" rx="1.5"/><rect x="4" y="17" width="16" height="5" rx="1.5"/></svg>
-          </div>
-          <div class="layer-info"><strong>Database</strong><span>MySQL (prod) / H2 (dev)</span></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="lp-arch-cards">
-
-          <div class="lp-arch-card">
-            <div class="card-icon blue">
-              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/></svg>
-            </div>
-            <h4>Frontend Rendering</h4>
-            <ul>
-              <li>Thymeleaf generates full HTML server-side</li>
-              <li>Vanilla JS for progressive enhancements</li>
-              <li>Dark mode, toasts, table sorting included</li>
-            </ul>
-          </div>
-
-          <div class="lp-arch-card">
-            <div class="card-icon red">
-              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-            </div>
-            <h4>Spring Security</h4>
-            <ul>
-              <li>BCrypt password hashing at login</li>
-              <li>CSRF tokens on all POST forms</li>
-              <li>Secure headers prevent XSS attacks</li>
-            </ul>
-          </div>
-
-          <div class="lp-arch-card">
-            <div class="card-icon blue">
-              <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            </div>
-            <h4>MVC Controllers</h4>
-            <ul>
-              <li>LoginController handles auth flow</li>
-              <li>ParkingController manages full CRUD</li>
-              <li>QRCodeController generates and scans</li>
-            </ul>
-          </div>
-
-          <div class="lp-arch-card">
-            <div class="card-icon gray">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2"/></svg>
-            </div>
-            <h4>Business Logic</h4>
-            <ul>
-              <li>Slot availability validation on booking</li>
-              <li>Duplicate vehicle detection enforced</li>
-              <li>Regex pattern validation on numbers</li>
-            </ul>
-          </div>
-
-          <div class="lp-arch-card">
-            <div class="card-icon red">
-              <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/></svg>
-            </div>
-            <h4>Data Persistence</h4>
-            <ul>
-              <li>Spring Data JPA with Hibernate ORM</li>
-              <li>Three entities: admin, slot, registration</li>
-              <li>Auto DDL update for schema management</li>
-            </ul>
-          </div>
-
-          <div class="lp-arch-card">
-            <div class="card-icon green">
-              <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="5" rx="1.5"/><rect x="4" y="10" width="16" height="5" rx="1.5"/></svg>
-            </div>
-            <h4>Dual Database Support</h4>
-            <ul>
-              <li>MySQL 8.0 for production deployment</li>
-              <li>H2 in-memory for dev and testing</li>
-              <li>Profile-based switching via Spring config</li>
-            </ul>
-          </div>
-
-        </div>
-
-        <div class="lp-arch-tech">
-          <span class="tech-badge">Java 17</span>
-          <span class="tech-badge">Spring Boot</span>
-          <span class="tech-badge">Spring Security</span>
-          <span class="tech-badge">Thymeleaf</span>
-          <span class="tech-badge">Spring Data JPA</span>
-          <span class="tech-badge">Hibernate</span>
-          <span class="tech-badge">MySQL</span>
-          <span class="tech-badge">H2</span>
-          <span class="tech-badge">ZXing</span>
-          <span class="tech-badge">HTML5 QR</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ QR SHOWCASE ============ -->
-  <section class="lp-section" aria-labelledby="qr-heading">
+  <section class="lp-section" id="how-it-works" aria-labelledby="qr-heading">
     <div class="lp-qr-wrap">
     <div class="lp-qr-showcase">
       <div class="lp-qr-content">
@@ -896,69 +708,243 @@
 
         <a href="/qrcode" class="lp-qr-cta-btn"><span>See Scan in Action</span><span class="btn-arrow">→</span></a>
       </div>
-      <div class="lp-qr-scene">
-        <div class="lp-qr-dot"></div>
-        <div class="lp-qr-dot"></div>
-        <div class="lp-qr-dot"></div>
-
-        <div class="lp-qr-card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--lp-primary)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="8" height="8" rx="1"/>
-            <rect x="14" y="2" width="8" height="8" rx="1"/>
-            <rect x="2" y="14" width="8" height="8" rx="1"/>
-            <path d="M14 14h4v4h-4zM20 14h2v2h-2zM14 20h2v2h-2zM18 18h2v2h-2z"/>
-          </svg>
-          <div class="card-label">Vehicle QR</div>
-        </div>
-
-        <div class="lp-scan-pulse">
-          <div class="pulse-ring"></div>
-          <div class="pulse-ring"></div>
-          <div class="pulse-ring"></div>
-        </div>
-
-        <div class="lp-qr-connect">
-          <div class="conn-line"></div>
-          <div class="conn-particle"></div>
-          <div class="conn-particle"></div>
-          <div class="conn-particle"></div>
-          <div class="conn-particle"></div>
-          <div class="conn-particle"></div>
-        </div>
-
-        <div class="lp-qr-phone">
-          <div class="p-notch"></div>
-          <div class="p-screen">
-            <div class="phone-header">
-              <span>QR Scanner</span>
-              <div class="h-dots"><div></div><div></div><div></div></div>
-            </div>
-            <div class="camera-view">
-              <div class="cam-frame">
-                <div class="qr-corner"></div>
-                <div class="scan-beam"></div>
-              </div>
-              <div class="cam-label">Scanning...</div>
-            </div>
-            <div class="vehicle-details">
-              <div class="v-success">
-                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                Vehicle Identified
-              </div>
-              <div class="v-number">KA 01 AB 1234</div>
-              <div class="v-info"><strong>Pawan S</strong> - Car - <strong>B2-047</strong></div>
-              <div class="v-btn">Confirm Parking</div>
+      <div class="lp-qr-phone">
+        <div class="p-notch"></div>
+        <div class="p-screen">
+          <div class="phone-status">
+            <span class="ps-time">9:41</span>
+            <div class="ps-icons">
+              <svg viewBox="0 0 24 24"><path d="M6 9h12l2 4v4H4v-4l2-4z"/><path d="M10 17v-3"/></svg>
+              <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="1.5"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
             </div>
           </div>
+          <div class="phone-header">
+            <span>QR Scanner</span>
+            <div class="h-dots"><div></div><div></div><div></div></div>
+          </div>
+          <div class="camera-view">
+            <div class="cam-frame">
+              <div class="qr-corner"></div>
+              <div class="scan-beam"></div>
+            </div>
+            <div class="cam-label">Scanning...</div>
+          </div>
+          <div class="vehicle-details">
+            <div class="v-success">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Vehicle Identified
+            </div>
+            <div class="v-number">KA 01 AB 1234</div>
+            <div class="v-info"><strong>Pawan Simha R</strong> - Car - <strong>B2-047</strong></div>
+            <div class="v-btn">Confirm Parking</div>
+          </div>
+          <div class="p-home-bar"></div>
         </div>
       </div>
     </div>
     <div class="lp-qr-badges">
-      <span class="lp-qr-badge"><span>&#9889;</span> &lt; 2 Seconds</span>
-      <span class="lp-qr-badge"><span>&#128247;</span> Camera Ready</span>
-      <span class="lp-qr-badge"><span>&#128663;</span> Auto Fill</span>
-      <span class="lp-qr-badge"><span>&#128274;</span> Secure</span>
+      <span class="lp-qr-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lp-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> &lt; 2 Seconds</span>
+      <span class="lp-qr-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lp-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Camera Ready</span>
+      <span class="lp-qr-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lp-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18" r="2.5"/><circle cx="18.5" cy="18" r="2.5"/></svg> Auto Fill</span>
+      <span class="lp-qr-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lp-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Secure</span>
     </div>
+    </div>
+  </section>
+
+  <!-- ============ ARCHITECTURE ============ -->
+  <section class="lp-section" id="architecture" aria-labelledby="arch-heading">
+    <div class="lp-section-header">
+      <span class="lp-label">Architecture</span>
+      <h2 id="arch-heading">How QSpark works under the hood</h2>
+      <p>A clean MVC architecture powered by Spring Boot - from browser to database and back.</p>
+    </div>
+    <div class="lp-arch-wrap">
+      <div class="lp-arch-diagram">
+        <div class="arch-backbone"></div>
+        <div class="arch-particle request"></div>
+        <div class="arch-particle response"></div>
+
+        <div class="lp-arch-layer">
+          <div class="layer-icon blue">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="7" x2="22" y2="7"/><circle cx="5" cy="5" r="1.2"/><circle cx="8" cy="5" r="1.2"/><circle cx="11" cy="5" r="1.2"/></svg>
+          </div>
+          <div class="layer-info"><strong>Browser</strong><span>Chrome, Edge, Firefox</span></div>
+          <span class="layer-tag">CLIENT</span>
+        </div>
+        <div class="lp-arch-connector"></div>
+
+        <div class="lp-arch-layer">
+          <div class="layer-icon red">
+            <svg viewBox="0 0 24 24"><path d="M12 2l7 4v5c0 5.25-3.83 9.15-7 10-3.17-.85-7-4.75-7-10V6l7-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+          </div>
+          <div class="layer-info"><strong>Spring Security</strong><span>Auth &amp; Filter Chain</span></div>
+          <span class="layer-tag">SECURITY</span>
+        </div>
+        <div class="lp-arch-connector"></div>
+
+        <div class="lp-arch-layer">
+          <div class="layer-icon blue">
+            <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div class="layer-info"><strong>Controllers</strong><span>REST API endpoints</span></div>
+          <span class="layer-tag">API</span>
+        </div>
+        <div class="lp-arch-connector"></div>
+
+        <div class="lp-arch-layer">
+          <div class="layer-icon gray">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2M23 12h-2M3 12H1m19.07-7.07l-1.41 1.41M5.34 17.66l-1.41 1.41M17.66 5.34l1.41-1.41M6.34 17.66l-1.41 1.41"/></svg>
+          </div>
+          <div class="layer-info"><strong>Service Layer</strong><span>Business Validation</span></div>
+          <span class="layer-tag">LOGIC</span>
+        </div>
+        <div class="lp-arch-connector"></div>
+
+        <div class="lp-arch-layer">
+          <div class="layer-icon red">
+            <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+          </div>
+          <div class="layer-info"><strong>Repository</strong><span>Spring Data JPA</span></div>
+          <span class="layer-tag">DATA</span>
+        </div>
+        <div class="lp-arch-connector"></div>
+
+        <div class="lp-arch-layer">
+          <div class="layer-icon blue">
+            <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="5" rx="1.5"/><rect x="4" y="10" width="16" height="5" rx="1.5"/><rect x="4" y="17" width="16" height="5" rx="1.5"/></svg>
+          </div>
+          <div class="layer-info"><strong>Database</strong><span>MySQL 8 / H2</span></div>
+          <span class="layer-tag">STORAGE</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="lp-arch-cards">
+
+          <div class="lp-arch-card">
+            <div class="card-icon blue">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/></svg>
+            </div>
+            <h4>Presentation Layer</h4>
+            <ul>
+              <li>Thymeleaf SSR + dedicated MVC Controllers</li>
+              <li>Vanilla JS enhances sorting, search, and dark mode</li>
+            </ul>
+          </div>
+
+          <div class="lp-arch-card">
+            <div class="card-icon blue">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </div>
+            <h4>Security &amp; Auth</h4>
+            <ul>
+              <li>BCrypt hashing with CSRF form protection</li>
+              <li>Secure headers against XSS and clickjacking</li>
+            </ul>
+          </div>
+
+          <div class="lp-arch-card">
+            <div class="card-icon gray">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2"/></svg>
+            </div>
+            <h4>Business Logic</h4>
+            <ul>
+              <li>Slot availability and duplicate detection</li>
+              <li>Regex validation on vehicle numbers</li>
+            </ul>
+          </div>
+
+          <div class="lp-arch-card">
+            <div class="card-icon green">
+              <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <h4>Persistence Layer</h4>
+            <ul>
+              <li>Spring Data JPA with MySQL 8 / H2 profiles</li>
+              <li>Three entities: admin, slot, registration</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="lp-arch-tech">
+          <span class="tech-badge">Java 17</span>
+          <span class="tech-badge">Spring Boot</span>
+          <span class="tech-badge">Spring Security</span>
+          <span class="tech-badge">Thymeleaf</span>
+          <span class="tech-badge">Spring Data JPA</span>
+          <span class="tech-badge">Hibernate</span>
+          <span class="tech-badge">MySQL</span>
+          <span class="tech-badge">H2</span>
+          <span class="tech-badge">ZXing</span>
+          <span class="tech-badge">HTML5 QR</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEVELOPERS ============ -->
+  <section class="lp-section" id="developers" aria-labelledby="dev-heading">
+    <div class="lp-section-header">
+      <span class="lp-label">Developers</span>
+      <h2 id="dev-heading">Meet the team behind QSpark</h2>
+      <p>Developers and students who built this Java project from the ground up.</p>
+    </div>
+    <div class="lp-dev-grid">
+      <article class="lp-dev-card">
+        <div class="lp-dev-avatar"><img src="/images/pawan-simha.webp" alt="Pawan Simha R" width="170" height="170" loading="lazy"></div>
+        <div class="lp-dev-body">
+          <h3>Pawan Simha R</h3>
+          <div class="lp-dev-role">Full Stack Developer</div>
+          <p class="lp-dev-desc">Passionate MCA student specializing in Java, Spring Boot, database systems, and modern full-stack development with a focus on scalable software solutions.</p>
+          <div class="lp-dev-skills">
+            <span class="lp-dev-skill">Java</span>
+            <span class="lp-dev-skill">Spring Boot</span>
+            <span class="lp-dev-skill">Python</span>
+            <span class="lp-dev-skill">MySQL</span>
+            <span class="lp-dev-skill">Git</span>
+            <span class="lp-dev-skill">REST API</span>
+          </div>
+          <div class="lp-dev-links">
+            <a href="https://www.linkedin.com/in/prajwal-r-140b851aa/" target="_blank" rel="noopener" class="lp-dev-link" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="var(--lp-text-muted)"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="https://github.com/PawanSimha" target="_blank" rel="noopener" class="lp-dev-link" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" fill="var(--lp-text-muted)"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/prajwal-r-140b851aa/" target="_blank" rel="noopener" class="lp-dev-link" aria-label="Email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--lp-text-muted)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+      <article class="lp-dev-card">
+        <div class="lp-dev-avatar"><img src="/images/prajwal-r.webp" alt="Prajwal R" width="170" height="170" loading="lazy"></div>
+        <div class="lp-dev-body">
+          <h3>Prajwal R</h3>
+          <div class="lp-dev-role">Full Stack Developer</div>
+          <p class="lp-dev-desc">MCA student focused on backend engineering, UI development, and creating reliable, user-friendly software systems.</p>
+          <div class="lp-dev-skills">
+            <span class="lp-dev-skill">Java</span>
+            <span class="lp-dev-skill">Spring Boot</span>
+            <span class="lp-dev-skill">Python</span>
+            <span class="lp-dev-skill">React</span>
+            <span class="lp-dev-skill">MySQL</span>
+            <span class="lp-dev-skill">Git</span>
+          </div>
+          <div class="lp-dev-links">
+            <a href="https://www.linkedin.com/in/prajwal-r-140b851aa/" target="_blank" rel="noopener" class="lp-dev-link" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="var(--lp-text-muted)"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="https://github.com/rajuprajwal2002-blip" target="_blank" rel="noopener" class="lp-dev-link" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" fill="var(--lp-text-muted)"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+            <a href="https://rajuprajwal2002-blip.github.io/futuristic-portfolio/" target="_blank" rel="noopener" class="lp-dev-link" aria-label="Portfolio">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--lp-text-muted)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -1029,81 +1015,6 @@
     </div>
   </section>
 
-  <!-- ============ DEVELOPERS ============ -->
-  <section class="lp-section" id="developers" aria-labelledby="dev-heading">
-    <div class="lp-section-header">
-      <span class="lp-label">Developers</span>
-      <h2 id="dev-heading">Meet the team behind QSpark</h2>
-      <p>Developers and students who built this Java project from the ground up.</p>
-    </div>
-    <div class="lp-dev-grid">
-      <article class="lp-dev-card">
-        <div class="lp-dev-avatar"><img src="/images/pawan-simha.webp" alt="Pawan Simha R" width="90" height="90" loading="lazy"></div>
-        <h3>Pawan Simha R</h3>
-        <div class="lp-dev-role">Full Stack Developer</div>
-        <p class="lp-dev-desc">Pragmatic Python and Java developer with a design-first approach.</p>
-        <div class="lp-dev-skills">
-          <span class="lp-dev-skill">Java</span>
-          <span class="lp-dev-skill">Spring Boot</span>
-          <span class="lp-dev-skill">Python</span>
-          <span class="lp-dev-skill">MySQL</span>
-        </div>
-        <div class="lp-dev-highlight">
-          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Built the QR Recognition System
-        </div>
-        <div class="lp-dev-links">
-          <a href="https://www.linkedin.com/in/prajwal-r-140b851aa/" target="_blank" rel="noopener" class="lp-dev-link" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="var(--lp-text-muted)"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/in/prajwal-r-140b851aa/" target="_blank" rel="noopener" class="lp-dev-link" aria-label="Portfolio">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--lp-text-muted)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          </a>
-          <a href="https://github.com/PawanSimha" target="_blank" rel="noopener" class="lp-dev-link" aria-label="GitHub">
-            <svg viewBox="0 0 24 24" fill="var(--lp-text-muted)"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-          </a>
-        </div>
-        <div class="lp-dev-stat"><strong>20+</strong> Git Commits</div>
-      </article>
-      <span class="lp-dev-connect" aria-hidden="true">Built Together</span>
-      <article class="lp-dev-card">
-        <div class="lp-dev-avatar"><img src="/images/prajwal-r.webp" alt="Prajwal R" width="90" height="90" loading="lazy"></div>
-        <h3>Prajwal R</h3>
-        <div class="lp-dev-role">Full Stack Developer</div>
-        <p class="lp-dev-desc">Python and Java full-stack developer, problem solver, and error solver.</p>
-        <div class="lp-dev-skills">
-          <span class="lp-dev-skill">Java</span>
-          <span class="lp-dev-skill">Spring Boot</span>
-          <span class="lp-dev-skill">Python</span>
-          <span class="lp-dev-skill">React</span>
-        </div>
-        <div class="lp-dev-highlight">
-          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Designed the Dashboard UI
-        </div>
-        <div class="lp-dev-links">
-          <a href="https://www.linkedin.com/in/prajwal-r-140b851aa/" target="_blank" rel="noopener" class="lp-dev-link" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="var(--lp-text-muted)"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          </a>
-          <a href="https://rajuprajwal2002-blip.github.io/futuristic-portfolio/" target="_blank" rel="noopener" class="lp-dev-link" aria-label="Portfolio">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--lp-text-muted)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          </a>
-          <a href="https://github.com/rajuprajwal2002-blip" target="_blank" rel="noopener" class="lp-dev-link" aria-label="GitHub">
-            <svg viewBox="0 0 24 24" fill="var(--lp-text-muted)"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-          </a>
-        </div>
-        <div class="lp-dev-stat">Backend <strong>Lead</strong></div>
-      </article>
-    </div>
-  </section>
-
-  <!-- ============ CTA ============ -->
-  <section class="lp-cta" aria-labelledby="cta-heading">
-    <h2 id="cta-heading">Ready to digitize your parking operations?</h2>
-    <p>QSpark is free, open-source, and ready to deploy. Sign in to the demo or fork the repository on GitHub.</p>
-    <a href="/login" class="cta-btn">Get Started Free →</a>
-  </section>
-
   <!-- ============ FOOTER ============ -->
   <footer class="lp-footer" id="footer">
     <div class="lp-footer-grid">
@@ -1153,8 +1064,18 @@
       q.addEventListener('click', function() {
         var item = this.parentElement;
         var isActive = item.classList.contains('active');
-        document.querySelectorAll('.lp-faq-item.active').forEach(function(i) { i.classList.remove('active'); i.querySelector('[aria-expanded]').setAttribute('aria-expanded', 'false'); });
-        if (!isActive) { item.classList.add('active'); this.setAttribute('aria-expanded', 'true'); }
+        document.querySelectorAll('.lp-faq-item.active').forEach(function(i) {
+          i.classList.remove('active');
+          var ans = i.querySelector('.lp-faq-answer');
+          if (ans) { ans.style.maxHeight = ''; }
+          i.querySelector('[aria-expanded]').setAttribute('aria-expanded', 'false');
+        });
+        if (!isActive) {
+          item.classList.add('active');
+          var ans = item.querySelector('.lp-faq-answer');
+          if (ans) { ans.style.maxHeight = ans.scrollHeight + 40 + 'px'; }
+          this.setAttribute('aria-expanded', 'true');
+        }
       });
     });
 
@@ -1182,7 +1103,7 @@
     });
 
     /* Nav: active section tracking */
-    var sections = ['features', 'architecture', 'faq'];
+    var sections = ['home', 'features', 'how-it-works', 'architecture', 'developers', 'faq'];
     var links = {};
     sections.forEach(function(id) {
       var el = document.querySelector('[data-section="' + id + '"]');
@@ -1201,6 +1122,15 @@
       sections.forEach(function(id) {
         var el = document.getElementById(id);
         if (el) sectionObs.observe(el);
+      });
+      /* default to home when at top */
+      var homeLink = links['home'];
+      if (homeLink && window.scrollY < 100) homeLink.classList.add('active');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY < 100 && homeLink) {
+          Object.keys(links).forEach(function(k) { links[k].classList.remove('active'); });
+          homeLink.classList.add('active');
+        }
       });
     }
 

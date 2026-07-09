@@ -1,6 +1,6 @@
 @echo off
 cd /d "%~dp0"
-title QSpark - Launcher
+title QSpark - Smart Parking System
 
 echo ============================================
 echo    QSpark - Smart Parking System
@@ -21,7 +21,7 @@ if not errorlevel 1 (
 
 echo [1/3] Starting backend server...
 echo.
-start "QSpark-App" /MIN mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
+start /B mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2" > backend.log 2>&1
 
 echo [2/3] Waiting for server (this may take 30-90 sec)...
 echo.
@@ -34,11 +34,11 @@ set /a "QPARK_WAIT+=3"
 if %QPARK_WAIT% GEQ 180 (
     echo.
     echo [TIMEOUT] Server did not start within 3 minutes.
-    echo Check the QSpark-App window for Maven/Java errors.
+    echo Check backend.log for Maven/Java errors.
+    echo.
     echo Press any key to exit.
     pause >nul
-    taskkill /f /fi "WINDOWTITLE eq QSpark-App" >nul 2>&1
-    exit
+    goto cleanup
 )
 goto waitloop
 
@@ -54,14 +54,14 @@ echo.
 echo    Login: QSparker / QSpark@Secure
 echo ============================================
 echo.
-echo Press any key to STOP the server and exit.
+echo Close this window or press any key to STOP the server.
 pause >nul
 
+:cleanup
 echo.
 echo Shutting down...
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8081 " ^| findstr "LISTENING"') do (
     taskkill /f /pid %%a >nul 2>&1
 )
-taskkill /f /fi "WINDOWTITLE eq QSpark-App" >nul 2>&1
 echo Done.
 exit
