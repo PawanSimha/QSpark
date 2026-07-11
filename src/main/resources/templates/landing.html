@@ -35,14 +35,14 @@
   <meta property="og:url" content="https://github.com/PawanSimha/QSpark">
   <meta property="og:title" content="QSpark - Open-Source Smart Parking Management System | Spring Boot">
   <meta property="og:description" content="Production-grade smart parking management: 480 slots, QR vehicle ID, Spring Security + BCrypt, real-time dashboard. Built with Java 17 and Spring Boot 3.3.1.">
-  <meta property="og:image" content="https://raw.githubusercontent.com/PawanSimha/QSpark/main/src/main/resources/static/logo.webp">
+  <meta property="og:image" content="https://raw.githubusercontent.com/PawanSimha/QSpark/main/src/main/resources/static/logo-light.webp">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://github.com/PawanSimha/QSpark">
   <meta property="twitter:title" content="QSpark - Open-Source Smart Parking Management System">
   <meta property="twitter:description" content="Production-grade smart parking: 480 slots, QR ID, BCrypt auth, real-time grid. Java 17 + Spring Boot 3.3.1.">
-  <meta property="twitter:image" content="https://raw.githubusercontent.com/PawanSimha/QSpark/main/src/main/resources/static/logo.webp">
+  <meta property="twitter:image" content="https://raw.githubusercontent.com/PawanSimha/QSpark/main/src/main/resources/static/logo-light.webp">
 
   <!-- GEO / AI Crawler Directives -->
   <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -132,7 +132,7 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css?v=2">
 
   <style>
     /* Landing page specific overrides - design tokens */
@@ -159,7 +159,7 @@
       border: 1px solid rgba(255,255,255,0.3); border-radius: 9999px;
       padding: 8px 28px;
       display: flex; align-items: center; justify-content: space-between;
-      width: 88%; max-width: 1100px;
+      width: 88%; max-width: 1100px; overflow: hidden;
       box-shadow: 0 8px 28px rgba(0,0,0,0.08);
       transition: all 0.3s ease;
       animation: navFadeIn 0.6s ease both;
@@ -177,8 +177,8 @@
 
     /* Links — perfectly centered */
     .lp-nav .nav-center {
-      position: absolute; left: 50%; transform: translateX(-50%);
-      display: flex; align-items: center; gap: 2px;
+      display: flex; align-items: center; justify-content: center; gap: 2px;
+      flex: 1; min-width: 0;
     }
     .lp-nav .nav-label {
       font-size: 0.875rem; font-weight: 500; color: rgba(0,0,0,0.65);
@@ -196,6 +196,22 @@
       transition: all 0.25s ease; text-decoration: none;
     }
     .lp-nav .nav-cta:hover { background: #1d4ed8; transform: scale(1.04); }
+
+    /* Dark Mode Toggle — between links and CTA */
+    .lp-nav .nav-dark-toggle {
+      background: none; border: none; cursor: pointer;
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(0,0,0,0.5); transition: all 0.25s ease; flex-shrink: 0;
+      margin-left: 6px;
+    }
+    .lp-nav .nav-dark-toggle:hover { background: rgba(0,0,0,0.06); color: #000; }
+    .lp-nav .nav-dark-toggle svg { width: 18px; height: 18px; }
+    .nav-drawer .drawer-toggle {
+      margin: 4px 0 0 14px; width: 40px; height: 40px;
+      color: rgba(0,0,0,0.5);
+    }
+    .nav-drawer .drawer-toggle:hover { background: rgba(255,255,255,0.05); }
 
     /* Hamburger */
     .lp-nav .nav-hamburger { display: none; }
@@ -238,7 +254,7 @@
 
     /* Hero */
     .lp-hero { padding: 20px 24px 40px; max-width: 1320px; margin: 0 auto; }
-    .lp-hero img { width: 100%; height: auto; display: block; }
+    .lp-hero img { width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover; object-position: center; display: block; border-radius: 24px; }
 
     /* Sections */
     .lp-section { padding: 80px 24px; max-width: 1200px; margin: 0 auto; }
@@ -512,6 +528,10 @@
     body.dark .lp-nav .nav-label.active { color: #fff; background: rgba(255,255,255,0.15); }
     body.dark .lp-nav .nav-cta { background: #3B82F6; }
     body.dark .lp-nav .nav-cta:hover { background: #2563EB; }
+    body.dark .lp-nav .nav-dark-toggle { color: rgba(255,255,255,0.5); }
+    body.dark .lp-nav .nav-dark-toggle:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    body.dark .nav-drawer .drawer-toggle { color: rgba(255,255,255,0.5); }
+    body.dark .nav-drawer .drawer-toggle:hover { background: rgba(255,255,255,0.08); color: #fff; }
     body.dark .lp-feature-card { background: var(--lp-card-bg); }
     body.dark .lp-arch-wrap { background: var(--lp-card-bg); }
     body.dark .arch-backbone { background: var(--lp-border); }
@@ -583,7 +603,7 @@
   <!-- ============ FLOATING NAV ============ -->
   <nav class="lp-nav" aria-label="Main navigation">
     <a href="#home" class="nav-logo" aria-label="Home">
-      <img src="/logo.webp" alt="QSpark">
+      <img src="/logo-light.webp" alt="QSpark" data-theme-img data-theme-light="/logo-light.webp" data-theme-dark="/logo-dark.webp">
     </a>
     <div class="nav-center">
       <a href="#features" class="nav-label" data-section="features">Features</a>
@@ -591,6 +611,9 @@
       <a href="#architecture" class="nav-label" data-section="architecture">Architecture</a>
       <a href="#developers" class="nav-label" data-section="developers">Developers</a>
       <a href="#faq" class="nav-label" data-section="faq">FAQ</a>
+      <button class="nav-dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode" aria-label="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
     </div>
     <a href="/login" class="nav-cta">Get Started</a>
     <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
@@ -605,12 +628,15 @@
     <a href="#architecture" class="nav-label" data-section="architecture">Architecture</a>
     <a href="#developers" class="nav-label" data-section="developers">Developers</a>
     <a href="#faq" class="nav-label" data-section="faq">FAQ</a>
+    <button class="nav-dark-toggle drawer-toggle" onclick="toggleDarkMode()" title="Toggle dark mode" aria-label="Toggle dark mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
     <a href="/login" class="nav-cta">Get Started</a>
   </div>
 
   <!-- ============ HERO ============ -->
   <header class="lp-hero" id="home">
-    <img src="/hero-banner.webp" alt="QSpark Smart Parking Management Dashboard - 480 parking slots, real-time grid, and QR vehicle identification" width="1920" height="1080" loading="eager" fetchpriority="high">
+    <img src="/hero-banner-light.webp" alt="QSpark Smart Parking Management Dashboard - 480 parking slots, real-time grid, and QR vehicle identification" width="1920" height="1080" loading="eager" fetchpriority="high" data-theme-img data-theme-light="/hero-banner-light.webp" data-theme-dark="/hero-banner-dark.webp">
     <div class="lp-stats">
       <div class="lp-stat-item"><div class="lp-stat-value">480</div><div class="lp-stat-label">Parking Slots</div></div>
       <div class="lp-stat-divider" aria-hidden="true"></div>
@@ -1019,7 +1045,7 @@
   <footer class="lp-footer" id="footer">
     <div class="lp-footer-grid">
       <div class="lp-footer-brand">
-        <img src="/logo.webp" alt="QSpark" width="100" height="40" loading="lazy">
+        <img src="/logo-light.webp" alt="QSpark" width="100" height="40" loading="lazy" data-theme-img data-theme-light="/logo-light.webp" data-theme-dark="/logo-dark.webp">
         <div class="tagline">Smart. Fast. Reliable Parking.</div>
         <p class="desc">QSpark is a production-grade, open-source smart parking management system built with Java 17 and Spring Boot 3.3.1. Manage 480 slots with QR-based vehicle identification and full audit trails.</p>
         <div class="lp-footer-badges">

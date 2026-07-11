@@ -20,7 +20,6 @@ package com.qspark.controller;
 
 import com.qspark.config.SecurityConfig;
 import com.qspark.model.VehicleRegistration;
-import com.qspark.repository.ParkingRepository;
 import com.qspark.repository.VehicleRegistrationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +48,6 @@ class QRCodeControllerTest {
 
     @MockBean
     private VehicleRegistrationRepository vehicleRepo;
-
-    @MockBean
-    private ParkingRepository parkingRepo;
 
     private static final String TEST_USER = "user";
 

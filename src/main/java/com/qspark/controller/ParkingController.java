@@ -85,11 +85,14 @@ public class ParkingController {
                        Model model) {
 
         if (result.hasErrors()) {
-            model.addAttribute("error",
-                    "Invalid vehicle number format (use: KA 01 AB 1234 or 26 BH 9876 AB)");
             if (result.hasFieldErrors("vehicleNumber")) {
-                model.addAttribute("vehicleNumberError",
-                        result.getFieldError("vehicleNumber").getDefaultMessage());
+                model.addAttribute("error",
+                        "Invalid vehicle number format (use: KA 01 AB 1234 or 26 BH 9876 AB)");
+            } else if (result.hasFieldErrors("mobileNumber")) {
+                model.addAttribute("error",
+                        "Mobile number must be exactly 10 digits");
+            } else {
+                model.addAttribute("error", "Invalid form data");
             }
             addModelAttributes(model);
             return "index";
@@ -129,7 +132,7 @@ public class ParkingController {
         return "index";
     }
 
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String delete(@PathVariable Integer id,
                          Model model) {
 
@@ -157,7 +160,7 @@ public class ParkingController {
         return "index";
     }
 
-    @GetMapping("/left/{id}")
+    @PostMapping("/left/{id}")
     public String left(@PathVariable Integer id,
                        Model model) {
 
@@ -212,11 +215,14 @@ public class ParkingController {
                          Model model) {
 
         if (result.hasErrors()) {
-            model.addAttribute("error",
-                    "Invalid vehicle number format (use: KA 01 AB 1234 or 26 BH 9876 AB)");
             if (result.hasFieldErrors("vehicleNumber")) {
-                model.addAttribute("vehicleNumberError",
-                        result.getFieldError("vehicleNumber").getDefaultMessage());
+                model.addAttribute("error",
+                        "Invalid vehicle number format (use: KA 01 AB 1234 or 26 BH 9876 AB)");
+            } else if (result.hasFieldErrors("mobileNumber")) {
+                model.addAttribute("error",
+                        "Mobile number must be exactly 10 digits");
+            } else {
+                model.addAttribute("error", "Invalid form data");
             }
             addModelAttributes(model);
             return "index";
@@ -227,6 +233,23 @@ public class ParkingController {
             ParkingSlot existing = repository.findById(parkingSlot.getId()).orElse(null);
             if (existing != null) {
                 parkingSlot.setEntryTime(existing.getEntryTime());
+            }
+
+            ParkingSlot slotOccupant = repository.findBySlotNumber(parkingSlot.getSlotNumber());
+            if (slotOccupant != null && slotOccupant.getExitTime() == null
+                    && !slotOccupant.getId().equals(parkingSlot.getId())) {
+                model.addAttribute("error", "Slot Already Booked!");
+                addModelAttributes(model);
+                return "index";
+            }
+
+            if (repository.existsByVehicleNumberAndExitTimeIsNull(parkingSlot.getVehicleNumber())) {
+                ParkingSlot active = repository.findBySlotNumber(parkingSlot.getSlotNumber());
+                if (active == null || !active.getId().equals(parkingSlot.getId())) {
+                    model.addAttribute("error", "Vehicle already parked in another slot!");
+                    addModelAttributes(model);
+                    return "index";
+                }
             }
 
             repository.save(parkingSlot);

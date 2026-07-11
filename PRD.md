@@ -49,7 +49,7 @@ QSpark solves all six problems with a single, unified, server-authoritative appl
 
 | Metric | Target | Rationale |
 |--------|--------|-----------|
-| **Test Pass Rate** | 100% (63/63) | Zero regression tolerance for a parking operations system |
+| **Test Pass Rate** | 100% (66/66) | Zero regression tolerance for a parking operations system |
 | **Booking Creation Time** | < 30 seconds | Admin should book a slot in under 30 seconds from login |
 | **Slot Grid Accuracy** | 100% | Occupied slots must always match database state (single source of truth) |
 | **QR Scan → Form Auto-Fill** | < 3 seconds | Camera scan must populate dashboard form with sub-second delay |
@@ -113,7 +113,7 @@ QSpark solves all six problems with a single, unified, server-authoritative appl
 | **CSRF Enforcement** | Every state-changing POST must include a valid CSRF token | `SecurityConfig` default + manual tokens in all templates |
 | **Session Invalidation** | Logout must invalidate session and clear authentication | `.invalidateHttpSession(true).clearAuthentication(true)` |
 | **Vehicle Number Format** | Must match exactly one of 4 predefined Indian registration regex patterns | `ParkingSlot.vehicleNumber` - `@Pattern` |
-| **Database Profiles** | MySQL for production, H2 in-memory for dev - dual seed files required | `application.properties` vs `application-h2.properties` |
+| **Database Profiles** | MySQL for production, H2 in-memory for dev - seeding via DataInitializer.java | `application.properties` vs `application-h2.properties` |
 | **Server Rendering** | No SPA - all pages are full Thymeleaf server renders; JS is progressive enhancement | Template architecture |
 | **QR Code Format** | QR encodes the vehicle number string (uppercase, trimmed), not a URL or JSON | `QRCodeController.generateQR()` |
 | **Scanner TLS Requirement** | Camera scan requires `localhost` or HTTPS - HTTP-only servers will fail | `html5-qrcode` browser security policy |

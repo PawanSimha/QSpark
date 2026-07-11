@@ -132,4 +132,54 @@ class ParkingSlotValidationTest {
 
         assertThat(violations).isEmpty();
     }
+
+    @Test
+    void validMobileNumber_ShouldPass() {
+        ParkingSlot slot = new ParkingSlot();
+        slot.setMobileNumber("9876543210");
+
+        Set<ConstraintViolation<ParkingSlot>> violations = validator.validateProperty(slot, "mobileNumber");
+
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
+    void invalidMobileNumber_TooShort_ShouldFail() {
+        ParkingSlot slot = new ParkingSlot();
+        slot.setMobileNumber("12345");
+
+        Set<ConstraintViolation<ParkingSlot>> violations = validator.validateProperty(slot, "mobileNumber");
+
+        assertThat(violations).isNotEmpty();
+    }
+
+    @Test
+    void invalidMobileNumber_WithLetters_ShouldFail() {
+        ParkingSlot slot = new ParkingSlot();
+        slot.setMobileNumber("98765abcde");
+
+        Set<ConstraintViolation<ParkingSlot>> violations = validator.validateProperty(slot, "mobileNumber");
+
+        assertThat(violations).isNotEmpty();
+    }
+
+    @Test
+    void nullMobileNumber_ShouldPass() {
+        ParkingSlot slot = new ParkingSlot();
+        slot.setMobileNumber(null);
+
+        Set<ConstraintViolation<ParkingSlot>> violations = validator.validateProperty(slot, "mobileNumber");
+
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
+    void emptyMobileNumber_ShouldFail() {
+        ParkingSlot slot = new ParkingSlot();
+        slot.setMobileNumber("");
+
+        Set<ConstraintViolation<ParkingSlot>> violations = validator.validateProperty(slot, "mobileNumber");
+
+        assertThat(violations).isNotEmpty();
+    }
 }

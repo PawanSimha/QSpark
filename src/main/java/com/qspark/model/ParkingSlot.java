@@ -47,6 +47,10 @@ public class ParkingSlot {
     private String slotNumber;
 
     @Column(name = "mobile_number")
+    @Pattern(
+            regexp = "^[0-9]{10}$",
+            message = "Mobile number must be exactly 10 digits"
+    )
     private String mobileNumber;
 
     @Column(name = "entry_time")

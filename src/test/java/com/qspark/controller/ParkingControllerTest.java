@@ -148,7 +148,7 @@ class ParkingControllerTest {
 
     @Test
     void delete_WithoutSession_ShouldReturn401() throws Exception {
-        mockMvc.perform(get("/delete/1"))
+        mockMvc.perform(post("/delete/1").with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -157,7 +157,7 @@ class ParkingControllerTest {
         when(parkingRepository.existsById(1)).thenReturn(true);
         when(parkingRepository.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/delete/1").with(user(TEST_USER).roles("ADMIN")))
+        mockMvc.perform(post("/delete/1").with(user(TEST_USER).roles("ADMIN")).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attributeExists("success"));
@@ -240,7 +240,7 @@ class ParkingControllerTest {
         when(parkingRepository.existsById(999)).thenReturn(false);
         when(parkingRepository.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/delete/999").with(user(TEST_USER).roles("ADMIN")))
+        mockMvc.perform(post("/delete/999").with(user(TEST_USER).roles("ADMIN")).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attribute("error", "Record not found"));
@@ -251,7 +251,7 @@ class ParkingControllerTest {
         when(parkingRepository.findById(1)).thenThrow(new RuntimeException("DB error"));
         when(parkingRepository.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/left/1").with(user(TEST_USER).roles("ADMIN")))
+        mockMvc.perform(post("/left/1").with(user(TEST_USER).roles("ADMIN")).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attribute("error", "Unable To Mark Vehicle as Left"));
@@ -270,7 +270,7 @@ class ParkingControllerTest {
 
     @Test
     void left_WithoutSession_ShouldReturn401() throws Exception {
-        mockMvc.perform(get("/left/1"))
+        mockMvc.perform(post("/left/1").with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -281,7 +281,7 @@ class ParkingControllerTest {
         when(parkingRepository.save(any())).thenReturn(slot);
         when(parkingRepository.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/left/1").with(user(TEST_USER).roles("ADMIN")))
+        mockMvc.perform(post("/left/1").with(user(TEST_USER).roles("ADMIN")).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attribute("success", "Vehicle Marked as Left"));
@@ -292,7 +292,7 @@ class ParkingControllerTest {
         when(parkingRepository.findById(999)).thenReturn(Optional.empty());
         when(parkingRepository.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/left/999").with(user(TEST_USER).roles("ADMIN")))
+        mockMvc.perform(post("/left/999").with(user(TEST_USER).roles("ADMIN")).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attribute("error", "Record not found"));
@@ -361,5 +361,27 @@ class ParkingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attribute("error", "Unable To Update Record"));
+    }
+
+    @Test
+    void update_ToOccupiedSlot_ShouldReturnError() throws Exception {
+        ParkingSlot current = createSlot(1, "A1-01", "KA 01 AB 1234");
+        ParkingSlot occupant = createSlot(2, "B2-05", "TN 07 XY 5678");
+        when(parkingRepository.findById(1)).thenReturn(Optional.of(current));
+        when(parkingRepository.findBySlotNumber("B2-05")).thenReturn(occupant);
+        when(parkingRepository.findAll()).thenReturn(List.of());
+
+        mockMvc.perform(post("/update")
+                        .with(user(TEST_USER).roles("ADMIN"))
+                        .with(csrf())
+                        .param("id", "1")
+                        .param("ownerName", "Test")
+                        .param("vehicleNumber", "KA 01 AB 1234")
+                        .param("vehicleType", "Car")
+                        .param("slotNumber", "B2-05")
+                        .param("mobileNumber", "9876543210"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"))
+                .andExpect(model().attribute("error", "Slot Already Booked!"));
     }
 }

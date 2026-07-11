@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/badge/MySQL-8.0-%234479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL 8.0"/>
     <img src="https://img.shields.io/badge/QR_Code-ZXing_3.5.3-%23FF8800?style=flat-square" alt="ZXing 3.5.3"/>
     <img src="https://img.shields.io/badge/License-GPLv3-%23A12E2E?style=flat-square&logo=gnu&logoColor=white" alt="License GPLv3"/>
-    <img src="https://img.shields.io/badge/Tests-63_Passing-%2322c55e?style=flat-square" alt="Tests 63 Passing"/>
+    <img src="https://img.shields.io/badge/Tests-66_Passing-%2322c55e?style=flat-square" alt="Tests 66 Passing"/>
   </p>
 </div>
 
@@ -94,8 +94,8 @@ Database (MySQL / H2)       ← 3 tables: admin, parking_slot, vehicle_registrat
 | **Database** | MySQL 8.0 (prod), H2 (dev) | Relational persistence |
 | **ORM** | Spring Data JPA, Hibernate | Repository pattern, auto-DDL |
 | **Frontend** | Thymeleaf 3.1, HTML5, CSS3 | Server-rendered templates |
-| **UI Enhancements** | Vanilla JavaScript (625 lines) | Tab switching, toast, modal, sorting, search, CSV export, pagination, dark mode, vehicle format helpers, slot grid builder |
-| **CSS** | Custom design system (1403 lines) | Design tokens, dark mode, responsive, animations |
+| **UI Enhancements** | Vanilla JavaScript (508 lines) | Tab switching, toast, modal, search, CSV export, pagination, dark mode, vehicle format helpers, slot grid builder |
+| **CSS** | Custom design system (1193 lines) | Design tokens, dark mode, responsive, animations |
 | **QR Code** | ZXing 3.5.3 (core + javase) | QR generation and PNG output |
 | **Scanner** | html5-qrcode (CDN) | Camera-based QR scanning |
 | **Build** | Maven Wrapper (mvnw.cmd) | Build, test, run |
@@ -116,52 +116,52 @@ QSpark/
 ├── data.sql / data-h2.sql           # Seed files (admin seed moved to DataInitializer)
 │
 ├── src/main/java/com/qspark/
-│   ├── QSparkApplication.java       # Entry point
+│   ├── QSparkApplication.java       # Entry point (26 lines)
 │   ├── config/
-│   │   ├── SecurityConfig.java      # Spring Security filter chain (71 lines)
-│   │   ├── AdminDetailsService.java # UserDetailsService impl (31 lines)
-│   │   └── DataInitializer.java     # Seeds admin with BCrypt password (29 lines)
+│   │   ├── SecurityConfig.java      # Spring Security filter chain (85 lines)
+│   │   ├── AdminDetailsService.java # UserDetailsService impl (42 lines)
+│   │   └── DataInitializer.java     # Seeds admin with BCrypt password (41 lines)
 │   ├── controller/
-│   │   ├── LoginController.java     # GET /, /login (36 lines)
-│   │   ├── ParkingController.java   # Dashboard + CRUD (245 lines)
-│   │   └── QRCodeController.java    # QR generate/scan/list (121 lines)
+│   │   ├── LoginController.java     # GET /, /login (31 lines)
+│   │   ├── ParkingController.java   # Dashboard + CRUD (211 lines)
+│   │   └── QRCodeController.java    # QR generate/scan/list (101 lines)
 │   ├── model/
-│   │   ├── Admin.java               # Admin entity (60 lines)
-│   │   ├── ParkingSlot.java         # Parking booking entity (124 lines)
-│   │   └── VehicleRegistration.java # QR vehicle registry (69 lines)
+│   │   ├── Admin.java               # Admin entity (48 lines)
+│   │   ├── ParkingSlot.java         # Parking booking entity (100 lines)
+│   │   └── VehicleRegistration.java # QR vehicle registry (57 lines)
 │   └── repository/
-│       ├── AdminRepository.java     # findByUsername (29 lines)
-│       ├── ParkingRepository.java   # Slot + vehicle queries (34 lines)
-│       └── VehicleRegistrationRepository.java  # findByVehicleNumber (28 lines)
+│       ├── AdminRepository.java     # findByUsername (24 lines)
+│       ├── ParkingRepository.java   # Slot + vehicle queries (24 lines)
+│       └── VehicleRegistrationRepository.java  # findByVehicleNumber (25 lines)
 │
 ├── src/main/resources/
 │   ├── application.properties       # MySQL profile
 │   ├── application-h2.properties    # H2 dev profile
 │   ├── templates/                   # Thymeleaf views
-│   │   ├── landing.html             # Marketing page (514 lines)
-│   │   ├── login.html               # Auth page (309 lines)
-│   │   ├── index.html               # Dashboard (490 lines)
-│   │   ├── edit.html                # Edit booking (216 lines)
-│   │   └── qrcode.html              # QR management (391 lines)
+│   │   ├── landing.html             # Marketing page (1074 lines)
+│   │   ├── login.html               # Auth page (307 lines)
+│   │   ├── index.html               # Dashboard (452 lines)
+│   │   ├── edit.html                # Edit booking (200 lines)
+│   │   └── qrcode.html              # QR management (362 lines)
 │   └── static/                      # Static assets
-│       ├── css/styles.css           # Full design system (1403 lines)
-│       ├── js/app.js                # Shared JS utilities (625 lines)
+│       ├── css/styles.css           # Full design system (1193 lines)
+│       ├── js/app.js                # Shared JS utilities (508 lines)
 │       ├── logo.webp                # Brand logo
 │       ├── hero-banner.webp         # Landing page hero image
 │       └── favicon.ico              # Favicon
 │
-└── src/test/java/com/qspark/        # 63 tests
-    ├── QSparkApplicationTests.java
+└── src/test/java/com/qspark/        # 66 tests
+    ├── QSparkApplicationTests.java  # 1 test
     ├── controller/
-    │   ├── LoginControllerTest.java       # 2 tests (public endpoints)
-    │   ├── LoginIntegrationTest.java      # 4 tests (full-stack auth)
-    │   ├── ParkingControllerTest.java     # 23 tests (CRUD + auth)
-    │   └── QRCodeControllerTest.java      # 8 tests (QR + auth)
+    │   ├── LoginControllerTest.java       # 2 tests
+    │   ├── LoginIntegrationTest.java      # 4 tests
+    │   ├── ParkingControllerTest.java     # 24 tests
+    │   └── QRCodeControllerTest.java      # 8 tests
     ├── model/
-    │   └── ParkingSlotValidationTest.java # 9 tests (regex patterns)
+    │   └── ParkingSlotValidationTest.java # 14 tests
     └── repository/
         ├── AdminRepositoryTest.java       # 4 tests
-        ├── ParkingRepositoryTest.java     # 6 tests
+        ├── ParkingRepositoryTest.java     # 3 tests
         └── VehicleRegistrationRepositoryTest.java  # 6 tests
 ```
 
@@ -200,7 +200,7 @@ $env:DB_PASSWORD = "your_password"
 - **Password:** `QSpark@Secure`
 
 ### 5. Windows Quick Launcher
-Double-click `QSpark.bat` - it checks port 8081, launches with H2 profile in a minimized window, opens the browser automatically.
+Double-click `QSpark.bat` - it checks port 8081, launches with H2 profile in a single terminal window, opens the browser automatically.
 
 ---
 
@@ -216,8 +216,8 @@ Double-click `QSpark.bat` - it checks port 8081, launches with H2 profile in a m
 | `POST` | `/save` | Authenticated | Create a new parking booking |
 | `POST` | `/update` | Authenticated | Update an existing booking |
 | `GET` | `/edit/{id}` | Authenticated | Edit form for a booking |
-| `GET` | `/delete/{id}` | Authenticated | Delete a booking |
-| `GET` | `/left/{id}` | Authenticated | Mark vehicle as exited |
+| `POST` | `/delete/{id}` | Authenticated | Delete a booking |
+| `POST` | `/left/{id}` | Authenticated | Mark vehicle as exited |
 | `GET` | `/qrcode` | Authenticated | QR code management page |
 | `POST` | `/qrcode/generate` | Authenticated | Generate QR PNG (returns image) |
 | `POST` | `/qrcode/scan` | Authenticated | Scan QR and redirect to dashboard |
@@ -272,7 +272,7 @@ Double-click `QSpark.bat` - it checks port 8081, launches with H2 profile in a m
 
 ### Running Tests
 ```powershell
-# Run all 63 tests
+# Run all 66 tests
 .\mvnw.cmd test
 
 # Run a specific test class

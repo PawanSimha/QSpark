@@ -13,7 +13,7 @@ QSpark is a **production-grade smart parking management system** for commercial 
 
 **Target users:** Parking administrators (daily ops), Security guards (QR scanning), System admins (monitoring)
 
-**Current maturity:** Production Ready v1.0 - all P0 features shipped, 63 tests passing, GPLv3 licensed.
+**Current maturity:** Production Ready v1.0 - all P0 features shipped, 66 tests passing, GPLv3 licensed.
 
 ---
 
@@ -32,8 +32,8 @@ QSpark is a **production-grade smart parking management system** for commercial 
 | **QR Generation** | ZXing | 3.5.3 | core + javase, PNG output via MatrixToImageWriter |
 | **QR Scanning** | html5-qrcode | CDN | Camera-based scan, requires HTTPS or localhost |
 | **Build Tool** | Maven Wrapper | 3.x | mvnw.cmd for Windows, mvnw for Unix |
-| **Frontend JS** | Vanilla JavaScript | ES5+ | 625 lines, no frameworks |
-| **Frontend CSS** | Custom design system | - | 1403 lines, CSS custom properties, dark mode |
+| **Frontend JS** | Vanilla JavaScript | ES5+ | 508 lines, no frameworks |
+| **Frontend CSS** | Custom design system | - | 1193 lines, CSS custom properties, dark mode |
 | **Testing** | JUnit 5 + Spring Test | - | @WebMvcTest, @DataJpaTest, @SpringBootTest |
 
 ---
@@ -65,7 +65,7 @@ Browser (HTML+CSS+JS) --> Controller (Spring @Controller)
 - **State management** - the server holds all authoritative state. Client holds only dark mode preference (localStorage `qspark-dark-mode`). No client-side state library.
 - **Auth** - Spring Security filter chain guards every route except public paths (/, /login, /css/**, /js/**, /images/**). CSRF tokens on all POST forms. API-style endpoints (/qrcode/generate, /qrcode/list) return 401 instead of redirect.
 - **Error handling** - try/catch in every controller method with model-level error/success attributes. No global exception handler.
-- **Dual database profile** - `default` (MySQL) vs `h2` (H2 in-memory). Seed files differ: data.sql uses `INSERT IGNORE` (MySQL), data-h2.sql uses `MERGE INTO` (H2).
+- **Dual database profile** - `default` (MySQL) vs `h2` (H2 in-memory). Seeding is handled by DataInitializer.java (no SQL seed files).
 
 ### Data Flow Example (Creating a Booking)
 
@@ -91,7 +91,7 @@ QSpark/
 |-- README.md                        # User-facing documentation
 |-- context.md                       # THIS FILE - workspace state & architecture reference
 |-- LICENSE                          # GNU General Public License v3.0
-|-- data.sql / data-h2.sql           # DB seed files - admin user (note: seed moved to DataInitializer.java)
+|-- data.sql / data-h2.sql           # 0-byte remnants - seeding handled by DataInitializer.java
 |
 |-- src/main/java/com/qspark/
 |   |-- QSparkApplication.java       # Entry point - @SpringBootApplication
@@ -109,7 +109,7 @@ QSpark/
 |   |   |-- VehicleRegistration.java # @Entity - QR-registered vehicles, createdAt set in constructor
 |   |-- repository/
 |       |-- AdminRepository.java     # findByUsername()
-|       |-- ParkingRepository.java   # findBySlotNumber(), findByVehicleNumberContainingIgnoreCase(), existsByVehicleNumberAndExitTimeIsNull()
+|       |-- ParkingRepository.java   # findBySlotNumber(), existsByVehicleNumberAndExitTimeIsNull()
 |       |-- VehicleRegistrationRepository.java  # findByVehicleNumber() with Optional, existsByVehicleNumber()
 |
 |-- src/main/resources/
@@ -126,18 +126,18 @@ QSpark/
 |       |-- js/app.js                # Shared utilities - Toast, Modal, sort, filter, paginate, CSV, slot grid
 |       |-- logo.webp / hero-banner.webp / favicon.ico
 |
-|-- src/test/java/com/qspark/        # 63 tests total
+|-- src/test/java/com/qspark/        # 66 tests total
 |   |-- QSparkApplicationTests.java  # 1 test - context loads
 |   |-- controller/
 |   |   |-- LoginControllerTest.java        # 2 tests - WebMvcTest public endpoints
 |   |   |-- LoginIntegrationTest.java       # 4 tests - full login flow with H2
-|   |   |-- ParkingControllerTest.java      # 23 tests - CRUD + auth guards
+|   |   |-- ParkingControllerTest.java      # 24 tests - CRUD + auth guards + validation
 |   |   |-- QRCodeControllerTest.java       # 8 tests - QR generate/scan/list + auth
 |   |-- model/
-|   |   |-- ParkingSlotValidationTest.java  # 9 tests - vehicle number regex patterns
+|   |   |-- ParkingSlotValidationTest.java  # 14 tests - vehicle number + mobile regex
 |   |-- repository/
 |       |-- AdminRepositoryTest.java        # 4 tests
-|       |-- ParkingRepositoryTest.java      # 6 tests
+|       |-- ParkingRepositoryTest.java      # 3 tests
 |       |-- VehicleRegistrationRepositoryTest.java  # 6 tests
 ```
 
@@ -170,7 +170,7 @@ QSpark/
 - **No client-side data fetching for critical UI.** Slot grid rendering depends on model attributes passed from the server. Do not fetch slot data via AJAX on page load.
 - **Do not skip CSRF on POST forms.** Every state-changing POST must include a CSRF token: `<input type="hidden" name="_csrf" th:value="${_csrf.token}">` for forms, `X-CSRF-TOKEN` header for AJAX.
 - **No em dashes in documentation files.** Use ` - ` instead of ` - ` (em dash U+2014) in all .md documentation files.
-- **Never delete `data-h2.sql`.** It is the only admin seed for the H2 development profile. Keep it in sync with `data.sql` but never use `INSERT IGNORE` in H2 or `MERGE INTO` in MySQL.
+- **data.sql and data-h2.sql are both 0-byte remnants.** All seeding is handled by DataInitializer.java. Do not add SQL seed commands to these files.
 
 ---
 
@@ -196,15 +196,17 @@ QSpark/
 - [x] GPLv3 license headers in all source files (31 files)
 - [x] Dual database profile (MySQL production / H2 development)
 - [x] MySQL password via environment variable `${DB_PASSWORD}`
-- [x] Windows quick launcher (QSpark.bat - port check, minimized window, auto-open browser)
-- [x] 63 tests passing (0 failures, 0 errors)
+- [x] Windows quick launcher (QSpark.bat - port check, single window, auto-open browser)
+- [x] 66 tests passing (0 failures, 0 errors)
 - [x] Em dashes removed from all .md documentation files
+- [x] AGENTS.md fully rewritten with accurate file inventory, test counts, and architecture patterns
+- [x] README.md synced with correct line counts, test counts, and endpoint methods
+- [x] PRD.md test count updated, dual-seed reference corrected
+- [x] Security audit: DELETE/LEFT migrated from GET→POST, @Valid+BindingResult added to update(), mobileNumber @Pattern enforcement, dead code removed, blue color standardized, dark mode unified across all pages
 
 ### In-Progress Workloads (Active Focus)
 
-- [ ] Update PRD.md feature matrix to reflect Spring Security migration as a P0 item
-- [ ] Review/clean stale entries in AGENTS.md vehicle format documentation (now centralized in app.js)
-- [ ] Investigate `String` ID fields for future entities (consistency with ParkingSlot/VehicleRegistration)
+- [ ] Investigate `Integer` vs `Long` ID consistency (ParkingSlot uses Integer, VehicleRegistration uses Long)
 - [ ] Confirm no `\u2014` em dash Unicode escape exists in application code (JS populateFormatSelect uses it for visual separator in dropdown labels)
 
 ### Upcoming Implementations (Next Steps)
