@@ -35,7 +35,7 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 | `config/AdminDetailsService.java` | 42 | Spring Security `UserDetailsService` — loads admin by username from DB. |
 | `config/DataInitializer.java` | 41 | `CommandLineRunner` — seeds admin user with BCrypt-hashed password at startup. |
 | `config/SecurityConfig.java` | 85 | Security filter chain, BCrypt encoder, endpoint permissions, CSRF, headers. |
-| `controller/LoginController.java` | 31 | Handles landing page (`/`), login page (`GET /login`). |
+| `controller/LoginController.java` | 37 | Handles landing page (`/`), login page (`GET /login`). Eagerly resolves deferred CSRF token to prevent session-creation-after-response error. |
 | `controller/ParkingController.java` | 211 | Dashboard (`GET /dashboard`), create (`POST /save`), edit (`GET /edit/{id}`), update (`POST /update`), mark left (`POST /left/{id}`), delete (`POST /delete/{id}`). |
 | `controller/QRCodeController.java` | 101 | QR page (`GET /qrcode`), generate QR PNG (`POST /qrcode/generate`), scan redirect (`POST /qrcode/scan`), JSON list (`GET /qrcode/list`). |
 | `model/ParkingSlot.java` | 100 | `@Entity` - id, ownerName, vehicleNumber (with `@Pattern`), vehicleType, slotNumber, mobileNumber (with `@Pattern`), entryTime, exitTime. |
@@ -65,8 +65,8 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 
 | File | Lines | Purpose |
 |------|------:|---------|
-| `landing.html` | 1074 | Marketing page: full-width hero, floating pill nav (logo left/links center/CTA right), dark mode toggle, feature cards, QR phone mockup, architecture pipeline, developer profiles, FAQ accordion, footer. Inter font, blue #2563EB primary, #EAEAEA bg, IntersectionObserver animations. |
-| `login.html` | 307 | Auth card: 2-column layout with logo + form + error shake animation + dark mode toggle. Standalone CSS (dark mode supported via styles.css + app.js). |
+| `landing.html` | 1085 | Marketing page: full-width hero, floating pill nav (logo left/links center/CTA right), dark mode toggle, feature cards, QR phone mockup, architecture pipeline, developer profiles, FAQ accordion, footer. Inter font, blue #2563EB primary, #EAEAEA bg, IntersectionObserver animations. |
+| `login.html` | 281 | Auth card: 2-column layout with logo + form + error shake animation. Standalone inline CSS. No dark mode toggle. |
 | `index.html` | 452 | Dashboard: sidebar + topbar (dark mode, scan, clock, logout), 3-tab layout (Booking form + 4x120 slot grid / Occupied table / History table), search/sort/export/pagination, confirm modals for delete/left. |
 | `edit.html` | 200 | Edit booking: cascading basement/slot dropdown, vehicle number formatting, mobile validation, CSRF hidden input. |
 | `qrcode.html` | 362 | Two-tab: Generate QR (format selector + AJAX download) / Scan QR (html5-qrcode camera + auto-redirect), registered vehicles table with client-side refresh. |
@@ -79,6 +79,10 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 | `js/app.js` | 508 | Toast notifications, Modal dialogs, dark mode toggle (`qspark-dark-mode` localStorage), live clock, table filtering, pagination, CSV export, vehicle format helpers (`VEHICLE_FORMATS`/`populateFormatSelect`/`setupVehicleFormat`), slot grid builder, quick-jump. |
 | `images/pawan-simha.webp` | — | Developer avatar (landing page). |
 | `images/prajwal-r.webp` | — | Developer avatar (landing page). |
+| `images/logo-light.webp` | — | Brand logo (light variant). |
+| `images/logo-dark.webp` | — | Brand logo (dark variant). |
+| `images/hero-banner-light.webp` | — | Hero banner (light variant). |
+| `images/hero-banner-dark.webp` | — | Hero banner (dark variant). |
 
 ### Config Files
 
@@ -180,7 +184,7 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 ## Spring Security Architecture
 
 ### Filter Chain (SecurityConfig)
-- All paths require authentication except `/`, `/login`, `/css/**`, `/js/**`, `/images/**`, `/logo.webp`, `/favicon.ico`, `/hero-banner.webp`
+- All paths require authentication except `/`, `/login`, `/css/**`, `/js/**`, `/images/**`, `/logo-light.webp`, `/logo-dark.webp`, `/favicon.ico`, `/hero-banner-light.webp`, `/hero-banner-dark.webp`
 - `/qrcode/generate` and `/qrcode/list` return 401 (for API-like use)
 - Form login at `/login` with default success redirect to `/dashboard`
 - Logout via POST `/logout`
@@ -381,7 +385,7 @@ Uses CSS custom properties (design tokens) organized into:
 2. **Empty** — Empty state with icon, title, and description (e.g., "No active bookings")
 3. **Error** — Error alerts (`.alert-error`) and toast notifications
 4. **Success** — Success alerts (`.alert-success`) and toast notifications
-5. **Edge Cases** — Mobile responsive breakpoints at 1024px, 768px, 480px; dark mode on all authenticated pages + landing + login
+5. **Edge Cases** — Mobile responsive breakpoints at 1024px, 768px, 480px; dark mode on landing page and all authenticated pages (login page is excluded from dark mode)
 
 ### Tab System (Dashboard & QR pages)
 
@@ -470,7 +474,8 @@ Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants — seed log
 ### Critical (Will Break Things)
 
 - **`-Dspring-boot.run.profiles=h2` MUST be quoted** when passed to `mvnw.cmd` from PowerShell or cmd. Without quotes, Maven parses it as a lifecycle phase name: `mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"`
-- **Dark mode localStorage key is `qspark-dark-mode`** — `app.js` uses this key consistently across all pages (landing, login, dashboard, edit, QR).
+- **Dark mode localStorage key is `qspark-dark-mode`** — `app.js` uses this key consistently across all pages (landing, dashboard, edit, QR). Login page has no dark mode support.
+- **Deferred CSRF token (Spring Security 6.3) can crash login page** — When `_csrf.token` is evaluated in Thymeleaf, the deferred token may try to create a session after the response is committed, causing `IllegalStateException`. Fix: eagerly resolve the CSRF token in the controller (`csrf.getToken()`) before rendering begins.
 - **Vehicle format map is centralized in `app.js`.** When adding/editing formats, update `VEHICLE_FORMATS` in `app.js` only — `index.html` and `qrcode.html` populate dynamically via `populateFormatSelect()`.
 - **ParkingSlot uses `Integer` for ID, VehicleRegistration uses `Long`.** Don't change without a full migration plan.
 
@@ -510,6 +515,10 @@ Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants — seed log
 | Jul 2026 | **Bug fix: removed dead form elements** | Non-functional "Remember me" checkbox and "Forgot password" link removed from login.html |
 | Jul 2026 | **Code quality: removed fragments.html** | Dead code — no template used `th:include`/`th:replace` with it |
 | Jul 2026 | **Code quality: vehicle format centralized** | Format map was in 3 places — now populated dynamically from single `VEHICLE_FORMATS` in app.js |
+| Jul 2026 | **Bug fix: deferred CSRF token crash** | `LoginController.loginPage()` now eagerly resolves CSRF token via `csrf.getToken()` to prevent `IllegalStateException: Cannot create a session after the response has been committed` on login page load |
+| Jul 2026 | **Login page dark mode removed** | Dark mode toggle button, `.login-dark-toggle` CSS, and `body.dark` rule removed from login.html per user request. Logo uses `logo-light.webp` only (no theme switching) |
+| Jul 2026 | **CONTACTS.md created** | Developer contact file added with Pawan Simha R and Prajwal R |
+| Jul 2026 | **Documentation updated** | AGENTS.md, README.md, PRD.md, context.md synced to current state — login line counts, dead log files cleaned, version unified to 1.0.0 |
 | Jul 2026 | **Code quality: SecurityConfig dead code** | `contentTypeOptions(customizer -> {})` was a no-op — replaced with `Customizer.withDefaults()` |
 | Jul 2026 | **Code quality: nav redesigned** | Logo left, links center, CTA right — wider nav with dark mode toggle and glassmorphism |
 
@@ -521,7 +530,7 @@ Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants — seed log
 2. **No frontend frameworks.** All JS is vanilla. All CSS is hand-written with custom properties. No Tailwind, Bootstrap, React, Vue, or Alpine.
 3. **Server-rendered first.** JS is progressive enhancement. The app must work (with degraded UX) without JS.
 4. **Thymeleaf templates are complete HTML.** Not partials/components. Each page is a full `<!DOCTYPE html>` document.
-5. **Dark mode is a design constraint.** Every new UI element needs a dark mode variant (`body.dark .your-class`).
+5. **Dark mode is a design constraint.** Every new UI element needs a dark mode variant (`body.dark .your-class`), except the login page which is intentionally excluded from dark mode.
 6. **Test every new endpoint.** At minimum: without auth → 401 + with auth → success. Test error/edge cases too. Always include `@Import(SecurityConfig.class)` and `.with(csrf())` for POST endpoint tests.
 7. **Both databases must work.** MySQL is production, H2 is dev/testing. Seeding is handled by `DataInitializer.java` — no SQL seed files needed.
 8. **No secrets in code.** Database passwords and API keys should be referenced via environment variables.

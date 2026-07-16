@@ -5,7 +5,7 @@
 | **Project Name** | QSpark - Quick & Smart Parking |
 | **Target Release** | Q3 2026 (Current) |
 | **Status** | Production Ready v1.0 |
-| **Author** | Product & Engineering Team |
+| **Author** | Pawan Simha R |
 | **Document Version** | 1.0 |
 
 ---
@@ -77,7 +77,7 @@ QSpark solves all six problems with a single, unified, server-authoritative appl
 | F-10 | **QR Code Scanning** | Camera-based scan via html5-qrcode - auto-fill dashboard form, error on unregistered | ✅ Built |
 | F-11 | **Entry/Exit Timestamps** | `entry_time` set on booking, `exit_time` set on "Mark as Left" | ✅ Built |
 | F-12 | **Audit Trail (History)** | All completed bookings visible in History tab with full details | ✅ Built |
-| F-13 | **Dark Mode** | Toggle persisted in `localStorage` (`qspark-dark-mode`), applied across all pages | ✅ Built |
+| F-13 | **Dark Mode** | Toggle persisted in `localStorage` (`qspark-dark-mode`), applied across all pages except login | ✅ Built |
 | F-14 | **Client-Side Search & Sort** | real-time `filterTable()` across columns, click-to-sort with asc/desc | ✅ Built |
 | F-15 | **CSV Export** | Download visible rows from Occupied and History tables | ✅ Built |
 | F-16 | **Security Headers** | X-XSS-Protection, X-Content-Type-Options (nosniff), X-Frame-Options (DENY), Referrer-Policy (same-origin) | ✅ Built |

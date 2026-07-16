@@ -6,7 +6,7 @@
   <p align="center">
     <img src="https://img.shields.io/badge/Java-17-%23ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java 17"/>
     <img src="https://img.shields.io/badge/Spring_Boot-3.3.1-%236DB33F?style=flat-square&logo=springboot&logoColor=white" alt="Spring Boot 3.3.1"/>
-    <img src="https://img.shields.io/badge/Spring_Security-6.0-%236DB33F?style=flat-square&logo=springsecurity&logoColor=white" alt="Spring Security 6.0"/>
+    <img src="https://img.shields.io/badge/Spring_Security-6.3-%236DB33F?style=flat-square&logo=springsecurity&logoColor=white" alt="Spring Security 6.3"/>
     <img src="https://img.shields.io/badge/Thymeleaf-3.1-%23005C0F?style=flat-square&logo=thymeleaf&logoColor=white" alt="Thymeleaf"/>
     <img src="https://img.shields.io/badge/MySQL-8.0-%234479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL 8.0"/>
     <img src="https://img.shields.io/badge/QR_Code-ZXing_3.5.3-%23FF8800?style=flat-square" alt="ZXing 3.5.3"/>
@@ -18,7 +18,7 @@
 ---
 
 <p align="center">
-  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/hero-banner.webp" alt="QSpark Hero Banner" width="100%" style="border-radius: 12px; max-width: 900px;"/>
+  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/images/hero-banner-light.webp" alt="QSpark Hero Banner" width="100%" style="border-radius: 12px; max-width: 900px;"/>
 </p>
 
 ##  Product Strategy
@@ -64,7 +64,7 @@
 |---------|--------|
 | **Spring Security Auth** | BCrypt password hashing, form login/logout, CSRF protection on all forms |
 | **Session Management** | Session invalidation on logout, secure headers (XSS, frame-deny, nosniff) |
-| **Dark Mode** | Persisted preference via `localStorage`, toggle across all pages |
+| **Dark Mode** | Persisted preference via `localStorage`, toggle across all pages except login |
 | **Responsive Design** | Breakpoints at 1024px, 768px, 480px |
 | **Toast Notifications** | Auto-dismissing success/error/info toasts with optional undo |
 | **Empty States** | Contextual empty-state UI for tables with no data |
@@ -90,7 +90,7 @@ Database (MySQL / H2)       ← 3 tables: admin, parking_slot, vehicle_registrat
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
 | **Backend** | Java 17, Spring Boot 3.3.1 | MVC framework, dependency injection |
-| **Security** | Spring Security 6.0, BCrypt | Authentication, authorization, CSRF |
+| **Security** | Spring Security 6.3, BCrypt | Authentication, authorization, CSRF |
 | **Database** | MySQL 8.0 (prod), H2 (dev) | Relational persistence |
 | **ORM** | Spring Data JPA, Hibernate | Repository pattern, auto-DDL |
 | **Frontend** | Thymeleaf 3.1, HTML5, CSS3 | Server-rendered templates |
@@ -111,9 +111,12 @@ QSpark/
 ├── mvnw.cmd / mvnw                  # Maven wrapper
 ├── QSpark.bat                       # Windows launcher
 ├── AGENTS.md                        # AI agent guide
+├── CONTACTS.md                      # Developer contact info
+├── PRD.md                           # Product requirements document
+├── context.md                       # Workspace context for AI
 ├── README.md                        # This file
 ├── .gitignore / .gitattributes
-├── data.sql / data-h2.sql           # Seed files (admin seed moved to DataInitializer)
+├── data.sql / data-h2.sql           # 0-byte remnants (seed logic in DataInitializer)
 │
 ├── src/main/java/com/qspark/
 │   ├── QSparkApplication.java       # Entry point (26 lines)
@@ -122,7 +125,7 @@ QSpark/
 │   │   ├── AdminDetailsService.java # UserDetailsService impl (42 lines)
 │   │   └── DataInitializer.java     # Seeds admin with BCrypt password (41 lines)
 │   ├── controller/
-│   │   ├── LoginController.java     # GET /, /login (31 lines)
+│   │   ├── LoginController.java     # GET /, /login (37 lines) - eager CSRF resolution
 │   │   ├── ParkingController.java   # Dashboard + CRUD (211 lines)
 │   │   └── QRCodeController.java    # QR generate/scan/list (101 lines)
 │   ├── model/
@@ -138,16 +141,21 @@ QSpark/
 │   ├── application.properties       # MySQL profile
 │   ├── application-h2.properties    # H2 dev profile
 │   ├── templates/                   # Thymeleaf views
-│   │   ├── landing.html             # Marketing page (1074 lines)
-│   │   ├── login.html               # Auth page (307 lines)
+│   │   ├── landing.html             # Marketing page (1085 lines)
+│   │   ├── login.html               # Auth page (281 lines) - no dark mode
 │   │   ├── index.html               # Dashboard (452 lines)
 │   │   ├── edit.html                # Edit booking (200 lines)
 │   │   └── qrcode.html              # QR management (362 lines)
 │   └── static/                      # Static assets
 │       ├── css/styles.css           # Full design system (1193 lines)
 │       ├── js/app.js                # Shared JS utilities (508 lines)
-│       ├── logo.webp                # Brand logo
-│       ├── hero-banner.webp         # Landing page hero image
+│       ├── images/
+│       │   ├── logo-light.webp      # Brand logo (light variant)
+│       │   ├── logo-dark.webp       # Brand logo (dark variant)
+│       │   ├── hero-banner-light.webp  # Hero banner (light variant)
+│       │   ├── hero-banner-dark.webp   # Hero banner (dark variant)
+│       │   ├── pawan-simha.webp     # Developer avatar
+│       │   └── prajwal-r.webp       # Co-developer avatar
 │       └── favicon.ico              # Favicon
 │
 └── src/test/java/com/qspark/        # 66 tests

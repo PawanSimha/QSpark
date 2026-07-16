@@ -23,7 +23,7 @@ QSpark is a **production-grade smart parking management system** for commercial 
 |-------|-----------|---------|--------------------------|
 | **Backend** | Java | 17 | OpenJDK 17, records not used yet |
 | **Framework** | Spring Boot | 3.3.1 | web, data-jpa, thymeleaf, devtools |
-| **Security** | Spring Security | 6.0.x | BCryptPasswordEncoder (strength 10), formLogin(), CSRF enabled, security headers |
+| **Security** | Spring Security | 6.3.x | BCryptPasswordEncoder (strength 10), formLogin(), CSRF enabled (deferred token), security headers |
 | **Template Engine** | Thymeleaf | 3.1 | Server-rendered HTML, no frontend framework |
 | **Database (prod)** | MySQL | 8.0 | Connector: mysql-connector-j |
 | **Database (dev)** | H2 | 2.x | In-memory mode, console at /h2-console |
@@ -89,6 +89,7 @@ QSpark/
 |-- AGENTS.md                        # AI agent guide for development assistants
 |-- PRD.md                           # Product requirements document (MoSCoW feature matrix)
 |-- README.md                        # User-facing documentation
+|-- CONTACTS.md                      # Developer contact info
 |-- context.md                       # THIS FILE - workspace state & architecture reference
 |-- LICENSE                          # GNU General Public License v3.0
 |-- data.sql / data-h2.sql           # 0-byte remnants - seeding handled by DataInitializer.java
@@ -124,7 +125,11 @@ QSpark/
 |   |-- static/
 |       |-- css/styles.css           # Full design system - tokens, layout, components, dark mode
 |       |-- js/app.js                # Shared utilities - Toast, Modal, sort, filter, paginate, CSV, slot grid
-|       |-- logo.webp / hero-banner.webp / favicon.ico
+|       |-- images/
+|       |   |-- logo-light.webp / logo-dark.webp        # Brand logos (light & dark variants)
+|       |   |-- hero-banner-light.webp / hero-banner-dark.webp  # Hero banners (light & dark variants)
+|       |   |-- pawan-simha.webp / prajwal-r.webp       # Developer avatars
+|       |-- favicon.ico
 |
 |-- src/test/java/com/qspark/        # 66 tests total
 |   |-- QSparkApplicationTests.java  # 1 test - context loads
@@ -203,11 +208,12 @@ QSpark/
 - [x] README.md synced with correct line counts, test counts, and endpoint methods
 - [x] PRD.md test count updated, dual-seed reference corrected
 - [x] Security audit: DELETE/LEFT migrated from GET→POST, @Valid+BindingResult added to update(), mobileNumber @Pattern enforcement, dead code removed, blue color standardized, dark mode unified across all pages
+- [x] Login page CSRF fix: eager token resolution in controller to prevent session-after-response-committed crash
+- [x] Login page dark mode removed: toggle button, CSS, and body.dark rule removed per user request
 
 ### In-Progress Workloads (Active Focus)
 
 - [ ] Investigate `Integer` vs `Long` ID consistency (ParkingSlot uses Integer, VehicleRegistration uses Long)
-- [ ] Confirm no `\u2014` em dash Unicode escape exists in application code (JS populateFormatSelect uses it for visual separator in dropdown labels)
 
 ### Upcoming Implementations (Next Steps)
 

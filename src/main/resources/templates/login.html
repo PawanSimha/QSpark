@@ -183,15 +183,6 @@
             color: #2563EB;
         }
 
-        .login-dark-toggle{
-            background: none; border: none; cursor: pointer;
-            width: 34px; height: 34px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: rgba(0,0,0,0.4); transition: all 0.25s ease;
-            margin: 0 auto 16px;
-        }
-        .login-dark-toggle:hover{ background: rgba(0,0,0,0.05); color: #000; }
-
         .login-right{
             width: 52%;
             position: relative;
@@ -263,8 +254,6 @@
             }
         }
 
-        /* Dark mode — only background changes, card stays white */
-        body.dark{ background: #111318; }
     </style>
 </head>
 <body>
@@ -273,13 +262,13 @@
         <div class="login-card">
             <div class="login-left">
                 <div class="login-left-inner">
-                    <img src="/logo-light.webp" alt="QSpark" class="login-logo" data-theme-img data-theme-light="/logo-light.webp" data-theme-dark="/logo-dark.webp">
+                    <img src="/logo-light.webp" alt="QSpark" class="login-logo">
 
                     <h1>Welcome Back</h1>
                     <p class="login-subtitle">Sign in to manage your smart parking system.</p>
 
                     <form action="/login" method="post" id="loginForm">
-                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" th:if="${_csrf != null}">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
 
                         <div class="form-group">
                             <div class="input-wrap">
@@ -300,8 +289,6 @@
                         <p class="error-msg" th:if="${param.error != null}">Invalid Username or Password</p>
                     </form>
 
-                    <button id="darkModeToggle" onclick="toggleDarkMode()" class="login-dark-toggle" title="Toggle dark mode"></button>
-
                     <a href="/" class="back-link">Back to Home</a>
                 </div>
             </div>
@@ -313,7 +300,6 @@
 
     <script src="/js/app.js"></script>
     <script>
-        applyDarkMode();
         var params = new URLSearchParams(window.location.search);
         if (params.get('error') === 'true') {
             var card = document.querySelector('.login-left-inner');
