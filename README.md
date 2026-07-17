@@ -19,7 +19,7 @@
 ---
 
 <p align="center">
-  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/images/hero-banner-light.webp" alt="QSpark Hero Banner" width="100%" style="border-radius: 12px; max-width: 900px;"/>
+  <img src="https://github.com/PawanSimha/QSpark/raw/main/src/main/resources/static/Readme.webp" alt="QSpark Dashboard" width="100%" style="border-radius: 12px; max-width: 900px;"/>
 </p>
 
 ##  Product Strategy
