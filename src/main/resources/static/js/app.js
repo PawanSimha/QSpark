@@ -466,7 +466,7 @@ function buildSlotGrid(basement, occupiedSlots, gridId, hiddenId, statusId) {
   if (!grid) return;
 
   hidden.value = '';
-  status.textContent = basement + ' — Select a slot';
+  status.textContent = basement + ' - Select a slot';
   grid.innerHTML = '';
 
   var occupied = occupiedSlots.split(',').filter(Boolean);
@@ -587,3 +587,4 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
   applyDarkMode();
 });
+

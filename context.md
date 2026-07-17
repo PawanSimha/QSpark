@@ -238,14 +238,15 @@ QSpark/
 
 ### Completed Since Last Session
 
-- [x] **Git history purge** — Removed `[REDACTED]`, `[REDACTED]`, `backend.log` from all 17 commits using git-filter-repo
-- [x] **Admin password via env var** — DataInitializer.reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` env vars with dev fallback
-- [x] **Rate limiting on /login** — LoginRateLimitFilter: 5 failed attempts per IP, 5-min cooldown
-- [x] **HSTS header** — includeSubDomains, 1-year max-age added to SecurityConfig
-- [x] **QR scan redirect** — PII removed from URL params; uses RedirectAttributes (flash attributes) instead
-- [x] **GitHub Actions CI** — .github/workflows/maven.yml runs tests on push/PR to main
-- [x] **Copyright headers** — All 33+ source files: "PawanSimha" → "Pawan Simha R"
-- [x] **pom.xml version** — 0.0.1-SNAPSHOT → 1.0.0
-- [x] **CHANGELOG.md, SECURITY.md, .env.example** — Created for release
-- [x] **manifest.json, robots.txt** — Created for SEO/PWA
-- [x] **Stale ParkEase references** — Removed from .idea/compiler.xml
+- [x] **Git history purge** - Removed `[REDACTED]`, `[REDACTED]`, `backend.log` from all 17 commits using git-filter-repo
+- [x] **Admin password via env var** - DataInitializer.reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` env vars with dev fallback
+- [x] **Rate limiting on /login** - LoginRateLimitFilter: 5 failed attempts per IP, 5-min cooldown
+- [x] **HSTS header** - includeSubDomains, 1-year max-age added to SecurityConfig
+- [x] **QR scan redirect** - PII removed from URL params; uses RedirectAttributes (flash attributes) instead
+- [x] **GitHub Actions CI** - .github/workflows/maven.yml runs tests on push/PR to main
+- [x] **Copyright headers** - All 33+ source files: "PawanSimha" → "Pawan Simha R"
+- [x] **pom.xml version** - 0.0.1-SNAPSHOT → 1.0.0
+- [x] **CHANGELOG.md, SECURITY.md, .env.example** - Created for release
+- [x] **manifest.json, robots.txt** - Created for SEO/PWA
+- [x] **Stale ParkEase references** - Removed from .idea/compiler.xml
+

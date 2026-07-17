@@ -18,7 +18,7 @@ We will acknowledge receipt within 48 hours and provide a timeline for the fix.
 
 QSpark implements the following security measures:
 
-- **BCrypt password hashing** (strength 10) — no plaintext password storage
+- **BCrypt password hashing** (strength 10) - no plaintext password storage
 - **CSRF protection** on all state-changing POST endpoints
 - **Security headers**: XSS protection (MODE_BLOCK), content-type sniffing disabled (nosniff), frame denial (DENY), referrer policy (SAME_ORIGIN), HSTS (includeSubDomains, 1-year max-age)
 - **Form-based authentication** with Spring Security session management
@@ -30,6 +30,7 @@ QSpark implements the following security measures:
 
 ## Known Security Considerations
 
-- The H2 console is enabled in the `h2` development profile only — do not enable in production
-- Application runs on HTTP by default — deploy behind a TLS-terminating proxy in production
-- Admin credentials are seeded at startup — change immediately after first login in production deployments
+- The H2 console is enabled in the `h2` development profile only - do not enable in production
+- Application runs on HTTP by default - deploy behind a TLS-terminating proxy in production
+- Admin credentials are seeded at startup - change immediately after first login in production deployments
+

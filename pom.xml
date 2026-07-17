@@ -12,7 +12,7 @@
     <artifactId>QSpark</artifactId>
     <version>1.0.0</version>
     <name>QSpark</name>
-    <description>Quick &amp; Smart Parking — A production-grade parking management system built with Spring Boot</description>
+    <description>Quick &amp; Smart Parking - A production-grade parking management system built with Spring Boot</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -88,3 +88,4 @@
     </build>
 
 </project>
+

@@ -268,7 +268,7 @@
         var blob = xhr.response;
         var url = URL.createObjectURL(blob);
         qrImage.src = url;
-        qrVehicleLabel.textContent = o + ' — ' + v;
+        qrVehicleLabel.textContent = o + ' - ' + v;
         downloadLink.href = url;
         downloadLink.download = 'QR-' + v.replace(/ /g, '_') + '.png';
         qrPreview.classList.add('visible');
@@ -389,3 +389,4 @@
 
 </body>
 </html>
+

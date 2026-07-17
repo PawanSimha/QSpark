@@ -1,5 +1,5 @@
 {
-  "name": "QSpark — Quick & Smart Parking",
+  "name": "QSpark - Quick & Smart Parking",
   "short_name": "QSpark",
   "description": "Production-grade smart parking management system. Manages 480 parking slots across 4 basements with QR-code-based vehicle identification and real-time slot grid.",
   "start_url": "/",

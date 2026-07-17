@@ -21,7 +21,7 @@ Thymeleaf renders HTML ← Controller adds model data ← Repository returns ent
 Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dark mode
 ```
 
-**Key concept:** The server is in full control. Spring Security guards all endpoints declaratively. Controllers pass model data to Thymeleaf for server-side rendering. JavaScript only adds convenience features on top — it never replaces server-side logic.
+**Key concept:** The server is in full control. Spring Security guards all endpoints declaratively. Controllers pass model data to Thymeleaf for server-side rendering. JavaScript only adds convenience features on top - it never replaces server-side logic.
 
 ---
 
@@ -32,10 +32,10 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 | File | Lines | Purpose |
 |------|------:|---------|
 | `QSparkApplication.java` | 26 | Entry point. `@SpringBootApplication` with `SpringApplication.run()`. |
-| `config/AdminDetailsService.java` | 42 | Spring Security `UserDetailsService` — loads admin by username from DB. |
-| `config/DataInitializer.java` | 41 | `CommandLineRunner` — seeds admin user with BCrypt-hashed password at startup (reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` env vars). |
+| `config/AdminDetailsService.java` | 42 | Spring Security `UserDetailsService` - loads admin by username from DB. |
+| `config/DataInitializer.java` | 41 | `CommandLineRunner` - seeds admin user with BCrypt-hashed password at startup (reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` env vars). |
 | `config/SecurityConfig.java` | 85 | Security filter chain, BCrypt encoder, endpoint permissions, CSRF, headers, HSTS. |
-| `config/LoginRateLimitFilter.java` | 80 | `Filter` — rate limits /login to 5 failed attempts per IP with 5-min cooldown. |
+| `config/LoginRateLimitFilter.java` | 80 | `Filter` - rate limits /login to 5 failed attempts per IP with 5-min cooldown. |
 | `controller/LoginController.java` | 37 | Handles landing page (`/`), login page (`GET /login`). Eagerly resolves deferred CSRF token to prevent session-creation-after-response error. |
 | `controller/ParkingController.java` | 211 | Dashboard (`GET /dashboard`), create (`POST /save`), edit (`GET /edit/{id}`), update (`POST /update`), mark left (`POST /left/{id}`), delete (`POST /delete/{id}`). |
 | `controller/QRCodeController.java` | 101 | QR page (`GET /qrcode`), generate QR PNG (`POST /qrcode/generate`), scan redirect (`POST /qrcode/scan`), JSON list (`GET /qrcode/list`). |
@@ -78,12 +78,12 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 |------|------:|---------|
 | `css/styles.css` | 1193 | Full design system: 50+ CSS custom properties (colors, surfaces, text, shadows), 60+ component classes (buttons, inputs, cards, tables, toasts, modals, slot grid, tabs, pagination, alerts), dark mode via `body.dark`, responsive breakpoints at 1024/768/480px. |
 | `js/app.js` | 508 | Toast notifications, Modal dialogs, dark mode toggle (`qspark-dark-mode` localStorage), live clock, table filtering, pagination, CSV export, vehicle format helpers (`VEHICLE_FORMATS`/`populateFormatSelect`/`setupVehicleFormat`), slot grid builder, quick-jump. |
-| `images/pawan-simha.webp` | — | Developer avatar (landing page). |
-| `images/prajwal-r.webp` | — | Developer avatar (landing page). |
-| `images/logo-light.webp` | — | Brand logo (light variant). |
-| `images/logo-dark.webp` | — | Brand logo (dark variant). |
-| `images/hero-banner-light.webp` | — | Hero banner (light variant). |
-| `images/hero-banner-dark.webp` | — | Hero banner (dark variant). |
+| `images/pawan-simha.webp` | - | Developer avatar (landing page). |
+| `images/prajwal-r.webp` | - | Developer avatar (landing page). |
+| `images/logo-light.webp` | - | Brand logo (light variant). |
+| `images/logo-dark.webp` | - | Brand logo (dark variant). |
+| `images/hero-banner-light.webp` | - | Hero banner (light variant). |
+| `images/hero-banner-dark.webp` | - | Hero banner (dark variant). |
 
 ### Config Files
 
@@ -91,13 +91,13 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 |------|---------|
 | `application.properties` | MySQL connection (`jdbc:mysql://localhost:3306/qspark`), JPA ddl-auto=update, port 8081, Thymeleaf cache=false. |
 | `application-h2.properties` | H2 in-memory (`jdbc:h2:mem:qspark`), H2 console enabled, port 8081. |
-| `data.sql` | 0 bytes — seeding handled by DataInitializer.java. |
-| `data-h2.sql` | 0 bytes — seeding handled by DataInitializer.java. |
+| `data.sql` | 0 bytes - seeding handled by DataInitializer.java. |
+| `data-h2.sql` | 0 bytes - seeding handled by DataInitializer.java. |
 | `pom.xml` | Spring Boot 3.3.1, Java 17, 12 dependencies (data-jpa, thymeleaf, web, mysql-connector-j, h2, validation, zxing 3.5.3, spring-security, test). |
 | `QSpark.bat` | Windows launcher: checks port 8081, starts mvnw with H2 via `start /B` in same window, polls for ready, opens browser, cleans up on keypress. |
 | `.gitignore` | Ignores HELP.md, backend.log, target/, build/, .DS_Store, Thumbs.db, IDE files, *.local.properties, .opencode/. |
 | `.gitattributes` | Auto LF normalization, diff for java/xml/html/css/js/md/properties, mvnw=LF, .bat/.cmd=CRLF, binaries (jar/png/webp/ico/jpg)=binary. |
-| `.github/workflows/maven.yml` | GitHub Actions CI — runs `mvn test` with H2 profile on push/PR to main. |
+| `.github/workflows/maven.yml` | GitHub Actions CI - runs `mvn test` with H2 profile on push/PR to main. |
 ---
 
 ## Request Lifecycle (Detailed)
@@ -130,7 +130,7 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
    - If not found → returns to qrcode view with error "Vehicle not registered"
    - If found → redirects to `/dashboard` with URL parameters (ownerName, vehicleNumber, vehicleType, mobileNumber)
 5. `ParkingController.dashboard()` receives URL params, adds them as `scanned*` model attributes
-6. `applyScannedVehicle()` JS auto-fills and locks the form fields — admin only needs to pick a slot
+6. `applyScannedVehicle()` JS auto-fills and locks the form fields - admin only needs to pick a slot
 
 ### Example: Authentication
 
@@ -170,14 +170,14 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 |--------|------|:-----------:|
 | `id` | `BIGINT` | PK, AUTO_INCREMENT |
 | `vehicle_number` | `VARCHAR` | UNIQUE, NOT NULL |
-| `owner_name` | `VARCHAR` | — |
+| `owner_name` | `VARCHAR` | - |
 | `vehicle_type` | `VARCHAR` | Same 6 types |
 | `mobile_number` | `VARCHAR` | 10 digits |
 | `created_at` | `DATETIME` | Set via `LocalDateTime.now()` in constructor |
 
 ### Entity Relationships
-- No JPA `@OneToMany`/`@ManyToOne` relationships exist — all lookups are explicit via repository methods
-- `ParkingSlot` uses `Integer` for ID; `VehicleRegistration` uses `Long` for ID — intentional but inconsistent
+- No JPA `@OneToMany`/`@ManyToOne` relationships exist - all lookups are explicit via repository methods
+- `ParkingSlot` uses `Integer` for ID; `VehicleRegistration` uses `Long` for ID - intentional but inconsistent
 - `ParkingSlot.vehicleNumber` and `VehicleRegistration.vehicleNumber` are independent strings (no FK constraint)
 
 ---
@@ -210,7 +210,7 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 
 ### Auth Pattern (Spring Security - No Manual Session Checks)
 
-Auth is managed declaratively through `SecurityConfig.java` filter chain. Controllers never check `session.getAttribute("admin")` — Spring Security handles it before the controller method is reached.
+Auth is managed declaratively through `SecurityConfig.java` filter chain. Controllers never check `session.getAttribute("admin")` - Spring Security handles it before the controller method is reached.
 
 ```java
 @Configuration
@@ -369,24 +369,24 @@ Uses CSS custom properties (design tokens) organized into:
 
 ### JS Utilities (`app.js` - 508 lines)
 
-- **Toast:** `Toast.success(msg)`, `Toast.error(msg)`, `Toast.info(msg)` — auto-dismissing notifications
-- **Modal:** `Modal.confirm({title, message, confirmText, confirmClass, onConfirm, onCancel})` — trap focus, escape/overlay dismiss
-- **Dark mode:** `toggleDarkMode()` / `applyDarkMode()` — persisted in localStorage key `qspark-dark-mode`
-- **Table filtering:** `filterTable(tableId, inputId)` — real-time client-side search across all columns
-- **Pagination:** `paginateTable(tableId, rowsPerPage)` — with page buttons and info
-- **CSV Export:** `exportCSV(tableId, filename)` — exports visible (non-filtered) rows
-- **Slot Grid:** `buildSlotGrid(basement, occupiedSlots, gridId, hiddenId, statusId)` — builds clickable 15-column grid
-- **Quick Jump:** `quickJumpSlot()` — type a slot number to auto-select or highlight
-- **Vehicle Formats:** `VEHICLE_FORMATS` object, `populateFormatSelect()`, `setupVehicleFormat()` — centralized format handling
-- **Live Clock:** `updateClock()` — updates `#liveDate` and `#liveTime` every second
+- **Toast:** `Toast.success(msg)`, `Toast.error(msg)`, `Toast.info(msg)` - auto-dismissing notifications
+- **Modal:** `Modal.confirm({title, message, confirmText, confirmClass, onConfirm, onCancel})` - trap focus, escape/overlay dismiss
+- **Dark mode:** `toggleDarkMode()` / `applyDarkMode()` - persisted in localStorage key `qspark-dark-mode`
+- **Table filtering:** `filterTable(tableId, inputId)` - real-time client-side search across all columns
+- **Pagination:** `paginateTable(tableId, rowsPerPage)` - with page buttons and info
+- **CSV Export:** `exportCSV(tableId, filename)` - exports visible (non-filtered) rows
+- **Slot Grid:** `buildSlotGrid(basement, occupiedSlots, gridId, hiddenId, statusId)` - builds clickable 15-column grid
+- **Quick Jump:** `quickJumpSlot()` - type a slot number to auto-select or highlight
+- **Vehicle Formats:** `VEHICLE_FORMATS` object, `populateFormatSelect()`, `setupVehicleFormat()` - centralized format handling
+- **Live Clock:** `updateClock()` - updates `#liveDate` and `#liveTime` every second
 
 ### Key Frontend States Every Page Must Handle
 
-1. **Loading** — Skeleton/spinner (CSS classes available but not currently used)
-2. **Empty** — Empty state with icon, title, and description (e.g., "No active bookings")
-3. **Error** — Error alerts (`.alert-error`) and toast notifications
-4. **Success** — Success alerts (`.alert-success`) and toast notifications
-5. **Edge Cases** — Mobile responsive breakpoints at 1024px, 768px, 480px; dark mode on landing page and all authenticated pages (login page is excluded from dark mode)
+1. **Loading** - Skeleton/spinner (CSS classes available but not currently used)
+2. **Empty** - Empty state with icon, title, and description (e.g., "No active bookings")
+3. **Error** - Error alerts (`.alert-error`) and toast notifications
+4. **Success** - Success alerts (`.alert-success`) and toast notifications
+5. **Edge Cases** - Mobile responsive breakpoints at 1024px, 768px, 480px; dark mode on landing page and all authenticated pages (login page is excluded from dark mode)
 
 ### Tab System (Dashboard & QR pages)
 
@@ -427,14 +427,14 @@ double-click QSpark.bat
 
 1. Create model class in `model/` package with `@Entity`, `@Table`, fields, getters/setters
 2. Create repository interface in `repository/` extending `JpaRepository<Entity, IdType>`
-3. No SQL seed needed — seeding is done exclusively by `DataInitializer.java`
+3. No SQL seed needed - seeding is done exclusively by `DataInitializer.java`
 4. Create tests: `@DataJpaTest` for repository, validation tests if `@Pattern` or `@NotNull` used
 5. Controller test: `@WebMvcTest(YourController.class)` with `@MockBean` for the new repository + `@MockBean AdminDetailsService` + `@Import(SecurityConfig.class)`
 
 ### Adding a New Endpoint
 
 1. Add method to appropriate controller with `@GetMapping`/`@PostMapping`
-2. Auth is handled by Spring Security declaratively — no manual session checks needed
+2. Auth is handled by Spring Security declaratively - no manual session checks needed
 3. Add model attributes needed by the view
 4. Add test: without auth → returns 401; with auth (`with(user(...).roles("ADMIN"))`) → returns expected view
 
@@ -466,7 +466,7 @@ double-click QSpark.bat
 | default (MySQL) | `application.properties` | DataInitializer.java | MySQL | No |
 | h2 | `application-h2.properties` | DataInitializer.java | H2 | `/h2-console` |
 
-Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants — seed logic was migrated to `DataInitializer.java`. All seeding is done programmatically with BCrypt hashing.
+Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants - seed logic was migrated to `DataInitializer.java`. All seeding is done programmatically with BCrypt hashing.
 
 ---
 
@@ -475,19 +475,19 @@ Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants — seed log
 ### Critical (Will Break Things)
 
 - **`-Dspring-boot.run.profiles=h2` MUST be quoted** when passed to `mvnw.cmd` from PowerShell or cmd. Without quotes, Maven parses it as a lifecycle phase name: `mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"`
-- **Dark mode localStorage key is `qspark-dark-mode`** — `app.js` uses this key consistently across all pages (landing, dashboard, edit, QR). Login page has no dark mode support.
-- **Deferred CSRF token (Spring Security 6.3) can crash login page** — When `_csrf.token` is evaluated in Thymeleaf, the deferred token may try to create a session after the response is committed, causing `IllegalStateException`. Fix: eagerly resolve the CSRF token in the controller (`csrf.getToken()`) before rendering begins.
-- **Vehicle format map is centralized in `app.js`.** When adding/editing formats, update `VEHICLE_FORMATS` in `app.js` only — `index.html` and `qrcode.html` populate dynamically via `populateFormatSelect()`.
+- **Dark mode localStorage key is `qspark-dark-mode`** - `app.js` uses this key consistently across all pages (landing, dashboard, edit, QR). Login page has no dark mode support.
+- **Deferred CSRF token (Spring Security 6.3) can crash login page** - When `_csrf.token` is evaluated in Thymeleaf, the deferred token may try to create a session after the response is committed, causing `IllegalStateException`. Fix: eagerly resolve the CSRF token in the controller (`csrf.getToken()`) before rendering begins.
+- **Vehicle format map is centralized in `app.js`.** When adding/editing formats, update `VEHICLE_FORMATS` in `app.js` only - `index.html` and `qrcode.html` populate dynamically via `populateFormatSelect()`.
 - **ParkingSlot uses `Integer` for ID, VehicleRegistration uses `Long`.** Don't change without a full migration plan.
 
 ### Medium (Common Mistakes)
 
-- `target/` may contain stale classes from Maven builds — always `mvn clean` first when switching branches.
+- `target/` may contain stale classes from Maven builds - always `mvn clean` first when switching branches.
 - CSRF protection is enabled on all state-changing endpoints. Every form must include a CSRF token. AJAX POST requests need `X-CSRF-TOKEN` header from the meta tag.
 - DELETE and LEFT now use POST (not GET). The `index.html` templates use hidden POST forms with CSRF. Confirmation dialogs submit the parent form.
-- Camera scanning requires `localhost` or HTTPS — on HTTP-only servers, the camera won't work.
+- Camera scanning requires `localhost` or HTTPS - on HTTP-only servers, the camera won't work.
 - When testing POST endpoints with `@WebMvcTest`, always include `.with(csrf())` on the request builder.
-- Mobile number is validated server-side with `@Pattern(regexp="^[0-9]{10}$")` — both `save()` and `update()` check `BindingResult` for mobile field errors.
+- Mobile number is validated server-side with `@Pattern(regexp="^[0-9]{10}$")` - both `save()` and `update()` check `BindingResult` for mobile field errors.
 
 ---
 
@@ -495,39 +495,39 @@ Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants — seed log
 
 | Date | What Changed | Why |
 |------|-------------|-----|
-| Jul 2026 | **Audit: DELETE/LEFT GET→POST** | GET endpoints performed state changes — changed to `@PostMapping` with CSRF-protected forms |
-| Jul 2026 | **Audit: update() slot availability** | `update()` could move a booking to an already-occupied slot — added occupancy + duplicate-vehicle checks |
-| Jul 2026 | **Audit: mobileNumber @Pattern** | No server-side validation for mobile number — added `@Pattern(regexp="^[0-9]{10}$")` on `ParkingSlot.mobileNumber` + field error handling |
+| Jul 2026 | **Audit: DELETE/LEFT GET→POST** | GET endpoints performed state changes - changed to `@PostMapping` with CSRF-protected forms |
+| Jul 2026 | **Audit: update() slot availability** | `update()` could move a booking to an already-occupied slot - added occupancy + duplicate-vehicle checks |
+| Jul 2026 | **Audit: mobileNumber @Pattern** | No server-side validation for mobile number - added `@Pattern(regexp="^[0-9]{10}$")` on `ParkingSlot.mobileNumber` + field error handling |
 | Jul 2026 | **Audit: dead code removed** | Removed unused `parkingRepo` from QRCodeController, unused `findByVehicleNumberContainingIgnoreCase` from ParkingRepository, dead CSS (skeleton, error-state, link, form-grid-3), dead JS (makeSortable, sortTableByColumn) |
-| Jul 2026 | **Audit: blue color standardized** | `--blue-500: #2563EB`, `--blue-600: #1d4ed8` — landing/login dashboard now share the same palette |
-| Jul 2026 | **Audit: dark mode on landing+login** | Added sun/moon toggle to landing nav and login form — now all pages support dark mode |
-| Jul 2026 | **Audit: cache-busting fixed** | `landing.html` loaded styles.css without `?v=2` — added cache-busting query param |
+| Jul 2026 | **Audit: blue color standardized** | `--blue-500: #2563EB`, `--blue-600: #1d4ed8` - landing/login dashboard now share the same palette |
+| Jul 2026 | **Audit: dark mode on landing+login** | Added sun/moon toggle to landing nav and login form - now all pages support dark mode |
+| Jul 2026 | **Audit: cache-busting fixed** | `landing.html` loaded styles.css without `?v=2` - added cache-busting query param |
 | Jul 2026 | **Audit: documentation updated** | AGENTS.md: test count 62→66, data.sql/h2.sql content corrected, CSRF line fixed, session-check pattern removed, config/ files added to inventory |
 | Jul 2026 | **README.md updated** | Spring Boot version (4.0 → 3.3.1), slot count (200 → 480), tech stack cleanup |
-| Jul 2026 | **Dark mode key unified** | `fragments.html` used `sppn-dark-mode`, `app.js` used `qpark-dark-mode` — dark mode didn't persist across pages |
+| Jul 2026 | **Dark mode key unified** | `fragments.html` used `sppn-dark-mode`, `app.js` used `qpark-dark-mode` - dark mode didn't persist across pages |
 | Jul 2026 | **pom.xml cleaned** | Empty `<url/>`, `<licenses/>`, `<developers/>`, `<scm/>` tags removed |
 | Jul 2026 | **.gitignore expanded** | Added `.DS_Store`, `Thumbs.db`, `*.log`, `*.swp`, `*.local.properties` |
 | Jul 2026 | **.gitattributes rewritten** | Proper Java/Maven line-ending rules, binary file types, diff patterns |
 | Jul 2026 | **QRCodeControllerTest added** | 7+1 tests covering session guard, generate, scan, and list endpoints |
 | Jul 2026 | **VehicleRegistrationRepositoryTest added** | 6 tests covering CRUD, exists check, case sensitivity |
-| Jul 2026 | **Bug fix: @Valid added to update()** | `ParkingController.update()` was missing `@Valid` + `BindingResult` — vehicle number format not enforced on updates |
-| Jul 2026 | **Bug fix: delete() existence check** | `delete()` would throw `EmptyResultDataAccessException` on non-existent IDs — added `existsById()` check |
+| Jul 2026 | **Bug fix: @Valid added to update()** | `ParkingController.update()` was missing `@Valid` + `BindingResult` - vehicle number format not enforced on updates |
+| Jul 2026 | **Bug fix: delete() existence check** | `delete()` would throw `EmptyResultDataAccessException` on non-existent IDs - added `existsById()` check |
 | Jul 2026 | **Bug fix: login redirects to /dashboard** | Login success now redirects to `/dashboard` instead of manually loading model data |
 | Jul 2026 | **Bug fix: removed dead form elements** | Non-functional "Remember me" checkbox and "Forgot password" link removed from login.html |
-| Jul 2026 | **Code quality: removed fragments.html** | Dead code — no template used `th:include`/`th:replace` with it |
-| Jul 2026 | **Code quality: vehicle format centralized** | Format map was in 3 places — now populated dynamically from single `VEHICLE_FORMATS` in app.js |
+| Jul 2026 | **Code quality: removed fragments.html** | Dead code - no template used `th:include`/`th:replace` with it |
+| Jul 2026 | **Code quality: vehicle format centralized** | Format map was in 3 places - now populated dynamically from single `VEHICLE_FORMATS` in app.js |
 | Jul 2026 | **Bug fix: deferred CSRF token crash** | `LoginController.loginPage()` now eagerly resolves CSRF token via `csrf.getToken()` to prevent `IllegalStateException: Cannot create a session after the response has been committed` on login page load |
 | Jul 2026 | **Login page dark mode removed** | Dark mode toggle button, `.login-dark-toggle` CSS, and `body.dark` rule removed from login.html per user request. Logo uses `logo-light.webp` only (no theme switching) |
 | Jul 2026 | **CONTACTS.md created** | Developer contact file added with Pawan Simha R and Prajwal R |
-| Jul 2026 | **Documentation updated** | AGENTS.md, README.md, PRD.md, context.md synced to current state — login line counts, dead log files cleaned, version unified to 1.0.0 |
-| Jul 2026 | **Code quality: SecurityConfig dead code** | `contentTypeOptions(customizer -> {})` was a no-op — replaced with `Customizer.withDefaults()` |
-| Jul 2026 | **Code quality: nav redesigned** | Logo left, links center, CTA right — wider nav with dark mode toggle and glassmorphism |
+| Jul 2026 | **Documentation updated** | AGENTS.md, README.md, PRD.md, context.md synced to current state - login line counts, dead log files cleaned, version unified to 1.0.0 |
+| Jul 2026 | **Code quality: SecurityConfig dead code** | `contentTypeOptions(customizer -> {})` was a no-op - replaced with `Customizer.withDefaults()` |
+| Jul 2026 | **Code quality: nav redesigned** | Logo left, links center, CTA right - wider nav with dark mode toggle and glassmorphism |
 | Jul 2026 | **Security: git history purge** | All 17 commits rewritten via git-filter-repo: removed `[REDACTED]`, `[REDACTED]`, `backend.log` from every commit |
 | Jul 2026 | **Security: env var admin credentials** | `DataInitializer.java` now reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` from env vars with dev fallback |
-| Jul 2026 | **Security: rate limiting on /login** | `LoginRateLimitFilter.java` — 5 failed attempts per IP triggers 5-minute cooldown, returns 429 |
+| Jul 2026 | **Security: rate limiting on /login** | `LoginRateLimitFilter.java` - 5 failed attempts per IP triggers 5-minute cooldown, returns 429 |
 | Jul 2026 | **Security: HSTS header added** | includeSubDomains, 1-year max-age in `SecurityConfig.java` |
 | Jul 2026 | **Security: QR scan PII removed from URL** | `QRCodeController.scanQR()` now uses `RedirectAttributes` (flash attributes) instead of URL query params |
-| Jul 2026 | **CI: GitHub Actions workflow added** | `.github/workflows/maven.yml` — runs tests with H2 on push/PR to main |
+| Jul 2026 | **CI: GitHub Actions workflow added** | `.github/workflows/maven.yml` - runs tests with H2 on push/PR to main |
 | Jul 2026 | **Docs: CHANGELOG.md, SECURITY.md, .env.example created** | Release documentation for v1.0.0 |
 | Jul 2026 | **Docs: PWA manifest.json, robots.txt added** | SEO/PWA static assets |
 | Jul 2026 | **Copyright: all 33+ files updated** | `PawanSimha` → `Pawan Simha R` in all Java, HTML, CSS, JS, properties headers |
@@ -544,5 +544,6 @@ Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants — seed log
 4. **Thymeleaf templates are complete HTML.** Not partials/components. Each page is a full `<!DOCTYPE html>` document.
 5. **Dark mode is a design constraint.** Every new UI element needs a dark mode variant (`body.dark .your-class`), except the login page which is intentionally excluded from dark mode.
 6. **Test every new endpoint.** At minimum: without auth → 401 + with auth → success. Test error/edge cases too. Always include `@Import(SecurityConfig.class)` and `.with(csrf())` for POST endpoint tests.
-7. **Both databases must work.** MySQL is production, H2 is dev/testing. Seeding is handled by `DataInitializer.java` — no SQL seed files needed.
+7. **Both databases must work.** MySQL is production, H2 is dev/testing. Seeding is handled by `DataInitializer.java` - no SQL seed files needed.
 8. **No secrets in code.** Database passwords and API keys should be referenced via environment variables.
+
