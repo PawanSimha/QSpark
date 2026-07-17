@@ -110,7 +110,7 @@ class QRCodeControllerTest {
                         .with(user(TEST_USER).roles("ADMIN"))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/dashboard?*"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test
