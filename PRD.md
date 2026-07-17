@@ -162,9 +162,9 @@ Step 2: Camera scans QR code → decodes vehicle number
 
 Step 3: POST /qrcode/scan (dynamic form with CSRF token)
         ├── Vehicle not registered → error → return to QR page
-        └── Registered → 302 redirect → /dashboard?ownerName=...&vehicleNumber=...&vehicleType=...&mobileNumber=...
+        └── Registered → 302 redirect → /dashboard (via flash attributes, no PII in URL)
 
-Step 4: Dashboard form auto-fills from URL params → fields locked
+Step 4: Dashboard receives flash attributes → form auto-fills → fields locked
         └── Admin only needs to pick a slot → confirm booking
 ```
 

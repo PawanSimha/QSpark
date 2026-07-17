@@ -11,7 +11,7 @@ QSpark is a **production-grade smart parking management system** built with Java
 
 ## Mental Model - How the System Works
 
-The system is a **server-rendered MVC monolith** with Thyme leaf templates and vanilla JavaScript enhancement. There is no SPA, no React, no frontend framework. Every navigation is a full page load.
+The system is a **server-rendered MVC monolith** with Thymeleaf templates and vanilla JavaScript enhancement. There is no SPA, no React, no frontend framework. Every navigation is a full page load.
 
 ```
 Browser (HTML + CSS + JS) → Spring Boot Controller → Repository (JPA) → Database
@@ -31,34 +31,34 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 
 | File | Lines | Purpose |
 |------|------:|---------|
-| `QSparkApplication.java` | 26 | Entry point. `@SpringBootApplication` with `SpringApplication.run()`. |
-| `config/AdminDetailsService.java` | 42 | Spring Security `UserDetailsService` - loads admin by username from DB. |
-| `config/DataInitializer.java` | 41 | `CommandLineRunner` - seeds admin user with BCrypt-hashed password at startup (reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` env vars). |
-| `config/SecurityConfig.java` | 85 | Security filter chain, BCrypt encoder, endpoint permissions, CSRF, headers, HSTS. |
-| `config/LoginRateLimitFilter.java` | 80 | `Filter` - rate limits /login to 5 failed attempts per IP with 5-min cooldown. |
-| `controller/LoginController.java` | 37 | Handles landing page (`/`), login page (`GET /login`). Eagerly resolves deferred CSRF token to prevent session-creation-after-response error. |
-| `controller/ParkingController.java` | 211 | Dashboard (`GET /dashboard`), create (`POST /save`), edit (`GET /edit/{id}`), update (`POST /update`), mark left (`POST /left/{id}`), delete (`POST /delete/{id}`). |
-| `controller/QRCodeController.java` | 101 | QR page (`GET /qrcode`), generate QR PNG (`POST /qrcode/generate`), scan redirect (`POST /qrcode/scan`), JSON list (`GET /qrcode/list`). |
-| `model/ParkingSlot.java` | 100 | `@Entity` - id, ownerName, vehicleNumber (with `@Pattern`), vehicleType, slotNumber, mobileNumber (with `@Pattern`), entryTime, exitTime. |
-| `model/Admin.java` | 48 | `@Entity` - id, username (unique), password. |
-| `model/VehicleRegistration.java` | 57 | `@Entity` - id (Long), vehicleNumber (unique, not null), ownerName, vehicleType, mobileNumber, createdAt. |
-| `repository/AdminRepository.java` | 24 | `findByUsername(username)` returns `Optional<Admin>`. |
-| `repository/ParkingRepository.java` | 24 | `findBySlotNumber()`, `existsByVehicleNumberAndExitTimeIsNull()`. |
-| `repository/VehicleRegistrationRepository.java` | 25 | `findByVehicleNumber()` returns `Optional`, `existsByVehicleNumber()`. |
+| `QSparkApplication.java` | 30 | Entry point. `@SpringBootApplication` with `SpringApplication.run()`. |
+| `config/AdminDetailsService.java` | 49 | Spring Security `UserDetailsService` - loads admin by username from DB. |
+| `config/DataInitializer.java` | 55 | `CommandLineRunner` - seeds admin user with BCrypt-hashed password at startup (reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` env vars). |
+| `config/SecurityConfig.java` | 95 | Security filter chain, BCrypt encoder, endpoint permissions, CSRF, headers, HSTS. |
+| `config/LoginRateLimitFilter.java` | 103 | `Filter` - rate limits /login to 5 failed attempts per IP with 5-min cooldown. |
+| `controller/LoginController.java` | 42 | Handles landing page (`/`), login page (`GET /login`). Eagerly resolves deferred CSRF token to prevent session-creation-after-response error. |
+| `controller/ParkingController.java` | 272 | Dashboard (`GET /dashboard`), create (`POST /save`), edit (`GET /edit/{id}`), update (`POST /update`), mark left (`POST /left/{id}`), delete (`POST /delete/{id}`). |
+| `controller/QRCodeController.java` | 113 | QR page (`GET /qrcode`), generate QR PNG (`POST /qrcode/generate`), scan redirect (`POST /qrcode/scan`), JSON list (`GET /qrcode/list`). |
+| `model/ParkingSlot.java` | 128 | `@Entity` - id, ownerName, vehicleNumber (with `@Pattern`), vehicleType, slotNumber, mobileNumber (with `@Pattern`), entryTime, exitTime. |
+| `model/Admin.java` | 60 | `@Entity` - id, username (unique), password. |
+| `model/VehicleRegistration.java` | 69 | `@Entity` - id (Long), vehicleNumber (unique, not null), ownerName, vehicleType, mobileNumber, createdAt. |
+| `repository/AdminRepository.java` | 29 | `findByUsername(username)` returns `Optional<Admin>`. |
+| `repository/ParkingRepository.java` | 30 | `findBySlotNumber()`, `existsByVehicleNumberAndExitTimeIsNull()`. |
+| `repository/VehicleRegistrationRepository.java` | 28 | `findByVehicleNumber()` returns `Optional`, `existsByVehicleNumber()`. |
 
 ### Test Source - `src/test/java/com/qspark/`
 
 | File | Lines | Tests | Purpose |
 |------|------:|:-----:|---------|
-| `QSparkApplicationTests.java` | 26 | 1 | Context loads successfully. |
-| `controller/LoginControllerTest.java` | 48 | 2 | WebMvcTest: landing page, login page access. |
-| `controller/LoginIntegrationTest.java` | 66 | 4 | Full-stack login flow with H2: valid/invalid login, logout, landing. |
-| `controller/ParkingControllerTest.java` | 335 | 24 | Dashboard, save (valid/duplicate/error/invalid-vehicle), delete (valid/invalid), left (valid/invalid/error), edit (valid/invalid), update (valid/invalid/error/occupied-slot), scanned params. |
-| `controller/QRCodeControllerTest.java` | 112 | 8 | QR page, generate, scan (unregistered/registered), list with/without auth. |
-| `model/ParkingSlotValidationTest.java` | 136 | 14 | Vehicle number regex (4 valid, 4 invalid) + mobile number validation (4 + 1 null). |
-| `repository/AdminRepositoryTest.java` | 62 | 4 | Find by username (exists/not found/no match), persist. |
-| `repository/ParkingRepositoryTest.java` | 59 | 3 | Find by slot number (exists/null), persist. |
-| `repository/VehicleRegistrationRepositoryTest.java` | 66 | 6 | Find by number (exists/empty), exists check, save with createdAt, case sensitivity. |
+| `QSparkApplicationTests.java` | 31 | 1 | Context loads successfully. |
+| `controller/LoginControllerTest.java` | 56 | 2 | WebMvcTest: landing page, login page access. |
+| `controller/LoginIntegrationTest.java` | 75 | 4 | Full-stack login flow with H2: valid/invalid login, logout, landing. |
+| `controller/ParkingControllerTest.java` | 387 | 24 | Dashboard, save (valid/duplicate/error/invalid-vehicle), delete (valid/invalid), left (valid/invalid/error), edit (valid/invalid), update (valid/invalid/error/occupied-slot), scanned params. |
+| `controller/QRCodeControllerTest.java` | 132 | 8 | QR page, generate, scan (unregistered/registered), list with/without auth. |
+| `model/ParkingSlotValidationTest.java` | 185 | 14 | Vehicle number regex (4 valid, 4 invalid) + mobile number validation (4 + 1 null). |
+| `repository/AdminRepositoryTest.java` | 79 | 4 | Find by username (exists/not found/no match), persist. |
+| `repository/ParkingRepositoryTest.java` | 71 | 3 | Find by slot number (exists/null), persist. |
+| `repository/VehicleRegistrationRepositoryTest.java` | 82 | 6 | Find by number (exists/empty), exists check, save with createdAt, case sensitivity. |
 
 **Total: 66 tests** - all pass with `mvnw.cmd test`.
 
@@ -66,18 +66,18 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 
 | File | Lines | Purpose |
 |------|------:|---------|
-| `landing.html` | 1085 | Marketing page: full-width hero, floating pill nav (logo left/links center/CTA right), dark mode toggle, feature cards, QR phone mockup, architecture pipeline, developer profiles, FAQ accordion, footer. Inter font, blue #2563EB primary, #EAEAEA bg, IntersectionObserver animations. |
-| `login.html` | 281 | Auth card: 2-column layout with logo + form + error shake animation. Standalone inline CSS. No dark mode toggle. |
-| `index.html` | 452 | Dashboard: sidebar + topbar (dark mode, scan, clock, logout), 3-tab layout (Booking form + 4x120 slot grid / Occupied table / History table), search/sort/export/pagination, confirm modals for delete/left. |
-| `edit.html` | 200 | Edit booking: cascading basement/slot dropdown, vehicle number formatting, mobile validation, CSRF hidden input. |
-| `qrcode.html` | 362 | Two-tab: Generate QR (format selector + AJAX download) / Scan QR (html5-qrcode camera + auto-redirect), registered vehicles table with client-side refresh. |
+| `landing.html` | 1185 | Marketing page: full-width hero, floating pill nav (logo left/links center/CTA right), dark mode toggle, feature cards, QR phone mockup, architecture pipeline, developer profiles, FAQ accordion, footer. Inter font, blue #2563EB primary, #EAEAEA bg, IntersectionObserver animations. |
+| `login.html` | 313 | Auth card: 2-column layout with logo + form + error shake animation. Standalone inline CSS. No dark mode toggle. |
+| `index.html` | 498 | Dashboard: sidebar + topbar (dark mode, scan, clock, logout), 3-tab layout (Booking form + 4x120 slot grid / Occupied table / History table), search/sort/export/pagination, confirm modals for delete/left. |
+| `edit.html` | 217 | Edit booking: cascading basement/slot dropdown, vehicle number formatting, mobile validation, CSRF hidden input. |
+| `qrcode.html` | 393 | Two-tab: Generate QR (format selector + AJAX download) / Scan QR (html5-qrcode camera + auto-redirect), registered vehicles table with client-side refresh. |
 
 ### Static - `src/main/resources/static/`
 
 | File | Lines | Purpose |
 |------|------:|---------|
-| `css/styles.css` | 1193 | Full design system: 50+ CSS custom properties (colors, surfaces, text, shadows), 60+ component classes (buttons, inputs, cards, tables, toasts, modals, slot grid, tabs, pagination, alerts), dark mode via `body.dark`, responsive breakpoints at 1024/768/480px. |
-| `js/app.js` | 508 | Toast notifications, Modal dialogs, dark mode toggle (`qspark-dark-mode` localStorage), live clock, table filtering, pagination, CSV export, vehicle format helpers (`VEHICLE_FORMATS`/`populateFormatSelect`/`setupVehicleFormat`), slot grid builder, quick-jump. |
+| `css/styles.css` | 1337 | Full design system: 50+ CSS custom properties (colors, surfaces, text, shadows), 60+ component classes (buttons, inputs, cards, tables, toasts, modals, slot grid, tabs, pagination, alerts), dark mode via `body.dark`, responsive breakpoints at 1024/768/480px. |
+| `js/app.js` | 590 | Toast notifications, Modal dialogs, dark mode toggle (`qspark-dark-mode` localStorage), live clock, table filtering, pagination, CSV export, vehicle format helpers (`VEHICLE_FORMATS`/`populateFormatSelect`/`setupVehicleFormat`), slot grid builder, quick-jump. |
 | `images/pawan-simha.webp` | - | Developer avatar (landing page). |
 | `images/prajwal-r.webp` | - | Developer avatar (landing page). |
 | `images/logo-light.webp` | - | Brand logo (light variant). |
@@ -91,13 +91,12 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 |------|---------|
 | `application.properties` | MySQL connection (`jdbc:mysql://localhost:3306/qspark`), JPA ddl-auto=update, port 8081, Thymeleaf cache=false. |
 | `application-h2.properties` | H2 in-memory (`jdbc:h2:mem:qspark`), H2 console enabled, port 8081. |
-| `data.sql` | 0 bytes - seeding handled by DataInitializer.java. |
-| `data-h2.sql` | 0 bytes - seeding handled by DataInitializer.java. |
 | `pom.xml` | Spring Boot 3.3.1, Java 17, 12 dependencies (data-jpa, thymeleaf, web, mysql-connector-j, h2, validation, zxing 3.5.3, spring-security, test). |
 | `QSpark.bat` | Windows launcher: checks port 8081, starts mvnw with H2 via `start /B` in same window, polls for ready, opens browser, cleans up on keypress. |
 | `.gitignore` | Ignores HELP.md, backend.log, target/, build/, .DS_Store, Thumbs.db, IDE files, *.local.properties, .opencode/. |
 | `.gitattributes` | Auto LF normalization, diff for java/xml/html/css/js/md/properties, mvnw=LF, .bat/.cmd=CRLF, binaries (jar/png/webp/ico/jpg)=binary. |
 | `.github/workflows/maven.yml` | GitHub Actions CI - runs `mvn test` with H2 profile on push/PR to main. |
+
 ---
 
 ## Request Lifecycle (Detailed)
@@ -128,8 +127,8 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
    - Formats vehicle number to uppercase
    - Looks up `VehicleRegistrationRepository.findByVehicleNumber()`
    - If not found → returns to qrcode view with error "Vehicle not registered"
-   - If found → redirects to `/dashboard` with URL parameters (ownerName, vehicleNumber, vehicleType, mobileNumber)
-5. `ParkingController.dashboard()` receives URL params, adds them as `scanned*` model attributes
+   - If found → redirects to `/dashboard` via flash attributes (no PII in URL)
+5. `ParkingController.dashboard()` receives flash attributes (`scannedOwnerName`, `scannedVehicleNumber`, `scannedVehicleType`, `scannedMobileNumber`), adds them as model attributes
 6. `applyScannedVehicle()` JS auto-fills and locks the form fields - admin only needs to pick a slot
 
 ### Example: Authentication
@@ -151,7 +150,7 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 |--------|------|:-----------:|
 | `id` | `INT` | PK, AUTO_INCREMENT |
 | `username` | `VARCHAR` | UNIQUE |
-| `password` | `VARCHAR` | NOT NULL |
+| `password` | `VARCHAR(60)` | NOT NULL (BCrypt hash) |
 
 ### `parking_slot` table
 | Column | Type | Notes |
@@ -257,16 +256,17 @@ private void addModelAttributes(Model model) {
 }
 ```
 
-### QRCodeController URL Encoding Pattern
+### QRCodeController RedirectAttributes Pattern
 
 ```java
-return "redirect:/dashboard?ownerName=" + urlEncode(reg.getOwnerName())
-        + "&vehicleNumber=" + urlEncode(reg.getVehicleNumber())
-        + "&vehicleType=" + urlEncode(reg.getVehicleType())
-        + "&mobileNumber=" + urlEncode(reg.getMobileNumber());
+redirectAttrs.addFlashAttribute("scannedOwnerName", reg.getOwnerName());
+redirectAttrs.addFlashAttribute("scannedVehicleNumber", reg.getVehicleNumber());
+redirectAttrs.addFlashAttribute("scannedVehicleType", reg.getVehicleType());
+redirectAttrs.addFlashAttribute("scannedMobileNumber", reg.getMobileNumber());
+return "redirect:/dashboard";
 ```
 
-The `urlEncode()` helper must be called manually since `RedirectAttributes` is not used.
+Flash attributes survive the redirect and are read by `ParkingController.dashboard()` via `model.containsAttribute("scannedVehicleNumber")`. This avoids exposing PII in URL query parameters.
 
 ### Frontend Vehicle Number Format Pattern
 
@@ -466,7 +466,7 @@ double-click QSpark.bat
 | default (MySQL) | `application.properties` | DataInitializer.java | MySQL | No |
 | h2 | `application-h2.properties` | DataInitializer.java | H2 | `/h2-console` |
 
-Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants - seed logic was migrated to `DataInitializer.java`. All seeding is done programmatically with BCrypt hashing.
+The SQL seed files (`data.sql`, `data-h2.sql`) were 0-byte remnants and have been removed - seed logic is handled entirely by `DataInitializer.java`. All seeding is done programmatically with BCrypt hashing.
 
 ---
 
@@ -533,6 +533,12 @@ Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants - seed logic
 | Jul 2026 | **Copyright: all 33+ files updated** | `PawanSimha` → `Pawan Simha R` in all Java, HTML, CSS, JS, properties headers |
 | Jul 2026 | **pom.xml version: 0.0.1-SNAPSHOT → 1.0.0** | Final release version |
 | Jul 2026 | **Stale ParkEase refs removed** | `ParkEase` → `QSpark` in `.idea/compiler.xml` |
+| Jul 2026 | **Dead files removed** | `backend.log`, `data.sql`, `data-h2.sql` deleted; `target/` cleaned via `mvn clean` |
+| Jul 2026 | **author meta tags added** | `<meta name="author" content="Pawan Simha R">` added to index.html, edit.html, login.html, qrcode.html |
+| Jul 2026 | **QR scan docs corrected** | AGENTS.md URL encoding section replaced with RedirectAttributes pattern; PRD.md QR flow fixed |
+| Jul 2026 | **README.md tree fixed** | `data.sql`/`data-h2.sql` removed; `LoginRateLimitFilter.java` added to config listing |
+| Jul 2026 | **context.md tree fixed** | `data.sql`/`data-h2.sql` removed; `Readme.webp` added to static assets; em dash rule clarified |
+| Jul 2026 | **Documentation audit completed** | All 7 markdown files audited for consistency, name accuracy, and tree accuracy |
 
 ---
 

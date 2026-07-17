@@ -117,39 +117,42 @@ QSpark/
 ├── context.md                       # Workspace context for AI
 ├── README.md                        # This file
 ├── .gitignore / .gitattributes
-├── data.sql / data-h2.sql           # 0-byte remnants (seed logic in DataInitializer)
 │
 ├── src/main/java/com/qspark/
-│   ├── QSparkApplication.java       # Entry point (26 lines)
+│   ├── QSparkApplication.java       # Entry point (30 lines)
 │   ├── config/
-│   │   ├── SecurityConfig.java      # Spring Security filter chain (85 lines)
-│   │   ├── AdminDetailsService.java # UserDetailsService impl (42 lines)
-│   │   └── DataInitializer.java     # Seeds admin with BCrypt password (41 lines)
+│   │   ├── SecurityConfig.java      # Spring Security filter chain (95 lines)
+│   │   ├── AdminDetailsService.java # UserDetailsService impl (49 lines)
+│   │   ├── DataInitializer.java     # Seeds admin with BCrypt password (55 lines)
+│   │   └── LoginRateLimitFilter.java # Rate limiter - 5 failed attempts, 5-min cooldown (103 lines)
 │   ├── controller/
-│   │   ├── LoginController.java     # GET /, /login (37 lines) - eager CSRF resolution
-│   │   ├── ParkingController.java   # Dashboard + CRUD (211 lines)
-│   │   └── QRCodeController.java    # QR generate/scan/list (101 lines)
+│   │   ├── LoginController.java     # GET /, /login (42 lines) - eager CSRF resolution
+│   │   ├── ParkingController.java   # Dashboard + CRUD (272 lines)
+│   │   └── QRCodeController.java    # QR generate/scan/list (113 lines)
 │   ├── model/
-│   │   ├── Admin.java               # Admin entity (48 lines)
-│   │   ├── ParkingSlot.java         # Parking booking entity (100 lines)
-│   │   └── VehicleRegistration.java # QR vehicle registry (57 lines)
+│   │   ├── Admin.java               # Admin entity (60 lines)
+│   │   ├── ParkingSlot.java         # Parking booking entity (128 lines)
+│   │   └── VehicleRegistration.java # QR vehicle registry (69 lines)
 │   └── repository/
-│       ├── AdminRepository.java     # findByUsername (24 lines)
-│       ├── ParkingRepository.java   # Slot + vehicle queries (24 lines)
-│       └── VehicleRegistrationRepository.java  # findByVehicleNumber (25 lines)
+│       ├── AdminRepository.java     # findByUsername (29 lines)
+│       ├── ParkingRepository.java   # Slot + vehicle queries (30 lines)
+│       └── VehicleRegistrationRepository.java  # findByVehicleNumber (28 lines)
 │
 ├── src/main/resources/
 │   ├── application.properties       # MySQL profile
 │   ├── application-h2.properties    # H2 dev profile
 │   ├── templates/                   # Thymeleaf views
-│   │   ├── landing.html             # Marketing page (1085 lines)
-│   │   ├── login.html               # Auth page (281 lines) - no dark mode
-│   │   ├── index.html               # Dashboard (452 lines)
-│   │   ├── edit.html                # Edit booking (200 lines)
-│   │   └── qrcode.html              # QR management (362 lines)
+│   │   ├── landing.html             # Marketing page (1185 lines)
+│   │   ├── login.html               # Auth page (313 lines) - no dark mode
+│   │   ├── index.html               # Dashboard (498 lines)
+│   │   ├── edit.html                # Edit booking (217 lines)
+│   │   └── qrcode.html              # QR management (393 lines)
 │   └── static/                      # Static assets
-│       ├── css/styles.css           # Full design system (1193 lines)
-│       ├── js/app.js                # Shared JS utilities (508 lines)
+│       ├── css/styles.css           # Full design system (1337 lines)
+│       ├── js/app.js                # Shared JS utilities (590 lines)
+│       ├── Readme.webp              # Dashboard screenshot for README
+│       ├── manifest.json            # Web app manifest (PWA support)
+│       ├── robots.txt               # SEO directives
 │       ├── images/
 │       │   ├── logo-light.webp      # Brand logo (light variant)
 │       │   ├── logo-dark.webp       # Brand logo (dark variant)
@@ -157,7 +160,7 @@ QSpark/
 │       │   ├── hero-banner-dark.webp   # Hero banner (dark variant)
 │       │   ├── pawan-simha.webp     # Developer avatar
 │       │   └── prajwal-r.webp       # Co-developer avatar
-│       └── favicon.ico              # Favicon
+│       ├── favicon.ico              # Favicon
 │
 └── src/test/java/com/qspark/        # 66 tests
     ├── QSparkApplicationTests.java  # 1 test
@@ -304,8 +307,25 @@ Double-click `QSpark.bat` - it checks port 8081, launches with H2 profile in a s
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+<div align="center">
+
+##  Links
+
+| Platform | URL |
+|----------|-----|
+| **GitHub** | [github.com/PawanSimha](https://github.com/PawanSimha) |
+| **LinkedIn** | [linkedin.com/in/pawansimha](https://www.linkedin.com/in/pawansimha) |
+| **X / Twitter** | [x.com/pawansimha](https://x.com/pawansimha) |
+| **Google Developer** | [g.dev/pawansimha](https://g.dev/pawansimha) |
+| **Google Skills Profile** | [skills.google.com/public_profiles/...](https://www.skills.google.com/public_profiles/9108dded-855b-466a-b261-0a7519d472cf) |
+| **Credly Badges** | [credly.com/users/pawansimha/badges](https://www.credly.com/users/pawansimha/badges) |
+
 ---
 
-##  License
+<p align="center">
+  <b>Pawan Simha R</b>
+  <br />
+  <sub>Built with Java 17 · Spring Boot 3.3.1 · Thymeleaf · MySQL / H2 · Spring Security · Vanilla JavaScript · CSS3 · ZXing · html5-qrcode · Maven · GitHub Actions</sub>
+</p>
 
-Distributed under the GNU General Public License v3.0. See `LICENSE` for more information.
+</div>

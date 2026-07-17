@@ -64,7 +64,7 @@ Browser (HTML+CSS+JS) --> Controller (Spring @Controller)
 - **No service layer** - controllers interact directly with JPA repositories. Business logic lives in controllers and repository methods.
 - **No DTOs** - entities are passed directly to views. ParkingSlot, Admin, VehicleRegistration serve as both JPA entities and form backing objects.
 - **State management** - the server holds all authoritative state. Client holds only dark mode preference (localStorage `qspark-dark-mode`). No client-side state library.
-- **Auth** - Spring Security filter chain guards every route except public paths (/, /login, /css/**, /js/**, /images/**). CSRF tokens on all POST forms. API-style endpoints (/qrcode/generate, /qrcode/list) return 401 instead of redirect.
+- **Auth** - Spring Security filter chain guards every route except public paths (/, /login, /css/**, /js/**, /images/**, /logo-light.webp, /logo-dark.webp, /favicon.ico, /hero-banner-light.webp, /hero-banner-dark.webp). CSRF tokens on all POST forms. API-style endpoints (/qrcode/generate, /qrcode/list) return 401 instead of redirect.
 - **Error handling** - try/catch in every controller method with model-level error/success attributes. No global exception handler.
 - **Dual database profile** - `default` (MySQL) vs `h2` (H2 in-memory). Seeding is handled by DataInitializer.java (no SQL seed files).
 
@@ -96,7 +96,6 @@ QSpark/
 |-- SECURITY.md                      # Security policy and vulnerability reporting
 |-- LICENSE                          # GNU General Public License v3.0
 |-- .env.example                     # Environment variable template (DB_PASSWORD, ADMIN_PASSWORD)
-|-- data.sql / data-h2.sql           # 0-byte remnants - seeding handled by DataInitializer.java
 |-- .github/
 |   |-- workflows/
 |       |-- maven.yml                # GitHub Actions CI - runs mvn test on push/PR
@@ -133,6 +132,7 @@ QSpark/
 |   |-- static/
 |       |-- css/styles.css           # Full design system - tokens, layout, components, dark mode
 |       |-- js/app.js                # Shared utilities - Toast, Modal, sort, filter, paginate, CSV, slot grid
+|       |-- Readme.webp               # Dashboard screenshot for README
 |       |-- manifest.json            # Web app manifest (PWA support)
 |       |-- robots.txt               # SEO directives
 |       |-- images/
@@ -184,8 +184,8 @@ QSpark/
 - **No global exception handler.** Each controller method handles its own errors with try/catch and model attributes. No @ControllerAdvice.
 - **No client-side data fetching for critical UI.** Slot grid rendering depends on model attributes passed from the server. Do not fetch slot data via AJAX on page load.
 - **Do not skip CSRF on POST forms.** Every state-changing POST must include a CSRF token: `<input type="hidden" name="_csrf" th:value="${_csrf.token}">` for forms, `X-CSRF-TOKEN` header for AJAX.
-- **No em dashes in documentation files.** Use ` - ` instead of ` - ` (em dash U+2014) in all .md documentation files.
-- **data.sql and data-h2.sql are both 0-byte remnants.** All seeding is handled by DataInitializer.java. Do not add SQL seed commands to these files.
+- **No em dashes in documentation files.** Use hyphens (-) or colons (:) instead of em dashes (U+2014) in all .md documentation files.
+- **SQL seed files (data.sql, data-h2.sql) have been removed.** All seeding is handled by DataInitializer.java. Do not create SQL seed files.
 
 ---
 
@@ -195,7 +195,7 @@ QSpark/
 
 - [x] Spring Boot 3.3.1 project scaffolding with Maven Wrapper
 - [x] MVC architecture with Thymeleaf templates (5 views: landing, login, dashboard, edit, QR)
-- [x] Spring Security 6.0 integration - BCryptPasswordEncoder, form login/logout, CSRF, secure headers
+- [x] Spring Security 6.3 integration - BCryptPasswordEncoder, form login/logout, CSRF, secure headers
 - [x] AdminDetailsService (UserDetailsService impl) + DataInitializer (seeds QSparker/QSpark@Secure)
 - [x] 480-slot management (4 basements x 120 slots, format B1-001 through B4-120)
 - [x] Full CRUD - create, read, update, delete bookings
@@ -249,4 +249,8 @@ QSpark/
 - [x] **CHANGELOG.md, SECURITY.md, .env.example** - Created for release
 - [x] **manifest.json, robots.txt** - Created for SEO/PWA
 - [x] **Stale ParkEase references** - Removed from .idea/compiler.xml
+- [x] **Dead files removed** - backend.log, data.sql, data-h2.sql deleted; mvn clean ran
+- [x] **author meta tags added** - All 5 HTML templates now include `<meta name="author" content="Pawan Simha R">`
+- [x] **LoginRateLimitFilter added** - Added to README.md file inventory and tree
+- [x] **QR scan flow corrected** - AGENTS.md, PRD.md updated to reflect RedirectAttributes (not URL params)
 
