@@ -208,7 +208,7 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 
 ## Key Patterns & Conventions
 
-### Auth Pattern (Spring Security — No Manual Session Checks)
+### Auth Pattern (Spring Security - No Manual Session Checks)
 
 Auth is managed declaratively through `SecurityConfig.java` filter chain. Controllers never check `session.getAttribute("admin")` — Spring Security handles it before the controller method is reached.
 
@@ -354,7 +354,7 @@ class ParkingSlotValidationTest {
 
 ## Frontend Architecture
 
-### CSS Design System (`styles.css` — 1193 lines)
+### CSS Design System (`styles.css` - 1193 lines)
 
 Uses CSS custom properties (design tokens) organized into:
 - **Colors:** Gray scale (50-900), blue (50-700: `#2563EB`/`#1d4ed8`), green/red/amber (50-700)
@@ -367,7 +367,7 @@ Uses CSS custom properties (design tokens) organized into:
 
 **Component classes:** buttons (9 variants), inputs, cards, stats, tables, actions, toasts (3 types), modals, pagination, slot grid (15-column), basement tabs, legend, badges (4 colors), alerts (2 types), forms, empty states, utilities.
 
-### JS Utilities (`app.js` — 508 lines)
+### JS Utilities (`app.js` - 508 lines)
 
 - **Toast:** `Toast.success(msg)`, `Toast.error(msg)`, `Toast.info(msg)` — auto-dismissing notifications
 - **Modal:** `Modal.confirm({title, message, confirmText, confirmClass, onConfirm, onCancel})` — trap focus, escape/overlay dismiss
@@ -400,7 +400,7 @@ Simple JS tab switching with `display: none` / `display: block` via `.tab-panel.
 # Compile
 mvnw.cmd compile
 
-# Run with H2 (no MySQL needed) — QUOTE the -D arg
+# Run with H2 (no MySQL needed) - QUOTE the -D arg
 mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=h2"
 
 # Run with MySQL (default profile)
@@ -415,13 +415,13 @@ mvnw.cmd test -Dtest=QRCodeControllerTest
 # Clean stale target/ (needed when switching branches/projects)
 mvnw.cmd clean
 
-# Quick launcher (Windows) — single terminal window
+# Quick launcher (Windows) - single terminal window
 double-click QSpark.bat
 ```
 
 ---
 
-## Common Tasks — Step by Step
+## Common Tasks - Step by Step
 
 ### Adding a New Entity
 
