@@ -32,6 +32,7 @@ QSpark is a **production-grade smart parking management system** for commercial 
 | **QR Generation** | ZXing | 3.5.3 | core + javase, PNG output via MatrixToImageWriter |
 | **QR Scanning** | html5-qrcode | CDN | Camera-based scan, requires HTTPS or localhost |
 | **Build Tool** | Maven Wrapper | 3.x | mvnw.cmd for Windows, mvnw for Unix |
+| **CI/CD** | GitHub Actions | - | Automated test runner on push/PR to main |
 | **Frontend JS** | Vanilla JavaScript | ES5+ | 508 lines, no frameworks |
 | **Frontend CSS** | Custom design system | - | 1193 lines, CSS custom properties, dark mode |
 | **Testing** | JUnit 5 + Spring Test | - | @WebMvcTest, @DataJpaTest, @SpringBootTest |
@@ -91,15 +92,22 @@ QSpark/
 |-- README.md                        # User-facing documentation
 |-- CONTACTS.md                      # Developer contact info
 |-- context.md                       # THIS FILE - workspace state & architecture reference
+|-- CHANGELOG.md                     # Release history for v1.0.0
+|-- SECURITY.md                      # Security policy and vulnerability reporting
 |-- LICENSE                          # GNU General Public License v3.0
+|-- .env.example                     # Environment variable template (DB_PASSWORD, ADMIN_PASSWORD)
 |-- data.sql / data-h2.sql           # 0-byte remnants - seeding handled by DataInitializer.java
+|-- .github/
+|   |-- workflows/
+|       |-- maven.yml                # GitHub Actions CI - runs mvn test on push/PR
 |
 |-- src/main/java/com/qspark/
 |   |-- QSparkApplication.java       # Entry point - @SpringBootApplication
 |   |-- config/
-|   |   |-- SecurityConfig.java      # Filter chain - auth rules, CSRF, headers, 401 entry points
+|   |   |-- SecurityConfig.java      # Filter chain - auth rules, CSRF, headers, 401 entry points, HSTS
 |   |   |-- AdminDetailsService.java # UserDetailsService - BCrypt-based admin lookup
-|   |   |-- DataInitializer.java     # Seeds QSparker/QSpark@Secure with BCrypt on first run
+|   |   |-- DataInitializer.java     # Seeds admin with BCrypt on first run (ADMIN_USERNAME/ADMIN_PASSWORD env vars)
+|   |   |-- LoginRateLimitFilter.java # Rate limiter - 5 failed login attempts = 5-min cooldown per IP
 |   |-- controller/
 |   |   |-- LoginController.java     # GET / (landing), GET /login - public only
 |   |   |-- ParkingController.java   # Dashboard + CRUD - /dashboard, /save, /update, /delete, /left, /edit
@@ -125,6 +133,8 @@ QSpark/
 |   |-- static/
 |       |-- css/styles.css           # Full design system - tokens, layout, components, dark mode
 |       |-- js/app.js                # Shared utilities - Toast, Modal, sort, filter, paginate, CSV, slot grid
+|       |-- manifest.json            # Web app manifest (PWA support)
+|       |-- robots.txt               # SEO directives
 |       |-- images/
 |       |   |-- logo-light.webp / logo-dark.webp        # Brand logos (light & dark variants)
 |       |   |-- hero-banner-light.webp / hero-banner-dark.webp  # Hero banners (light & dark variants)
@@ -217,7 +227,6 @@ QSpark/
 
 ### Upcoming Implementations (Next Steps)
 
-- [ ] Rate limiting on `/login` to prevent brute-force attacks
 - [ ] Multi-admin roles (super admin, operator, viewer) with distinct permissions
 - [ ] PDF parking receipts with QR code on exit
 - [ ] Server-side pagination for large history datasets
@@ -226,3 +235,17 @@ QSpark/
 - [ ] Automated email/SMS notifications at occupancy thresholds
 - [ ] Monthly occupancy reports (charts + PDF)
 - [ ] License plate recognition (ANPR) as future enhancement
+
+### Completed Since Last Session
+
+- [x] **Git history purge** — Removed `[REDACTED]`, `[REDACTED]`, `backend.log` from all 17 commits using git-filter-repo
+- [x] **Admin password via env var** — DataInitializer.reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` env vars with dev fallback
+- [x] **Rate limiting on /login** — LoginRateLimitFilter: 5 failed attempts per IP, 5-min cooldown
+- [x] **HSTS header** — includeSubDomains, 1-year max-age added to SecurityConfig
+- [x] **QR scan redirect** — PII removed from URL params; uses RedirectAttributes (flash attributes) instead
+- [x] **GitHub Actions CI** — .github/workflows/maven.yml runs tests on push/PR to main
+- [x] **Copyright headers** — All 33+ source files: "PawanSimha" → "Pawan Simha R"
+- [x] **pom.xml version** — 0.0.1-SNAPSHOT → 1.0.0
+- [x] **CHANGELOG.md, SECURITY.md, .env.example** — Created for release
+- [x] **manifest.json, robots.txt** — Created for SEO/PWA
+- [x] **Stale ParkEase references** — Removed from .idea/compiler.xml

@@ -33,8 +33,9 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 |------|------:|---------|
 | `QSparkApplication.java` | 26 | Entry point. `@SpringBootApplication` with `SpringApplication.run()`. |
 | `config/AdminDetailsService.java` | 42 | Spring Security `UserDetailsService` — loads admin by username from DB. |
-| `config/DataInitializer.java` | 41 | `CommandLineRunner` — seeds admin user with BCrypt-hashed password at startup. |
-| `config/SecurityConfig.java` | 85 | Security filter chain, BCrypt encoder, endpoint permissions, CSRF, headers. |
+| `config/DataInitializer.java` | 41 | `CommandLineRunner` — seeds admin user with BCrypt-hashed password at startup (reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` env vars). |
+| `config/SecurityConfig.java` | 85 | Security filter chain, BCrypt encoder, endpoint permissions, CSRF, headers, HSTS. |
+| `config/LoginRateLimitFilter.java` | 80 | `Filter` — rate limits /login to 5 failed attempts per IP with 5-min cooldown. |
 | `controller/LoginController.java` | 37 | Handles landing page (`/`), login page (`GET /login`). Eagerly resolves deferred CSRF token to prevent session-creation-after-response error. |
 | `controller/ParkingController.java` | 211 | Dashboard (`GET /dashboard`), create (`POST /save`), edit (`GET /edit/{id}`), update (`POST /update`), mark left (`POST /left/{id}`), delete (`POST /delete/{id}`). |
 | `controller/QRCodeController.java` | 101 | QR page (`GET /qrcode`), generate QR PNG (`POST /qrcode/generate`), scan redirect (`POST /qrcode/scan`), JSON list (`GET /qrcode/list`). |
@@ -96,7 +97,7 @@ Browser JS enhances: live clock, slot grid, table search/filter, QR scanner, dar
 | `QSpark.bat` | Windows launcher: checks port 8081, starts mvnw with H2 via `start /B` in same window, polls for ready, opens browser, cleans up on keypress. |
 | `.gitignore` | Ignores HELP.md, backend.log, target/, build/, .DS_Store, Thumbs.db, IDE files, *.local.properties, .opencode/. |
 | `.gitattributes` | Auto LF normalization, diff for java/xml/html/css/js/md/properties, mvnw=LF, .bat/.cmd=CRLF, binaries (jar/png/webp/ico/jpg)=binary. |
-
+| `.github/workflows/maven.yml` | GitHub Actions CI — runs `mvn test` with H2 profile on push/PR to main. |
 ---
 
 ## Request Lifecycle (Detailed)
@@ -521,6 +522,17 @@ Both SQL seed files (`data.sql`, `data-h2.sql`) are 0-byte remnants — seed log
 | Jul 2026 | **Documentation updated** | AGENTS.md, README.md, PRD.md, context.md synced to current state — login line counts, dead log files cleaned, version unified to 1.0.0 |
 | Jul 2026 | **Code quality: SecurityConfig dead code** | `contentTypeOptions(customizer -> {})` was a no-op — replaced with `Customizer.withDefaults()` |
 | Jul 2026 | **Code quality: nav redesigned** | Logo left, links center, CTA right — wider nav with dark mode toggle and glassmorphism |
+| Jul 2026 | **Security: git history purge** | All 17 commits rewritten via git-filter-repo: removed `[REDACTED]`, `[REDACTED]`, `backend.log` from every commit |
+| Jul 2026 | **Security: env var admin credentials** | `DataInitializer.java` now reads `ADMIN_USERNAME`/`ADMIN_PASSWORD` from env vars with dev fallback |
+| Jul 2026 | **Security: rate limiting on /login** | `LoginRateLimitFilter.java` — 5 failed attempts per IP triggers 5-minute cooldown, returns 429 |
+| Jul 2026 | **Security: HSTS header added** | includeSubDomains, 1-year max-age in `SecurityConfig.java` |
+| Jul 2026 | **Security: QR scan PII removed from URL** | `QRCodeController.scanQR()` now uses `RedirectAttributes` (flash attributes) instead of URL query params |
+| Jul 2026 | **CI: GitHub Actions workflow added** | `.github/workflows/maven.yml` — runs tests with H2 on push/PR to main |
+| Jul 2026 | **Docs: CHANGELOG.md, SECURITY.md, .env.example created** | Release documentation for v1.0.0 |
+| Jul 2026 | **Docs: PWA manifest.json, robots.txt added** | SEO/PWA static assets |
+| Jul 2026 | **Copyright: all 33+ files updated** | `PawanSimha` → `Pawan Simha R` in all Java, HTML, CSS, JS, properties headers |
+| Jul 2026 | **pom.xml version: 0.0.1-SNAPSHOT → 1.0.0** | Final release version |
+| Jul 2026 | **Stale ParkEase refs removed** | `ParkEase` → `QSpark` in `.idea/compiler.xml` |
 
 ---
 

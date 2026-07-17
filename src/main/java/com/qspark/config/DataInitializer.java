@@ -37,10 +37,18 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (adminRepo.findByUsername("QSparker").isEmpty()) {
+        String adminUser = System.getenv("ADMIN_USERNAME");
+        if (adminUser == null || adminUser.isBlank()) {
+            adminUser = "QSparker";
+        }
+        if (adminRepo.findByUsername(adminUser).isEmpty()) {
             Admin admin = new Admin();
-            admin.setUsername("QSparker");
-            admin.setPassword(passwordEncoder.encode("QSpark@Secure"));
+            admin.setUsername(adminUser);
+            String adminPass = System.getenv("ADMIN_PASSWORD");
+            if (adminPass == null || adminPass.isBlank()) {
+                adminPass = "QSpark@Secure";
+            }
+            admin.setPassword(passwordEncoder.encode(adminPass));
             adminRepo.save(admin);
         }
     }

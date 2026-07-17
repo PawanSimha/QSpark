@@ -61,19 +61,21 @@ public class ParkingController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model,
-                            @RequestParam(required = false) String ownerName,
-                            @RequestParam(required = false) String vehicleNumber,
-                            @RequestParam(required = false) String vehicleType,
-                            @RequestParam(required = false) String mobileNumber) {
+    public String dashboard(Model model) {
 
         addModelAttributes(model);
 
-        if (vehicleNumber != null && !vehicleNumber.isEmpty()) {
-            model.addAttribute("scannedOwnerName", ownerName != null ? ownerName : "");
-            model.addAttribute("scannedVehicleNumber", vehicleNumber);
-            model.addAttribute("scannedVehicleType", vehicleType != null ? vehicleType : "");
-            model.addAttribute("scannedMobileNumber", mobileNumber != null ? mobileNumber : "");
+        if (model.containsAttribute("scannedVehicleNumber")) {
+            String vn = (String) model.getAttribute("scannedVehicleNumber");
+            if (vn != null && !vn.isEmpty()) {
+                model.addAttribute("scannedOwnerName",
+                        model.getAttribute("scannedOwnerName") != null ? model.getAttribute("scannedOwnerName") : "");
+                model.addAttribute("scannedVehicleNumber", vn);
+                model.addAttribute("scannedVehicleType",
+                        model.getAttribute("scannedVehicleType") != null ? model.getAttribute("scannedVehicleType") : "");
+                model.addAttribute("scannedMobileNumber",
+                        model.getAttribute("scannedMobileNumber") != null ? model.getAttribute("scannedMobileNumber") : "");
+            }
         }
 
         return "index";

@@ -84,6 +84,10 @@ public class SecurityConfig {
                 .referrerPolicy(referrer -> referrer
                     .policy(org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)
                 )
+                .httpStrictTransportSecurity(hsts -> hsts
+                    .includeSubDomains(true)
+                    .maxAgeInSeconds(31536000)
+                )
             );
 
         return http.build();

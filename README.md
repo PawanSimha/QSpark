@@ -12,6 +12,7 @@
     <img src="https://img.shields.io/badge/QR_Code-ZXing_3.5.3-%23FF8800?style=flat-square" alt="ZXing 3.5.3"/>
     <img src="https://img.shields.io/badge/License-GPLv3-%23A12E2E?style=flat-square&logo=gnu&logoColor=white" alt="License GPLv3"/>
     <img src="https://img.shields.io/badge/Tests-66_Passing-%2322c55e?style=flat-square" alt="Tests 66 Passing"/>
+    <img src="https://img.shields.io/github/actions/workflow/status/PawanSimha/QSpark/maven.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI" alt="CI Status"/>
   </p>
 </div>
 
@@ -204,8 +205,8 @@ $env:DB_PASSWORD = "your_password"
 
 ### 4. Login
 - **URL:** http://localhost:8081
-- **Username:** `QSparker`
-- **Password:** `QSpark@Secure`
+- **Username:** `QSparker` (or set `ADMIN_USERNAME` env var)
+- **Password:** `QSpark@Secure` (or set `ADMIN_PASSWORD` env var)
 
 ### 5. Windows Quick Launcher
 Double-click `QSpark.bat` - it checks port 8081, launches with H2 profile in a single terminal window, opens the browser automatically.

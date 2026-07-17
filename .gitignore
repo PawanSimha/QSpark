@@ -57,5 +57,4 @@ frontend/
 # Agent configuration
 .opencode/
 
-# Git filter patterns (temporary, removed after history rewrite)
-.git-filter-repo-patterns.txt
+

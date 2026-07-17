@@ -30,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -85,7 +86,7 @@ public class QRCodeController {
     }
 
     @PostMapping("/qrcode/scan")
-    public String scanQR(@RequestParam String vehicleNumber, Model model) {
+    public String scanQR(@RequestParam String vehicleNumber, Model model, RedirectAttributes redirectAttrs) {
 
         String formatted = vehicleNumber.toUpperCase().trim();
 
@@ -96,19 +97,12 @@ public class QRCodeController {
             return "qrcode";
         }
 
-        return "redirect:/dashboard?ownerName=" + urlEncode(reg.getOwnerName())
-                + "&vehicleNumber=" + urlEncode(reg.getVehicleNumber())
-                + "&vehicleType=" + urlEncode(reg.getVehicleType())
-                + "&mobileNumber=" + urlEncode(reg.getMobileNumber());
-    }
+        redirectAttrs.addFlashAttribute("scannedOwnerName", reg.getOwnerName());
+        redirectAttrs.addFlashAttribute("scannedVehicleNumber", reg.getVehicleNumber());
+        redirectAttrs.addFlashAttribute("scannedVehicleType", reg.getVehicleType());
+        redirectAttrs.addFlashAttribute("scannedMobileNumber", reg.getMobileNumber());
 
-    private String urlEncode(String s) {
-        if (s == null) return "";
-        try {
-            return java.net.URLEncoder.encode(s, java.nio.charset.StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            return s;
-        }
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/qrcode/list")

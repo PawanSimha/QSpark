@@ -86,7 +86,7 @@ QSpark solves all six problems with a single, unified, server-authoritative appl
 
 | ID | Feature | Rationale |
 |----|---------|-----------|
-| F-17 | **Rate Limiting on `/login`** | Prevent brute-force password guessing |
+| F-17 | **Rate Limiting on `/login`** | Prevent brute-force password guessing | ✅ Built |
 | F-18 | **Multi-Admin Roles** | Distinguish super admin, parking operator, and viewer roles with distinct permissions |
 | F-19 | **MySQL Password via Env Var** | Replace hardcoded dev password with `${DB_PASSWORD}` in application.properties | ✅ Built |
 | F-20 | **Parking Receipt (PDF)** | Generate a printable receipt with QR code when vehicle exits |
