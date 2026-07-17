@@ -1,0 +1,28 @@
+{
+  "name": "QSpark — Quick & Smart Parking",
+  "short_name": "QSpark",
+  "description": "Production-grade smart parking management system. Manages 480 parking slots across 4 basements with QR-code-based vehicle identification and real-time slot grid.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EAEAEA",
+  "theme_color": "#2563EB",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/logo-light.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any light"
+    },
+    {
+      "src": "/logo-dark.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any dark"
+    }
+  ]
+}

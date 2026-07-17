@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.qspark</groupId>
     <artifactId>QSpark</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>QSpark</name>
     <description>Quick &amp; Smart Parking — A production-grade parking management system built with Spring Boot</description>
     <properties>
