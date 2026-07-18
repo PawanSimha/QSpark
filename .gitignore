@@ -2,6 +2,8 @@
 HELP.md
 backend.log
 *.log
+Thumbs.db
+desktop.ini
 
 # Build output
 target/
